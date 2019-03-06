@@ -1,0 +1,9 @@
+diff a/team15duckD2D/playGround.cpp b/team15duckD2D/playGround.cpp	(rejected hunks)
+@@ -124,6 +124,7 @@
+ 	SCENEMANAGER->addScene("�Ͽ���", new hayoungTestScene);
+ 	SCENEMANAGER->addScene("mapToolScene", new mapToolScene);
+ 	SCENEMANAGER->addScene("mapTestScene", new mapTestScene);
++	SCENEMANAGER->addScene("����", new objectTool);
+ 
+ 	if (MAPTOOLSCENE)
+ 	{

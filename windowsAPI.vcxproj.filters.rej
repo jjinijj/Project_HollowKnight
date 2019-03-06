@@ -1,0 +1,11 @@
+diff a/team15duckD2D/windowsAPI.vcxproj.filters b/team15duckD2D/windowsAPI.vcxproj.filters	(rejected hunks)
+@@ -302,6 +302,9 @@
+     <ClCompile Include="hayoungTestScene.cpp">
+       <Filter>PlayGround\ui</Filter>
+     </ClCompile>
++    <ClCompile Include="mapTool.cpp">
++      <Filter>PlayGround\map</Filter>
++    </ClCompile>
+   </ItemGroup>
+   <ItemGroup>
+     <ResourceCompile Include="windowsAPI.rc">
