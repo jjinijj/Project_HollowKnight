@@ -6,18 +6,22 @@ button::button()
 : _state(eButton_None)
 , _isToggle(false)
 , _isToggleOn(false)
+, _fontSize(10)
+, _width(0.f)
+, _height(0.f)
 , _x(0.f)
 , _y(0.f)
 {
 	for (int ii = 0; ii < eButton_Count; ++ii)
+	{
 		_imgs[ii] = nullptr;
+		_text[ii].clear();
+	}
 
 	_rc = {};
 
 	_onFunction = NULL;
 	_offFunction = NULL;
-
-	_text.clear();
 }
 
 button::~button()
@@ -68,12 +72,13 @@ HRESULT button::init( const char* upImgName, const char* pressImgName, const cha
 void button::release()
 {
 	for (int ii = 0; ii < eButton_Count; ++ii)
+	{
 		_imgs[ii] = nullptr;
+		_text[ii].clear();
+	}
 
 	_onFunction = NULL;
 	_offFunction = NULL;
-
-	_text.clear();
 }
 
 void button::update()
@@ -84,7 +89,7 @@ void button::update()
 		{
 			_state = eButton_Press;
 		}
-		else if (KEYMANAGER->isOnceKeyUp(VK_LBUTTON) && eButton_Press == _state)
+		if (KEYMANAGER->isOnceKeyUp(VK_LBUTTON) && eButton_Press == _state)
 		{
 			_state = eButton_Up;
 			if (_isToggle)
@@ -126,16 +131,49 @@ void button::update()
 void button::render()
 {
 	_imgs[_state]->render(_rc, 1.0f);
-	D2DMANAGER->drawText(_text.c_str()
-						 , _rc.left
-						 , _rc.top + (_height - _fontSize) / 2.5f
-						 , _fontSize, RGB(255, 255, 255));
+
+	//WCHAR str[128] ;
+	//swprintf_s(str, L"%d %d", _state, _isToggleOn);
+	D2DMANAGER->drawText(_text[_state].c_str()
+						 ,_rc.left
+						 ,_rc.top + (_height - _fontSize) / 2.5f
+						 ,_fontSize, RGB(255, 255, 255));
+}
+
+void button::setText(wstring text)
+{
+	for(int ii = 0 ; ii < eButton_Count; ++ii)
+		_text[ii] = text;
 }
 
 void button::setText(wstring text, int fontSize)
 {
-	_text = text;
+	setText(text);
 	_fontSize = fontSize;
+}
+
+void button::setText(wstring text, eButtonState state)
+{
+	_text[state] = text;
+}
+
+void button::setText(wstring text, eButtonState state, int fontSize)
+{
+	_text[state] = text;
+	_fontSize = fontSize;
+}
+
+void button::setState(eButtonState state)
+{
+	_state = state;
+
+	if (_isToggle)
+	{
+		if(eButton_Up == state)
+			_isToggleOn = false;
+		else if(eButton_Down == state)
+			_isToggleOn = true;
+	}
 }
 
 void button::rePosition(float x, float y)

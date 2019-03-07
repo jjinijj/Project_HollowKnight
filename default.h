@@ -23,6 +23,9 @@
 
 #define MAP_LAYER_COUNT 5
 
+#define DEFAULT_FONT_SIZE 15
+#define DEFAULT_FONT_COLOR RGB(0, 0, 0)
+
 
 //=============================================
 //   지형 속성

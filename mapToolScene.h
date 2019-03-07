@@ -3,7 +3,7 @@
 
 
 
-#define SAMPLABOARD_WIDTH 980.f
+#define SAMPLABOARD_WIDTH 1010.f
 #define UI_SPACE 10.f
 
 class mapTool;
@@ -21,6 +21,7 @@ private:
 	image* _uiBG[5];
 
 	bool _isOpenSampleBoard;
+	bool _isCloseSampleBoard;
 	bool _isMoveMiniScope;
 	
 	RECTD2D _canvers;
@@ -52,10 +53,10 @@ public:
 	void render()  override;
 
 private:
-	void closeSampleBoard();
-	void openSampleBoard(bool isSkip = false);
+	void closingSampleBoard();
+	void openningSampleBoard(bool isSkip = false);
 
-	void openSampleBoardQick();
-	void closeSampleBoardQick();
+	void openSampleBoard();
+	void closeSampleBoard();
 };
 

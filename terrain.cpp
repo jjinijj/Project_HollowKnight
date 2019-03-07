@@ -245,10 +245,15 @@ void terrainFrame::update()
 void terrainFrame::render()
 {
 	terrain::render();
+	_img->render(_x, _y, 1.f, false);
 }
 
 void terrainFrame::render(float destX, float destY, float percent)
 {
+	_img->render( _x * percent + destX
+				 ,_y * percent + destY
+				 ,_img->GetWidth() * percent
+				 ,_img->GetHeight() * percent, 1.0f);
 }
 
 TARRAINPACK* terrainFrame::makePack()

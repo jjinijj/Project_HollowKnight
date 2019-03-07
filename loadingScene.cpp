@@ -46,7 +46,7 @@ void loadingScene::loadImageData()
 	IMAGEMANAGER->addFrameImage("chair", L"image/chair.png", 366, 90, 2, 1);
 	IMAGEMANAGER->addFrameImage("fence", L"image/fence.png", 960, 800, 1, 1);
 	IMAGEMANAGER->addFrameImage("floor", L"image/floor.png", 800, 800, 1, 1);
-	IMAGEMANAGER->addFrameImage("streetLamp", L"image/streetLamp.png", 800, 480, 1, 1);
+	IMAGEMANAGER->addFrameImage("streetLamp", L"image/streetLamp.png", 960, 480, 1, 1);
 	IMAGEMANAGER->addFrameImage("town_bg", L"image/town_bg.png", 960, 960, 1, 1);
 	IMAGEMANAGER->addFrameImage("town_bg_big_01", L"image/town_bg_big_01.png", 960, 960, 1, 1);
 	IMAGEMANAGER->addFrameImage("town_bg_big_02", L"image/town_bg_big_02.png", 960, 960, 1, 1);

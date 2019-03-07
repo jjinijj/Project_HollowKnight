@@ -36,7 +36,6 @@ HRESULT mapToolScene::init()
 	_tool->init();
 
 	
-
 	_sampleBoard = { _sampleBoardCloseX, 5.f, _sampleBoardCloseX + SAMPLABOARD_WIDTH, WINSIZEY - 5.f };
 	_canvers = { UI_SPACE, UI_SPACE, WINSIZEX / 3.f * 2.f - UI_SPACE, WINSIZEY / 5.f * 4.f - UI_SPACE};
 	_miniMap = {_canvers.left, _canvers.bottom + UI_SPACE, _canvers.left + (MAPSIZEX * 0.019f), _canvers.bottom + UI_SPACE + (MAPSIZEY * 0.019f)};
@@ -45,18 +44,19 @@ HRESULT mapToolScene::init()
 	_inspector = {_hierarchy.right + UI_SPACE, _hierarchy.top, _sampleBoardCloseX - UI_SPACE - 20.f, _hierarchy.bottom};
 
 	_tool->setCanversRect(&_canvers);
-	_tool->setCanversSampleRect(&_sampleBoard);
+	_tool->setSampleBoardRect(&_sampleBoard);
 
 	_miniScopeWidth = (_canvers.right - _canvers.left) * (_miniMap.right - _miniMap.left) / MAPSIZEX;
 	_miniScopeHeight = (_canvers.bottom - _canvers.top) *  (_miniMap.bottom - _miniMap.top)  / MAPSIZEY;
 
+	_miniScope = {_miniMap.left, _miniMap.top, _miniMap.left + _miniScopeWidth, _miniMap.top + _miniScopeHeight};
 
 	_beforeSample = new button;
 	_nextSample = new button;
 	_qickOpen = new button;
 
 	_beforeSample->init( "uiBG3", "uiBG"
-						, _sampleBoard.left + UI_SPACE, _sampleBoard.bottom - 100.f
+						, _sampleBoard.left + (3.f * UI_SPACE), _sampleBoard.bottom - 100.f
 						, 60.0f, 50.0f, bind(&mapTool::beforeSample, _tool));
 	_beforeSample->setText(L"<<", 50);
 
@@ -70,9 +70,10 @@ HRESULT mapToolScene::init()
 	_qickOpen->init( "uiBG3", "uiBG", "uiBG2"
 					 , _sampleBoard.left - 20.f, _sampleBoard.top
 					 , 20.f, _sampleBoard.bottom - _sampleBoard.top
-					, bind(&mapToolScene::openSampleBoardQick, this)
-					, bind(&mapToolScene::closeSampleBoardQick, this));
+					, bind(&mapToolScene::openSampleBoard, this)
+					, bind(&mapToolScene::closeSampleBoard, this));
 	_qickOpen->setText(L"¢¸\n¢¸\n¢¸", 20);
+	_qickOpen->setText(L"¢º\n¢º\n¢º", eButton_Down, 20);
 
 	CAMERA->setScope(_canvers);
 
@@ -91,19 +92,20 @@ void mapToolScene::update()
 	_beforeSample->update();
 	_nextSample->update();
 
-	if(_tool)
-		_tool->update();
-
 	if (PtInRectD2D(_sampleBoard, _ptMouse))
 	{
 		_isMoveMiniScope = false;
-		openSampleBoard();
+		openningSampleBoard();
 	}
 	else 
 	{
 		if(!_tool->isSamplePicking())
-			closeSampleBoard();
+			closingSampleBoard();
 	}
+
+	if (_tool)
+		_tool->update();
+
 
 	if (PtInRectD2D(_miniMap, _ptMouse))
 	{
@@ -193,55 +195,96 @@ void mapToolScene::render()
 	_uiBG[3]->render(_sampleBoard, 1.f);
 	D2DMANAGER->drawRectangle(_sampleBoard);
 
+	// ¹öÆ°
 	_qickOpen->render();
 	_nextSample->render();
 	_beforeSample->render();
 
+	// Åø
 	_tool->render();
 
+	//WCHAR str[128];
+	//swprintf_s(str, L"%d %d", _isOpenSampleBoard, _isCloseSampleBoard);
+	//D2DMANAGER->drawText(str
+	//					 , WINSIZEX / 2
+	//					 , WINSIZEY / 2
+	//					 , 50, RGB(255, 255, 255));
 }
 
-void mapToolScene::closeSampleBoard()
+void mapToolScene::closingSampleBoard()
 {
-	_isOpenSampleBoard = false;
 	if (_sampleBoard.left < _sampleBoardCloseX)
 	{
 		_sampleBoard.left += _sampleBoardSpeed;
 		_sampleBoard.right += _sampleBoardSpeed;
-	}
-	else if (_sampleBoardCloseX < _sampleBoard.left)
-	{
-		_sampleBoard.left = _sampleBoardCloseX;
-		_sampleBoard.right = _sampleBoard.left + SAMPLABOARD_WIDTH;
-	}
 
-	_qickOpen->rePosition(_sampleBoard.left - 20.f, _sampleBoard.top);
-	_beforeSample->rePosition(_sampleBoard.left + UI_SPACE, _sampleBoard.bottom - 100.f);
-	_nextSample->rePosition(_beforeSample->getRect().right + UI_SPACE, _beforeSample->getRect().top);
+		_qickOpen->rePosition(_sampleBoard.left, _sampleBoard.top);
+		_beforeSample->rePosition(_sampleBoard.left + (UI_SPACE * 3.f), _sampleBoard.bottom - 100.f);
+		_nextSample->rePosition(_beforeSample->getRect().right + UI_SPACE, _beforeSample->getRect().top);
+
+		_isOpenSampleBoard = false;
+		_isCloseSampleBoard = false;
+	}
+	
+	if (_sampleBoardCloseX <= _sampleBoard.left)
+	{
+		closeSampleBoard();
+	}
 }
 
-void mapToolScene::openSampleBoard(bool isSkip)
+void mapToolScene::openningSampleBoard(bool isSkip)
 {
 	if (_sampleBoardOpenX < _sampleBoard.left)
 	{
 		_sampleBoard.left -= _sampleBoardSpeed;
 		_sampleBoard.right -= _sampleBoardSpeed;
+
+		_qickOpen->rePosition(_sampleBoard.left, _sampleBoard.top);
+		_beforeSample->rePosition(_sampleBoard.left +(UI_SPACE * 3.f), _sampleBoard.bottom - 100.f);
+		_nextSample->rePosition(_beforeSample->getRect().right + UI_SPACE, _beforeSample->getRect().top);
+
+		_isOpenSampleBoard = false;
+		_isCloseSampleBoard = false;
 	}
-	else if (_sampleBoard.left < _sampleBoardOpenX)
+	
+	if (_sampleBoard.left <= _sampleBoardOpenX)
+	{
+		openSampleBoard();
+	}
+}
+
+void mapToolScene::openSampleBoard()
+{
+	if (!_isOpenSampleBoard)
 	{
 		_sampleBoard.left = _sampleBoardOpenX;
-		_sampleBoard.right = _sampleBoard.left + SAMPLABOARD_WIDTH;
+		_sampleBoard.right = _sampleBoardOpenX + SAMPLABOARD_WIDTH;
+
+		_qickOpen->rePosition(_sampleBoard.left, _sampleBoard.top);
+		_beforeSample->rePosition(_sampleBoard.left + (UI_SPACE * 3.f), _sampleBoard.bottom - 100.f);
+		_nextSample->rePosition(_beforeSample->getRect().right + UI_SPACE, _beforeSample->getRect().top);
+
+		_qickOpen->setState(eButton_Down);
+		_isOpenSampleBoard = true;
+		_isCloseSampleBoard = false;
 	}
-
-	_qickOpen->rePosition(_sampleBoard.left - 20.f, _sampleBoard.top);
-	_beforeSample->rePosition(_sampleBoard.left + UI_SPACE, _sampleBoard.bottom - 100.f);
-	_nextSample->rePosition(_beforeSample->getRect().right + UI_SPACE, _beforeSample->getRect().top);
 }
 
-void mapToolScene::openSampleBoardQick()
+void mapToolScene::closeSampleBoard()
 {
-}
+	if (!_isCloseSampleBoard)
+	{
+		_sampleBoard.left = _sampleBoardCloseX;
+		_sampleBoard.right = _sampleBoard.left + SAMPLABOARD_WIDTH;
 
-void mapToolScene::closeSampleBoardQick()
-{
+		_qickOpen->rePosition(_sampleBoard.left - 20.f, _sampleBoard.top);
+
+		_beforeSample->rePosition(_sampleBoard.left + (UI_SPACE * 3.f), _sampleBoard.bottom - 100.f);
+		_nextSample->rePosition(_beforeSample->getRect().right + UI_SPACE, _beforeSample->getRect().top);
+
+		_qickOpen->setState(eButton_Up);
+
+		_isOpenSampleBoard = false;
+		_isCloseSampleBoard = true;
+	}
 }

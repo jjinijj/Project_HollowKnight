@@ -18,7 +18,7 @@ private:
 	
 	eButtonState _state;
 	image* _imgs[eButton_Count];
-	wstring _text;
+	wstring _text[eButton_Count];
 	
 	bool _isToggle;
 	bool _isToggleOn;
@@ -61,7 +61,18 @@ public:
 	void update();
 	void render();
 	
+	// 텍스트, 버튼 상태, 크기(default)
+	void setText(wstring text);
+	// 텍스트, 크기
 	void setText(wstring text, int fontSize);
+	// 텍스트, 버튼 상태, 크기(default)
+	void setText(wstring text, eButtonState state);
+	// 텍스트, 버튼 상태, 크기
+	void setText(wstring text, eButtonState state, int fontSize);
+
+	// 버튼 상태
+	void setState(eButtonState state);
+	eButtonState getState() {return _state;}
 
 	void rePosition(float x, float y);
 	void reSize(float width, float height);

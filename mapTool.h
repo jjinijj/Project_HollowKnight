@@ -31,8 +31,8 @@ typedef struct tagSampleTerrain
 	float x;
 	float y;
 
-	float frameX;
-	float framxY;
+	int frameX;
+	int frameY;
 
 	float width;
 	float height;
@@ -40,6 +40,7 @@ typedef struct tagSampleTerrain
 	eImageUID uid;
 
 	bool isPick;
+	bool isFrame;
 
 	void clear()
 	{
@@ -49,9 +50,48 @@ typedef struct tagSampleTerrain
 		height = 0.f;
 		uid = eImage_None;
 		isPick = false;
+		isFrame = false;
 	}
 
 }SAMPLE;
+
+// 이미지 링크. 샘플 이미지와 실제 출력될 이미지가 다를 경우를 고려
+typedef struct tagImageLink
+{
+	eImageUID mainUID;
+
+	bool isFrameImg;
+	int lnkSize;
+
+	vector<eImageUID> lnkUIDs;
+
+	void makeImageLnk(eImageUID mainUid, bool isFrame)
+	{
+		mainUID = mainUid;
+		isFrameImg = isFrame;
+		lnkSize = 0;
+		lnkUIDs.clear();
+	}
+
+	void pushBack(eImageUID uid)
+	{
+		lnkUIDs.push_back(uid);
+		++lnkSize;
+	}
+
+	void operator= (tagImageLink lnk)
+	{
+		makeImageLnk(lnk.mainUID, lnk.isFrameImg);
+		if (0 < lnk.lnkSize && 0 < lnk.lnkUIDs.size())
+		{
+			for (int ii = 0; ii < lnk.lnkSize; ++ii)
+			{
+				pushBack(lnk.lnkUIDs[ii]);
+			}
+		}
+	}
+
+}IMGLNK;
 
 class mapData;
 class terrain;
@@ -62,11 +102,11 @@ private:
 	int _sampleIdx;
 
 	mapData* _mapData;					// 맵 데이터
-	vector<eImageUID> _imgUids;			// 맵툴에서 사용할 이미지 번호들
+	vector<IMGLNK*> _imgLnks;			// 맵툴에서 사용할 이미지 번호들
 	
 	eLayer _curLayer;
 
-	image* _samples;					// 샘플 지형들
+	image* _sampleImg;					// 샘플 지형들
 	SAMPLE _pick;						// 선택한 지형
 	eTerrainType _terType;				// 지형 종류
 
@@ -74,11 +114,13 @@ private:
 	POINTF _pickMousePos;
 	
 	RECTD2D* _canvers;					// 실제 맵이 그려지는 부분
-	RECTD2D* _canversSample;			// 샘플 이미지가 그려지는 부분
-	RECTD2D* _miniMap;
+	RECTD2D  _canversSample;			// 샘플 이미지가 그려지는 부분
+	
+	RECTD2D* _miniMap;					// 미니맵 
+	RECTD2D* _sampleBoard;				// 샘플 이미지가 ui
 
-	RECTD2D _pickArea;
-	RECTD2D _mapViewArea;
+	RECTD2D _pickArea;					// 샘플에서 드래그
+	RECTD2D _mapViewArea;				// 미니맵에서 현재 보여주는 맵 표시
 
 public:
 	mapTool();
@@ -91,9 +133,10 @@ public:
 	void terrainRender();
 	void terrainRender(float destX, float destY, float percent);
 
-	// 캔버스 지정
+	// 캔버스 위치 지정
+	void setSampleBoardRect(RECTD2D* rc);
+	
 	void setCanversRect(RECTD2D* rc)		{ _canvers = rc; }
-	void setCanversSampleRect(RECTD2D* rc)	{ _canversSample = rc; }
 	void setMiniMapRect(RECTD2D* rc)		{ _miniMap = rc;}
 
 	// 샘플 선택
@@ -104,8 +147,11 @@ public:
 
 	void nextSample();
 	void beforeSample();
-	image* getSample() { return _samples; }
+	image* getSample() { return _sampleImg; }
 
 	bool isSamplePicking() {return _isPicking;}
+
+private:
+	void setSampleImage();
 };
 

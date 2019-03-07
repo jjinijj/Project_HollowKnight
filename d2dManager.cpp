@@ -43,11 +43,11 @@ HRESULT d2dManager::init()
 	assert(hr == S_OK);
 	
 	// 브러쉬 생성
-	_defaultBrush = createBrush(RGB(0, 0, 0));
+	_defaultBrush = createBrush(DEFAULT_FONT_COLOR);
 
 	//	기본 텍스트 포맷 생성
 	_writeFactory->CreateTextFormat(L"맑은고딕", NULL, DWRITE_FONT_WEIGHT_REGULAR,
-		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 17.0f, L"", &_defaultTextFormat);
+		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, DEFAULT_FONT_SIZE, L"", &_defaultTextFormat);
 
 	hr = createCollection(L"font/DungGeunMo.ttf");
 	assert(hr == S_OK);
@@ -298,58 +298,28 @@ void d2dManager::fillEllipse(COLORREF rgb, D2D1_ELLIPSE e)
 
 }
 
-void d2dManager::drawText(LPCWSTR string, float x, float y)
+void d2dManager::drawText(LPCWSTR string, float x, float y, bool isAbsolute)
 {
-	D2D1_RECT_F rcf = getDrawRectfArea(x, y, x + lstrlenW(string) * 15, y + 20);
-
-	if (!isRectFInRangeWindow(rcf))
-		return;
-
-	//	TextFormat 생성
-	
-
-	_writeFactory->CreateTextFormat(L"둥근모꼴", _collection, DWRITE_FONT_WEIGHT_REGULAR,
-		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 15, L"", &_customTextFormat);
-
-	_renderTarget->DrawTextA(string, lstrlenW(string), _customTextFormat, rcf, _defaultBrush);
-
-	SAFE_RELEASE2(_customTextFormat);
+	drawText(string, x, y, DEFAULT_FONT_SIZE, isAbsolute);
 }
 
-void d2dManager::drawText(LPCWSTR string, float x, float y, int fontSize)
+void d2dManager::drawText(LPCWSTR string, float x, float y, int fontSize, bool isAbsolute)
 {
-	D2D1_RECT_F rcf = getDrawRectfArea(x, y, x + lstrlenW(string) * fontSize, y + 20);
-
-	if (!isRectFInRangeWindow(rcf))
-		return;
-
-	//	TextFormat 생성
-
-
-	_writeFactory->CreateTextFormat(L"둥근모꼴", _collection, DWRITE_FONT_WEIGHT_REGULAR,
-		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, fontSize, L"", &_customTextFormat);
-
-	_renderTarget->DrawTextA(string, lstrlenW(string), _customTextFormat, rcf, _defaultBrush);
-
-	SAFE_RELEASE2(_customTextFormat);
+	drawText(string, x, y, fontSize, DEFAULT_FONT_COLOR, isAbsolute);
 }
 
-void d2dManager::drawText(LPCWSTR string, float x, float y, int fontSize, COLORREF rgb)
+void d2dManager::drawText(LPCWSTR string, float x, float y, int fontSize, COLORREF rgb, bool isAbsolute)
 {
-	D2D1_RECT_F rcf = getDrawRectfArea(x, y, x + lstrlenW(string) * fontSize, y + 20);
+	D2D1_RECT_F rcf = { x, y, x + lstrlenW(string) * fontSize, y + 20 };
+
+	if (!isAbsolute)
+		rcf = getDrawRectfArea(x, y, x + lstrlenW(string) * fontSize, y + 20);
 
 	if (!isRectFInRangeWindow(rcf))
 		return;
 
-	//	TextFormat 생성
-
-
-	_writeFactory->CreateTextFormat(L"둥근모꼴", _collection, DWRITE_FONT_WEIGHT_REGULAR,
-		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, fontSize, L"", &_customTextFormat);
-
-	_renderTarget->DrawTextA(string, lstrlenW(string), _customTextFormat, rcf, createBrush(rgb, 1));
-
-	SAFE_RELEASE2(_customTextFormat);
+	IDWriteTextFormat* font = getFontFormat(L"둥근모꼴", fontSize);
+	_renderTarget->DrawTextA(string, lstrlenW(string), font, rcf, createBrush(rgb, 1));
 }
 
 
@@ -400,4 +370,29 @@ bool d2dManager::isRectFInRangeWindow(const D2D1_RECT_F& rcf)
 	if ( WINSIZEY < rcf.top &&  WINSIZEY < rcf.bottom) return false;
 
 	return true;
+}
+
+IDWriteTextFormat* d2dManager::getFontFormat(wstring fontName, UINT fontSize)
+{
+	IDWriteTextFormat* font = nullptr;
+
+	map<UINT, IDWriteTextFormat*> formats;
+	if (_fontFormatMap.find(fontName) == _fontFormatMap.end())
+		_fontFormatMap.insert(make_pair(fontName, formats));
+	else formats = _fontFormatMap[fontName];
+	
+	if (formats.find(fontSize) == formats.end())
+	{
+		_writeFactory->CreateTextFormat( fontName.c_str()
+										, _collection
+										,DWRITE_FONT_WEIGHT_REGULAR
+										,DWRITE_FONT_STYLE_NORMAL
+										,DWRITE_FONT_STRETCH_NORMAL
+										,fontSize
+										,L"", &font);
+	}
+	else
+		font = formats[fontSize];
+
+	return font;
 }
