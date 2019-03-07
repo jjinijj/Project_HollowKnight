@@ -158,10 +158,11 @@ void terrainDrag::render()
 	terrain::render();
 
 	if(CAMERA->isRangeInCamera(_rc.left, _rc.top, _rc.right, _rc.bottom))
-		_img->render(_x + CAMERA->getScopeRect().left, _y + CAMERA->getScopeRect().top
-					,_sourX, _sourY
-					,_width, _height
-					,1.0f, false);
+		_img->render( _x + CAMERA->getScopeRect().left
+					 ,_y + CAMERA->getScopeRect().top
+					 ,_sourX, _sourY
+					 ,_width, _height
+					 ,1.0f, false);
 }
 
 void terrainDrag::render(float destX, float destY, float percent)
@@ -245,7 +246,10 @@ void terrainFrame::update()
 void terrainFrame::render()
 {
 	terrain::render();
-	_img->render(_x, _y, 1.f, false);
+	_img->render( _x + CAMERA->getScopeRect().left
+				 ,_y + CAMERA->getScopeRect().top
+				 ,1.f
+				 ,false);
 }
 
 void terrainFrame::render(float destX, float destY, float percent)
@@ -320,6 +324,7 @@ void terrainClear::update()
 void terrainClear::render()
 {
 	terrain::render();
+	D2DMANAGER->drawRectangle(_rc);
 }
 
 void terrainClear::render(float destX, float destY, float percent)

@@ -54,6 +54,7 @@ HRESULT mapToolScene::init()
 	_beforeSample = new button;
 	_nextSample = new button;
 	_qickOpen = new button;
+	_createCol = new button;
 
 	_beforeSample->init( "uiBG3", "uiBG"
 						, _sampleBoard.left + (3.f * UI_SPACE), _sampleBoard.bottom - 100.f
@@ -75,6 +76,14 @@ HRESULT mapToolScene::init()
 	_qickOpen->setText(L"¢¸\n¢¸\n¢¸", 20);
 	_qickOpen->setText(L"¢º\n¢º\n¢º", eButton_Down, 20);
 
+	_createCol->init("uiBG3", "uiBG", "uiBG2"
+					 , _canvers.right + UI_SPACE
+					 , _canvers.bottom - 50.f
+					 , 80.f, 50.f
+					 , bind(&mapTool::setToolMode, _tool, eToolMode_DrawCollider)
+					 , bind(&mapTool::setToolMode, _tool, eToolMode_None));
+	_createCol->setText(L"Collider", 20);
+
 	CAMERA->setScope(_canvers);
 
 	return S_OK;
@@ -88,9 +97,16 @@ void mapToolScene::release()
 
 void mapToolScene::update()
 {
+	if (!_isOpenSampleBoard && ! _isCloseSampleBoard)
+	{
+		if(eToolMode_DrawCollider != _tool->getToolMode())
+			_createCol->setState(eButton_Up);
+	}
+
 	_qickOpen->update();
 	_beforeSample->update();
 	_nextSample->update();
+	_createCol->update();
 
 	if (PtInRectD2D(_sampleBoard, _ptMouse))
 	{
@@ -190,6 +206,9 @@ void mapToolScene::render()
 
 	// inspector
 	_uiBG[4]->render(_inspector, 1.0f);
+
+
+	_createCol->render();
 
 	// sampleBoard
 	_uiBG[3]->render(_sampleBoard, 1.f);

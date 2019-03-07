@@ -14,6 +14,7 @@ enum eTerrainType
 	eTerrain_Count = eTarrain_None,
 };
 
+// 레이어
 enum eLayer
 {
 	eLayer_FarBack,
@@ -24,6 +25,17 @@ enum eLayer
 
 	eLayer_None,
 	eLayer_Count = eLayer_None,
+};
+
+enum eToolMode
+{
+	eToolMode_DrawTerrain,
+	eToolMode_DrawCollider,
+	eToolMode_DrawObject,
+	eToolMode_Inspector,
+
+	eToolMode_None,
+	eToolMode_Count = eToolMode_None,
 };
 
 typedef struct tagSampleTerrain
@@ -99,6 +111,8 @@ class mapTool
 {
 private:
 
+	eToolMode _mode;
+
 	int _sampleIdx;
 
 	mapData* _mapData;					// 맵 데이터
@@ -110,6 +124,7 @@ private:
 	SAMPLE _pick;						// 선택한 지형
 	eTerrainType _terType;				// 지형 종류
 
+	
 	bool _isPicking;
 	POINTF _pickMousePos;
 	
@@ -119,7 +134,7 @@ private:
 	RECTD2D* _miniMap;					// 미니맵 
 	RECTD2D* _sampleBoard;				// 샘플 이미지가 ui
 
-	RECTD2D _pickArea;					// 샘플에서 드래그
+	RECTD2D _pickArea;					// 드래그
 	RECTD2D _mapViewArea;				// 미니맵에서 현재 보여주는 맵 표시
 
 public:
@@ -147,11 +162,22 @@ public:
 
 	void nextSample();
 	void beforeSample();
+	
+	// 모드
+	void setToolMode(eToolMode mode);
+
 	image* getSample() { return _sampleImg; }
+	eToolMode getToolMode() { return _mode; }
 
 	bool isSamplePicking() {return _isPicking;}
 
 private:
 	void setSampleImage();
+
+	void updateDrawTerrain();
+	void updateDrawCollider();
+
+	void renderDrawTerrain();
+	void renderDrawCollider();
 };
 

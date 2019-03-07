@@ -87,6 +87,8 @@ HRESULT mapTool::init()
 	_curLayer = eLayer_Play;
 	_terType = eTerrain_Drag;
 
+	_mode = eToolMode_DrawTerrain;
+
 	return S_OK;
 }
 
@@ -96,42 +98,38 @@ void mapTool::release()
 
 void mapTool::update()
 {
-	// 마우스 입력이 없다면 picking해제
-	if (_isPicking)
-		_isPicking = (GetAsyncKeyState(VK_LBUTTON) & 0x8000);
-
-	// 마우스 우클릭하면 픽 정보 클리어
-	if (_pick.isPick)
+	switch (_mode)
 	{
-		if (KEYMANAGER->isOnceKeyDown(VK_RBUTTON))
-			_pick.clear();
+		case eToolMode_DrawTerrain: { updateDrawTerrain();	break;}
+		case eToolMode_DrawCollider:{ updateDrawCollider(); break;}
+		case eToolMode_DrawObject:  { break; }
+		case eToolMode_Inspector:   { break; }
 	}
 
-	_canversSample = {_sampleBoard->left + (3.f * DISTANCE)
-					, _sampleBoard->top + DISTANCE
-					, _sampleBoard->left + (3.f * DISTANCE) + _sampleImg->GetWidth()
-					, _sampleBoard->top + DISTANCE  + _sampleImg->GetHeight()};
+	_canversSample = { _sampleBoard->left + (3.f * DISTANCE)
+				, _sampleBoard->top + DISTANCE
+				, _sampleBoard->left + (3.f * DISTANCE) + _sampleImg->GetWidth()
+				, _sampleBoard->top + DISTANCE + _sampleImg->GetHeight() };
 	pickSample();
 	pickCanvers();
 }
 
 void mapTool::render()
 {
-	if(_sampleImg)
+	if (_sampleImg)
 		_sampleImg->render(_canversSample.left, _canversSample.top, 1.f);
+	D2DMANAGER->drawRectangle(_canversSample);
 
-	if(_isPicking)
+	if (_isPicking)
 		D2DMANAGER->drawRectangle(_pickArea);
 
-	if (_pick.isPick) 
+	switch (_mode)
 	{
-		if (_pick.isFrame)
-			IMGDATABASE->getImage(_pick.uid)->render(_ptMouse.x, _ptMouse.y, 0.5f);
-		else
-			_sampleImg->render(_ptMouse.x, _ptMouse.y, _pick.x, _pick.y, _pick.width, _pick.height, 0.5f);
+		case eToolMode_DrawTerrain: { renderDrawTerrain();	break; }
+		case eToolMode_DrawCollider:{ renderDrawCollider(); break; }
+		case eToolMode_DrawObject:  { break; }
+		case eToolMode_Inspector:   { break; }
 	}
-
-	D2DMANAGER->drawRectangle(_canversSample);
 }
 
 void mapTool::terrainRender()
@@ -168,6 +166,7 @@ void mapTool::pickSample()
 	{
 		_isPicking = true;
 		_pickArea = { _ptMouse.x, _ptMouse.y, _ptMouse.x + 1.f, _ptMouse.y + 1.f };
+		_mode = eToolMode_DrawTerrain;
 	}
 
 	// drag
@@ -201,6 +200,10 @@ void mapTool::pickSample()
 
 			_pick.uid = curLnk->lnkUIDs[idx];
 			_pick.isFrame = true;
+
+			image* img = IMGDATABASE->getImage(_pick.uid);
+			_pick.width = img->GetWidth();
+			_pick.height = img->GetHeight();
 		}
 		else
 		{
@@ -242,20 +245,48 @@ void mapTool::pickSample()
 
 void mapTool::pickCanvers()
 {
-	// pick 아니면 return
-	if(!_pick.isPick)
-		return;
-
 	// 그리는 구역이 아니면 return
 	if(!PtInRectD2D(*_canvers, _ptMouse))
 		return;
 
-	// 0,0 기준으로 위치 지정
-	float destX = _ptMouse.x + CAMERA->getPosX();// - CAMERA->getScopeRect().left;
-	float destY = _ptMouse.y + CAMERA->getPosY();// - CAMERA->getScopeRect().top;
-
-	if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+	// 
+	if (eToolMode_DrawCollider == _mode)
 	{
+		// pick
+		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+		{
+			_isPicking = true;
+			_pickArea = { _ptMouse.x, _ptMouse.y, _ptMouse.x + 1.f, _ptMouse.y + 1.f };
+		}
+
+		// drag
+		if (KEYMANAGER->isStayKeyDown(VK_LBUTTON))
+		{
+			_pickArea.right = _ptMouse.x;
+			_pickArea.bottom = _ptMouse.y;
+		}
+	}
+	
+	// pick 아니면 return
+	if(!_isPicking)
+		return;
+
+	if (KEYMANAGER->isOnceKeyUp(VK_LBUTTON))
+	{
+		// 0,0 기준으로 위치 지정
+		float destX = 0;
+		float destY = 0;
+		if (eToolMode_DrawCollider == _mode)
+		{
+			destX = _ptMouse.x + CAMERA->getPosX() - CAMERA->getScopeRect().left;
+			destY = _ptMouse.y + CAMERA->getPosY() - CAMERA->getScopeRect().top;
+		}
+		else
+		{
+			destX = (_ptMouse.x - _pick.width / 2.f) + CAMERA->getPosX() - CAMERA->getScopeRect().left;
+			destY = (_ptMouse.y - _pick.height / 2.f) + CAMERA->getPosY() - CAMERA->getScopeRect().top;
+		}
+		
 		switch (_terType)
 		{
 			case eTerrain_Frame:
@@ -272,7 +303,36 @@ void mapTool::pickCanvers()
 
 			case eTerrain_Clear:
 			{
-				_mapData->addTerrainClear(_curLayer, destX, destY, _pick.width, _pick.height);
+				_pick.clear();
+				_isPicking = false;
+
+				_pickArea.right = _ptMouse.x;
+				_pickArea.bottom = _ptMouse.y;
+
+				float width = _pickArea.right - _pickArea.left;
+				float height = _pickArea.bottom - _pickArea.top;
+
+				if (-5.f < width &&  width <= 5.f
+					|| -5.f < height && height <= 5.f)
+				{
+					return;
+				}
+
+				// 역사각형일경우
+				if (_pickArea.right < _pickArea.left)
+				{
+					swap(_pickArea.left, _pickArea.right);
+					width *= -1.f;
+				}
+
+				// 역사각형일경우
+				if (_pickArea.bottom < _pickArea.top)
+				{
+					swap(_pickArea.top, _pickArea.bottom);
+					height *= -1;
+				}
+
+				_mapData->addTerrainClear(_curLayer, destX, destY, width, height);
 				break;
 			}
 
@@ -300,6 +360,15 @@ void mapTool::beforeSample()
 	setSampleImage();
 }
 
+void mapTool::setToolMode(eToolMode mode)
+{
+	_mode = mode;
+	_pick.clear();
+	_isPicking = false;
+	if(eToolMode_DrawCollider == mode)
+		_terType = eTerrain_Clear;
+}
+
 void mapTool::setSampleImage()
 {
 	_sampleImg = IMGDATABASE->getImage(_imgLnks[_sampleIdx]->mainUID);
@@ -308,5 +377,42 @@ void mapTool::setSampleImage()
 		_terType = eTerrain_Frame;
 	else
 		_terType = eTerrain_Drag;
+
+	_pick.clear();
+}
+
+void mapTool::updateDrawTerrain()
+{
+	// 마우스 입력이 없다면 picking해제
+	if (_isPicking)
+		_isPicking = (GetAsyncKeyState(VK_LBUTTON) & 0x8000);
+
+	// 마우스 우클릭하면 픽 정보 클리어
+	if (_pick.isPick)
+	{
+		if (KEYMANAGER->isOnceKeyDown(VK_RBUTTON))
+			_pick.clear();
+	}
+}
+
+void mapTool::updateDrawCollider()
+{
+}
+
+void mapTool::renderDrawTerrain()
+{
+	if (_pick.isPick)
+	{
+		float destX = _ptMouse.x - _pick.width / 2.f;
+		float destY = _ptMouse.y - _pick.height / 2.f;
+		if (_pick.isFrame)
+			IMGDATABASE->getImage(_pick.uid)->render(destX, destY, 0.5f);
+		else
+			_sampleImg->render(destX, destY, _pick.x, _pick.y, _pick.width, _pick.height, 0.5f);
+	}
+}
+
+void mapTool::renderDrawCollider()
+{
 }
 

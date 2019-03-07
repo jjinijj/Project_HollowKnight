@@ -16,6 +16,7 @@ private:
 	button* _qickOpen;
 	button* _beforeSample;
 	button* _nextSample;
+	button* _createCol;
 
 
 	image* _uiBG[5];
