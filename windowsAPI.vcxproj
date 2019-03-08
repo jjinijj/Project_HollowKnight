@@ -150,7 +150,7 @@
     <ClInclude Include="action.h" />
     <ClInclude Include="animation.h" />
     <ClInclude Include="baseScene.h" />
-    <ClInclude Include="button.h" />
+    <ClInclude Include="uiButton.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="d2dManager.h" />
     <ClInclude Include="default.h" />
@@ -170,6 +170,7 @@
     <ClInclude Include="mapData.h" />
     <ClInclude Include="mapTool.h" />
     <ClInclude Include="mapToolScene.h" />
+    <ClInclude Include="uiPanel.h" />
     <ClInclude Include="playGround.h" />
     <ClInclude Include="randomFunction.h" />
     <ClInclude Include="Resource.h" />
@@ -183,13 +184,16 @@
     <ClInclude Include="timer.h" />
     <ClInclude Include="toolState.h" />
     <ClInclude Include="txtData.h" />
+    <ClInclude Include="uiBase.h" />
+    <ClInclude Include="uiManager.h" />
+    <ClInclude Include="uiObject.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="action.cpp" />
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="baseScene.cpp" />
-    <ClCompile Include="button.cpp" />
+    <ClCompile Include="uiButton.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="d2dManager.cpp" />
     <ClCompile Include="devTool.cpp" />
@@ -207,6 +211,7 @@
     <ClCompile Include="mapData.cpp" />
     <ClCompile Include="mapTool.cpp" />
     <ClCompile Include="mapToolScene.cpp" />
+    <ClCompile Include="uiPanel.cpp" />
     <ClCompile Include="playGround.cpp" />
     <ClCompile Include="sceneManager.cpp" />
     <ClCompile Include="soundManager.cpp" />
@@ -221,6 +226,9 @@
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="toolState.cpp" />
     <ClCompile Include="txtData.cpp" />
+    <ClCompile Include="uiBase.cpp" />
+    <ClCompile Include="uiManager.cpp" />
+    <ClCompile Include="uiObject.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="windowsAPI.cpp" />
   </ItemGroup>

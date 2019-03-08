@@ -1,6 +1,7 @@
 #pragma once
 #include "toolState.h"
 
+
 #define DISTANCE 10.f
 
 // 지형 종류
@@ -107,7 +108,9 @@ typedef struct tagImageLink
 
 class mapData;
 class terrain;
-class mapTool
+class uiButton;
+class uiPanel;
+class mapTool : public uiBase
 {
 private:
 
@@ -129,8 +132,12 @@ private:
 	bool _isPicking;
 	POINTF _pickMousePos;
 	
+	uiPanel* _samplePanel;
+	uiPanel* _sampleCanvers;
+
+
 	RECTD2D* _canvers;					// 실제 맵이 그려지는 부분
-	RECTD2D  _canversSample;			// 샘플 이미지가 그려지는 부분
+	//RECTD2D  _sampleCanvers;			// 샘플 이미지가 그려지는 부분
 	
 	RECTD2D* _miniMap;					// 미니맵 
 	RECTD2D* _sampleBoard;				// 샘플 이미지가 ui
@@ -150,18 +157,22 @@ public:
 	void terrainRender(float destX, float destY, float percent);
 
 	// 캔버스 위치 지정
-	void setSampleBoardRect(RECTD2D* rc);
-	
+	void setSampleBoardRect(RECTD2D* rc)	{ _sampleBoard = rc;}
 	void setCanversRect(RECTD2D* rc)		{ _canvers = rc; }
 	void setMiniMapRect(RECTD2D* rc)		{ _miniMap = rc;}
 
+
+	void pickSampleStart();
+	void pickSampleEnd();
+
+	void pickCanversStart();
+	void pickCanversEnd();
 
 	void picking();
 	// 샘플 선택
 	void pickSample();
 	// 캔버스 그리기
 	void pickCanvers();
-
 
 	void nextSample();
 	void beforeSample();
@@ -182,6 +193,4 @@ private:
 
 	void renderDrawTerrain();
 	void renderDrawCollider();
-
-	void test(wchar_t const* const str, _In_z_ _Printf_format_string_ wchar_t const* format);
 };

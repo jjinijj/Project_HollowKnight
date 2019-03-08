@@ -7,16 +7,16 @@
 #define UI_SPACE 10.f
 
 class mapTool;
-class button;
+class uiButton;
 class mapToolScene:	public baseScene
 {
 private:
 	mapTool* _tool;
 	
-	button* _qickOpen;
-	button* _beforeSample;
-	button* _nextSample;
-	button* _createCol;
+	uiButton* _qickOpen;
+	uiButton* _beforeSample;
+	uiButton* _nextSample;
+	uiButton* _createCol;
 
 
 	image* _uiBG[5];

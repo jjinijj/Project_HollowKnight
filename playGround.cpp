@@ -39,6 +39,7 @@ void playGround::update()
 
 	SCENEMANAGER->update();
 	CAMERA->update();
+	UIMANAGER->update();
 
 #ifdef _DEBUG
 	DEVTOOL->pushBackDebugText(format(L"cameraX : %.2f", CAMERA->getPosX()));
@@ -57,7 +58,7 @@ void playGround::render()
 	//				##		여기에 코드 작성(Start)			##
 
 	SCENEMANAGER->render();
-	
+	UIMANAGER->render();
 
 
 	//				##			여기에 코드 작성(End)			##

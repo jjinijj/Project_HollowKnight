@@ -1,5 +1,4 @@
 #pragma once
-#include "gameNode.h"
 #include<functional>
 
 enum eButtonState
@@ -12,7 +11,7 @@ enum eButtonState
 	eButton_Count = eButton_None,
 };
 
-class button : public gameNode
+class uiButton : public uiObject
 {
 private:
 	
@@ -25,36 +24,26 @@ private:
 
 	int _fontSize;
 
-	float _width;
-	float _height;
-
-	RECTD2D _rc;
-
-	float _x, _y;		//위치 좌표
-	
 	function<void(void)> _onFunction;
+	function<void(void)> _pressFunction;
 	function<void(void)> _offFunction;
 
-
 public:
-	button();
-	~button();
+	uiButton();
+	~uiButton();
 
 	// 일반 버튼
 	HRESULT init( const char* upImgName
 				 , const char* pressImgName
 				 , float destX, float destY
-				 , float width, float height
-				 , function<void(void)> func);
-				
+				 , float width, float height);
+
 	// 토글 속성 버튼
 	HRESULT init( const char* upImgName
 				 ,const char* pressImgName
 				 ,const char* downImgName
 				 ,float destX, float destY
-				 ,float width, float height
-				 ,function<void(void)> toggleOnFunc
-				 , function<void(void)> toggleOffFunc);
+				 ,float width, float height);
 
 
 	void release();
@@ -70,6 +59,14 @@ public:
 	// 텍스트, 버튼 상태, 크기
 	void setText(wstring text, eButtonState state, int fontSize);
 
+	// 눌렀을 때 함수 
+	void setOnClickFunction(function<void(void)> func);
+	// 누르고 있을 때 함수
+	void sePressFunction(function<void(void)> func);
+	// 누르기 해제 했을 때 함수
+	void setOnClickUPFunction(function<void(void)> func);
+
+
 	// 버튼 상태
 	void setState(eButtonState state);
 	eButtonState getState() {return _state;}
@@ -81,5 +78,16 @@ public:
 
 	float getWidth() { return _width; }
 	float getHeight(){ return _height;}
+
+private:
+	void releaseInputKey() override;
+
+	void onceKeyDownMouseL() override;
+	void onceKeyUpMouseL() override;
+	void stayKeyMouseL() override;
+
+	void onceKeyDownMouseR() override;
+	void onceKeyUpMouseR() override;
+	void stayKeyMouseR() override;
 };
 

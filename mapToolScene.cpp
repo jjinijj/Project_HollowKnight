@@ -2,7 +2,7 @@
 #include "mapToolScene.h"
 
 #include "mapTool.h"
-#include "button.h"
+#include "uiButton.h"
 
 mapToolScene::mapToolScene()
 : _tool(nullptr)
@@ -51,38 +51,39 @@ HRESULT mapToolScene::init()
 
 	_miniScope = {_miniMap.left, _miniMap.top, _miniMap.left + _miniScopeWidth, _miniMap.top + _miniScopeHeight};
 
-	_beforeSample = new button;
-	_nextSample = new button;
-	_qickOpen = new button;
-	_createCol = new button;
+	_beforeSample = new uiButton;
+	_nextSample = new uiButton;
+	_qickOpen = new uiButton;
+	_createCol = new uiButton;
 
 	_beforeSample->init( "uiBG3", "uiBG"
 						, _sampleBoard.left + (3.f * UI_SPACE), _sampleBoard.bottom - 100.f
-						, 60.0f, 50.0f, bind(&mapTool::beforeSample, _tool));
+						, 60.0f, 50.0f);
 	_beforeSample->setText(L"<<", 50);
+	_beforeSample->setOnClickFunction(bind(&mapTool::beforeSample, _tool));
 
 	_nextSample->init(  "uiBG3", "uiBG"
 						, _beforeSample->getRect().right + UI_SPACE
 						, _beforeSample->getRect().top
-						, 60.f, 50.f
-						, bind(&mapTool::nextSample, _tool));
+						, 60.f, 50.f);
 	_nextSample->setText(L">>", 50);
+	_nextSample->setOnClickFunction(bind(&mapTool::nextSample, _tool));
 
 	_qickOpen->init( "uiBG3", "uiBG", "uiBG2"
 					 , _sampleBoard.left - 20.f, _sampleBoard.top
-					 , 20.f, _sampleBoard.bottom - _sampleBoard.top
-					, bind(&mapToolScene::openSampleBoard, this)
-					, bind(&mapToolScene::closeSampleBoard, this));
+					 , 20.f, _sampleBoard.bottom - _sampleBoard.top);
 	_qickOpen->setText(L"¢¸\n¢¸\n¢¸", 20);
 	_qickOpen->setText(L"¢º\n¢º\n¢º", eButton_Down, 20);
+	_qickOpen->setOnClickFunction(bind(&mapToolScene::openSampleBoard, this));
+	_qickOpen->setOnClickUPFunction(bind(&mapToolScene::closeSampleBoard, this));
 
 	_createCol->init("uiBG3", "uiBG", "uiBG2"
 					 , _canvers.right + UI_SPACE
 					 , _canvers.bottom - 50.f
-					 , 80.f, 50.f
-					 , bind(&mapTool::setToolMode, _tool, eToolMode_DrawCollider)
-					 , bind(&mapTool::setToolMode, _tool, eToolMode_None));
+					 , 80.f, 50.f);
 	_createCol->setText(L"Collider", 20);
+	_createCol->setOnClickFunction(bind(&mapTool::setToolMode, _tool, eToolMode_DrawCollider));
+	_createCol->setOnClickUPFunction(bind(&mapTool::setToolMode, _tool, eToolMode_None));
 
 	CAMERA->setScope(_canvers);
 

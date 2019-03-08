@@ -43,9 +43,6 @@
     <Filter Include="2DFramework\animation">
       <UniqueIdentifier>{c9be62ad-2100-428a-b933-248575dff170}</UniqueIdentifier>
     </Filter>
-    <Filter Include="2DFramework\button">
-      <UniqueIdentifier>{f04acabe-84cc-43ad-9830-9917275fa472}</UniqueIdentifier>
-    </Filter>
     <Filter Include="2DFramework\effect">
       <UniqueIdentifier>{6c16437b-1960-48f5-bd50-52809067e246}</UniqueIdentifier>
     </Filter>
@@ -72,6 +69,18 @@
     </Filter>
     <Filter Include="2DFramework\devTool">
       <UniqueIdentifier>{ad8130eb-6044-4d16-a47e-fa5279d62ecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2DFramework\ui">
+      <UniqueIdentifier>{39716b89-e5e5-493f-83d9-d8276c00ad13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\ui">
+      <UniqueIdentifier>{d7aac9ce-b209-4c1f-97a4-62c2e6619d0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2DFramework\ui\uiPanel">
+      <UniqueIdentifier>{496d682b-aacd-4705-901d-c483ee6e10e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2DFramework\ui\uiButton">
+      <UniqueIdentifier>{f04acabe-84cc-43ad-9830-9917275fa472}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -129,9 +138,6 @@
     <ClInclude Include="sceneManager.h">
       <Filter>2DFramework\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="button.h">
-      <Filter>2DFramework\button</Filter>
-    </ClInclude>
     <ClInclude Include="effect.h">
       <Filter>2DFramework\effect</Filter>
     </ClInclude>
@@ -186,6 +192,21 @@
     <ClInclude Include="devTool.h">
       <Filter>2DFramework\devTool</Filter>
     </ClInclude>
+    <ClInclude Include="uiBase.h">
+      <Filter>2DFramework\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="uiManager.h">
+      <Filter>2DFramework\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="uiObject.h">
+      <Filter>2DFramework\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="uiPanel.h">
+      <Filter>2DFramework\ui\uiPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="uiButton.h">
+      <Filter>2DFramework\ui\uiButton</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -232,9 +253,6 @@
     </ClCompile>
     <ClCompile Include="sceneManager.cpp">
       <Filter>2DFramework\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="button.cpp">
-      <Filter>2DFramework\button</Filter>
     </ClCompile>
     <ClCompile Include="effect.cpp">
       <Filter>2DFramework\effect</Filter>
@@ -283,6 +301,21 @@
     </ClCompile>
     <ClCompile Include="devTool.cpp">
       <Filter>2DFramework\devTool</Filter>
+    </ClCompile>
+    <ClCompile Include="uiBase.cpp">
+      <Filter>2DFramework\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="uiManager.cpp">
+      <Filter>2DFramework\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="uiObject.cpp">
+      <Filter>2DFramework\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="uiPanel.cpp">
+      <Filter>2DFramework\ui\uiPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="uiButton.cpp">
+      <Filter>2DFramework\ui\uiButton</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
