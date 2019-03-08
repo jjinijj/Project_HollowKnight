@@ -154,6 +154,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="d2dManager.h" />
     <ClInclude Include="default.h" />
+    <ClInclude Include="devTool.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="effectManager.h" />
     <ClInclude Include="fontLoader.h" />
@@ -180,6 +181,7 @@
     <ClInclude Include="terrain.h" />
     <ClInclude Include="timeManager.h" />
     <ClInclude Include="timer.h" />
+    <ClInclude Include="toolState.h" />
     <ClInclude Include="txtData.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
@@ -190,6 +192,7 @@
     <ClCompile Include="button.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="d2dManager.cpp" />
+    <ClCompile Include="devTool.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="effectManager.cpp" />
     <ClCompile Include="fontLoader.cpp" />
@@ -216,6 +219,7 @@
     <ClCompile Include="terrain.cpp" />
     <ClCompile Include="timeManager.cpp" />
     <ClCompile Include="timer.cpp" />
+    <ClCompile Include="toolState.cpp" />
     <ClCompile Include="txtData.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="windowsAPI.cpp" />

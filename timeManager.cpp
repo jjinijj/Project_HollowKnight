@@ -31,30 +31,22 @@ void timeManager::update(float lockFPS)
 	{
 		_timer->tick(lockFPS);
 	}
-}
-
-void timeManager::render()
-{
-	WCHAR str[128];
 
 	//디버그 상태면
 #ifdef _DEBUG
 	{
-		
-
-		swprintf_s(str, L"framePerSec(FPS) : %d", _timer->getFrameRate());
-		D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY());
-		swprintf_s(str, L"worldTime : %f", _timer->getWorldTime());
-		D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 20);
-		swprintf_s(str, L"elapsedTime : %f", _timer->getElapsedTime());
-		D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 40);
+		DEVTOOL->pushBackDebugText(format(L"framePerSec(FPS) : %d", _timer->getFrameRate()));
+		DEVTOOL->pushBackDebugText(format(L"worldTime : %f", _timer->getWorldTime()));
+		DEVTOOL->pushBackDebugText(format(L"elapsedTime : %f", _timer->getElapsedTime()));
 	}
 #else
 	//릴리즈 상태면
 	{
-
-		swprintf_s(str, L"framePerSec(FPS) : %d", _timer->getFrameRate(), (float)(MAPSIZEX - WINSIZEX));
-		D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY());
+		DEVTOOL->pushBackDebugText(format(L"framePerSec(FPS) : %d", _timer->getFrameRate()));
 	}
 #endif
+}
+
+void timeManager::render()
+{
 }

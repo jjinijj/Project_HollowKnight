@@ -89,6 +89,8 @@ HRESULT mapTool::init()
 
 	_mode = eToolMode_DrawTerrain;
 
+	//_state = nullptr;
+
 	return S_OK;
 }
 
@@ -110,8 +112,13 @@ void mapTool::update()
 				, _sampleBoard->top + DISTANCE
 				, _sampleBoard->left + (3.f * DISTANCE) + _sampleImg->GetWidth()
 				, _sampleBoard->top + DISTANCE + _sampleImg->GetHeight() };
-	pickSample();
-	pickCanvers();
+	
+	picking();
+	if (_isPicking)
+	{
+		pickSample();
+		pickCanvers();
+	}
 }
 
 void mapTool::render()
@@ -156,27 +163,53 @@ void mapTool::setSampleBoardRect(RECTD2D* rc)
 	_canversSample = { rc->left + DISTANCE, rc->top + DISTANCE, rc->right - DISTANCE, rc->bottom - DISTANCE };
 }
 
+void mapTool::picking()
+{
+	if (PtInRectD2D(_canversSample, _ptMouse)) // 샘플
+	{
+		// pick
+		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+		{
+			_isPicking = true;
+			_pickArea = { _ptMouse.x, _ptMouse.y, _ptMouse.x + 1.f, _ptMouse.y + 1.f };
+			_mode = eToolMode_DrawTerrain;
+		}
+
+		// drag
+		if (KEYMANAGER->isStayKeyDown(VK_LBUTTON))
+		{
+			_pickArea.right = _ptMouse.x;
+			_pickArea.bottom = _ptMouse.y;
+		}
+
+	}
+	else if (PtInRectD2D(*_canvers, _ptMouse)) // 캔버스
+	{
+		if (eToolMode_DrawCollider == _mode)
+		{
+			// pick
+			if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+			{
+				_pick.clear();
+				_pick.isPick = true;
+				_pickArea = { _ptMouse.x, _ptMouse.y, _ptMouse.x + 1.f, _ptMouse.y + 1.f };
+			}
+
+			// drag
+			if (KEYMANAGER->isStayKeyDown(VK_LBUTTON))
+			{
+				_pickArea.right = _ptMouse.x;
+				_pickArea.bottom = _ptMouse.y;
+			}
+		}
+	}
+}
+
 void mapTool::pickSample()
 {
 	if (!PtInRectD2D(_canversSample, _ptMouse))
 		return;
 
-	// pick
-	if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
-	{
-		_isPicking = true;
-		_pickArea = { _ptMouse.x, _ptMouse.y, _ptMouse.x + 1.f, _ptMouse.y + 1.f };
-		_mode = eToolMode_DrawTerrain;
-	}
-
-	// drag
-	if (KEYMANAGER->isStayKeyDown(VK_LBUTTON))
-	{
-		_pickArea.right = _ptMouse.x;
-		_pickArea.bottom = _ptMouse.y;
-	}
-
-	//up
 	if (KEYMANAGER->isOnceKeyUp(VK_LBUTTON))
 	{
 		_pick.clear();
@@ -245,30 +278,7 @@ void mapTool::pickSample()
 
 void mapTool::pickCanvers()
 {
-	// 그리는 구역이 아니면 return
-	if(!PtInRectD2D(*_canvers, _ptMouse))
-		return;
-
-	// 
-	if (eToolMode_DrawCollider == _mode)
-	{
-		// pick
-		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
-		{
-			_isPicking = true;
-			_pickArea = { _ptMouse.x, _ptMouse.y, _ptMouse.x + 1.f, _ptMouse.y + 1.f };
-		}
-
-		// drag
-		if (KEYMANAGER->isStayKeyDown(VK_LBUTTON))
-		{
-			_pickArea.right = _ptMouse.x;
-			_pickArea.bottom = _ptMouse.y;
-		}
-	}
-	
-	// pick 아니면 return
-	if(!_isPicking)
+	if (!PtInRectD2D(*_canvers, _ptMouse))
 		return;
 
 	if (KEYMANAGER->isOnceKeyUp(VK_LBUTTON))
@@ -415,4 +425,12 @@ void mapTool::renderDrawTerrain()
 void mapTool::renderDrawCollider()
 {
 }
+
+void mapTool::test(wchar_t const * const str, wchar_t const * format)
+{
+	WCHAR c[128];
+
+	swprintf_s(c, str, format);
+}
+
 

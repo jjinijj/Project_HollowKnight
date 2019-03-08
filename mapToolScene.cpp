@@ -103,10 +103,14 @@ void mapToolScene::update()
 			_createCol->setState(eButton_Up);
 	}
 
-	_qickOpen->update();
-	_beforeSample->update();
-	_nextSample->update();
-	_createCol->update();
+	// 툴에서 드래그 중이 아닐 경우에만 버튼 활성화 
+	if (!_tool->isPicking())
+	{
+		_qickOpen->update();
+		_beforeSample->update();
+		_nextSample->update();
+		_createCol->update();
+	}
 
 	if (PtInRectD2D(_sampleBoard, _ptMouse))
 	{
@@ -115,7 +119,7 @@ void mapToolScene::update()
 	}
 	else 
 	{
-		if(!_tool->isSamplePicking())
+		if(!_tool->isPicking())
 			closingSampleBoard();
 	}
 

@@ -40,13 +40,13 @@ HRESULT terrain::init(const UID uid, const float destX, const float destY)
 void terrain::render()
 {
 	if ((_debugMode & DEBUG_SHOW_RECT) == DEBUG_SHOW_RECT)
-		D2DMANAGER->drawRectangle(_rc);
+		D2DMANAGER->drawRectangle(_rc, false);
 }
 
 void terrain::render(float destX, float destY, float percent)
 {
 	if ((_debugMode & DEBUG_SHOW_RECT) == DEBUG_SHOW_RECT)
-		D2DMANAGER->drawRectangle(_rc);
+		D2DMANAGER->drawRectangle(_rc, false);
 }
 
 TARRAINPACK* terrain::makePack()
@@ -323,8 +323,7 @@ void terrainClear::update()
 
 void terrainClear::render()
 {
-	terrain::render();
-	D2DMANAGER->drawRectangle(_rc);
+	D2DMANAGER->drawRectangle(_rc, false);
 }
 
 void terrainClear::render(float destX, float destY, float percent)

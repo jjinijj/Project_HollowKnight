@@ -1,4 +1,5 @@
 #pragma once
+#include <stdarg.h>
 
 #define PI 3.141592f
 #define PI2 2 * PI
@@ -106,4 +107,12 @@ namespace JJIN_UTIL
 	//=========================== string wstring º¯È¯ ===============================
 
 	wstring string2wstring(string str);
+
+	// ===========================
+	string format(const char *fmt, ...);
+	string format_arg_list(const char *fmt, va_list args);
+
+	wstring format(const WCHAR *fmt, ...);
+	wstring format_arg_list(const WCHAR *fmt, va_list args);
+
 }

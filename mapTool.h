@@ -1,5 +1,5 @@
 #pragma once
-
+#include "toolState.h"
 
 #define DISTANCE 10.f
 
@@ -112,6 +112,7 @@ class mapTool
 private:
 
 	eToolMode _mode;
+	//toolState* _state;
 
 	int _sampleIdx;
 
@@ -154,6 +155,8 @@ public:
 	void setCanversRect(RECTD2D* rc)		{ _canvers = rc; }
 	void setMiniMapRect(RECTD2D* rc)		{ _miniMap = rc;}
 
+
+	void picking();
 	// »ùÇÃ ¼±ÅÃ
 	void pickSample();
 	// Äµ¹ö½º ±×¸®±â
@@ -169,7 +172,7 @@ public:
 	image* getSample() { return _sampleImg; }
 	eToolMode getToolMode() { return _mode; }
 
-	bool isSamplePicking() {return _isPicking;}
+	bool isPicking() {return _isPicking;}
 
 private:
 	void setSampleImage();
@@ -179,5 +182,6 @@ private:
 
 	void renderDrawTerrain();
 	void renderDrawCollider();
-};
 
+	void test(wchar_t const* const str, _In_z_ _Printf_format_string_ wchar_t const* format);
+};

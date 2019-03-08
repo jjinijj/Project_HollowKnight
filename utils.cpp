@@ -296,12 +296,85 @@ namespace JJIN_UTIL
 
 	wstring string2wstring(string str)
 	{
-
 		int nLen = MultiByteToWideChar(CP_ACP, 0, &str[0], str.size(), NULL, NULL);
 		wstring strUni(nLen, 0);
 		MultiByteToWideChar(CP_ACP, 0, &str[0], str.size(), &strUni[0], nLen);
 
 		return strUni;
+	}
+
+	string format(const char* fmt, ...)
+	{
+		va_list args;
+		va_start(args, fmt);
+		string str = format_arg_list(fmt, args);
+		va_end(args);
+
+		return str;
+	}
+
+	string format_arg_list(const char* fmt, va_list args)
+	{
+		if(!fmt)
+			return "";
+
+		int result = -1;
+		int length = 256;
+
+		char* buffer = NULL;
+		while (-1 == result)
+		{
+			if(buffer)
+				delete[] buffer;
+
+			buffer = new char[length + 1];
+			memset(buffer, NULL, length + 1);
+			
+			result = _vsnprintf_s(buffer, length, length, fmt, args);
+			
+			length *= 2;
+		}
+
+		string str(buffer);
+		delete[] buffer;
+		return str;
+	}
+
+	wstring format(const WCHAR* fmt, ...)
+	{
+		va_list args;
+		va_start(args, fmt);
+		wstring str = format_arg_list(fmt, args);
+		va_end(args);
+
+		return str;
+	}
+
+	wstring format_arg_list(const WCHAR* fmt, va_list args)
+	{
+		if (!fmt)
+			return L"";
+
+		int result = -1;
+		int length = 512;
+
+		WCHAR* buffer = NULL;
+		while (-1 == result)
+		{
+			if (buffer)
+				delete[] buffer;
+
+			buffer = new WCHAR[length];
+			memset(buffer, NULL, length);
+
+			result = _vsnwprintf_s(buffer, length, length, fmt, args);
+
+			length *= 2;
+		}
+
+		wstring str(buffer);
+		delete[] buffer;
+		return str;
 	}
 
 }

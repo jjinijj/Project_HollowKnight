@@ -70,6 +70,9 @@
     <Filter Include="PlayGround\database">
       <UniqueIdentifier>{aa7d2e81-18b2-470b-b168-900b9c6b2815}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFramework\devTool">
+      <UniqueIdentifier>{ad8130eb-6044-4d16-a47e-fa5279d62ecf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -177,6 +180,12 @@
     <ClInclude Include="mapToolScene.h">
       <Filter>PlayGround\scene\mapToolScene</Filter>
     </ClInclude>
+    <ClInclude Include="toolState.h">
+      <Filter>PlayGround\mapTool</Filter>
+    </ClInclude>
+    <ClInclude Include="devTool.h">
+      <Filter>2DFramework\devTool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -268,6 +277,12 @@
     </ClCompile>
     <ClCompile Include="mapToolScene.cpp">
       <Filter>PlayGround\scene\mapToolScene</Filter>
+    </ClCompile>
+    <ClCompile Include="toolState.cpp">
+      <Filter>PlayGround\mapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="devTool.cpp">
+      <Filter>2DFramework\devTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
