@@ -34,6 +34,8 @@ public:
 	uiObject* getChild(int idx);
 	
 	void setActive(bool active) { _isActive = active; }
+	void setWorldPosition(float x, float y);
+	void setLocalPosition(float x, float y);
 	void setPositionX(float x) {_x = x;}
 	void setPositionY(float y) {_y = y;}
 	void setWidth(float width)	 { _width = width;	}
@@ -51,6 +53,8 @@ public:
 	POINTF getSize()  { return PointFMake(_x, _y); }
 	float getWidth()  { return _width;}
 	float getHeight() { return _height;}
+
+	RECTD2D getRect() {return _rc;}
 
 	vector<uiObject*>* getChilds()	{ return &_childs; }
 	int getChildCount()				{ return _childs.size();}

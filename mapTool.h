@@ -2,7 +2,10 @@
 #include "toolState.h"
 
 
+#define SAMPLABOARD_WIDTH 1010.f
+
 #define DISTANCE 10.f
+#define MINIMAP_PERCENT 0.019f				// 미니맵 배율
 
 // 지형 종류
 enum eTerrainType
@@ -132,16 +135,25 @@ private:
 	bool _isPicking;
 	POINTF _pickMousePos;
 	
-	uiPanel* _samplePanel;
-	uiPanel* _sampleCanvers;
+	uiPanel* _samplePanel;			// 샘플 이미지가 ui
+	uiPanel* _samplecanvas;			// 샘플 이미지가 그려지는 부분
 
+	uiPanel* _canvas;				// 실제 맵이 그려지는 부분
 
-	RECTD2D* _canvers;					// 실제 맵이 그려지는 부분
-	//RECTD2D  _sampleCanvers;			// 샘플 이미지가 그려지는 부분
+	uiPanel* _miniMap;				// 미니맵 
+
+	uiButton* _qickOpen;
+	uiButton* _beforeSample;
+	uiButton* _nextSample;
+	uiButton* _createCol;
+
+	float _miniScopeWidth;
+	float _miniScopeHeight;
+
+	//RECTD2D* _canvas;					
+	//RECTD2D  _samplecanvas;			
 	
-	RECTD2D* _miniMap;					// 미니맵 
-	RECTD2D* _sampleBoard;				// 샘플 이미지가 ui
-
+	RECTD2D _miniScope;
 	RECTD2D _pickArea;					// 드래그
 	RECTD2D _mapViewArea;				// 미니맵에서 현재 보여주는 맵 표시
 
@@ -153,27 +165,18 @@ public:
 	void release();
 	void update();
 	void render();
-	void terrainRender();
-	void terrainRender(float destX, float destY, float percent);
 
-	// 캔버스 위치 지정
-	void setSampleBoardRect(RECTD2D* rc)	{ _sampleBoard = rc;}
-	void setCanversRect(RECTD2D* rc)		{ _canvers = rc; }
-	void setMiniMapRect(RECTD2D* rc)		{ _miniMap = rc;}
-
-
+	// 샘플 선택
 	void pickSampleStart();
 	void pickSampleEnd();
-
-	void pickCanversStart();
-	void pickCanversEnd();
-
-	void picking();
-	// 샘플 선택
-	void pickSample();
 	// 캔버스 그리기
-	void pickCanvers();
+	void pickcanvasStart();
+	void pickcanvasEnd();
+	// 드래그
+	void picking();
 
+	void clickingMinimap();
+	
 	void nextSample();
 	void beforeSample();
 	
@@ -186,11 +189,17 @@ public:
 	bool isPicking() {return _isPicking;}
 
 private:
+	void settingSampleImageLinks();
 	void setSampleImage();
+	void initUI();
 
 	void updateDrawTerrain();
 	void updateDrawCollider();
 
 	void renderDrawTerrain();
 	void renderDrawCollider();
+
+	void openSampleCanvas();
+	void closeSampleCanvas();
+
 };

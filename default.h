@@ -26,6 +26,7 @@
 #define DEFAULT_FONT_SIZE 15
 #define DEFAULT_FONT_COLOR RGB(0, 0, 0)
 
+#define UI_SPACE 10.f
 
 //=============================================
 //   지형 속성

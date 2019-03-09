@@ -11,7 +11,7 @@ mapTool::mapTool()
 , _sampleImg(nullptr)
 
 , _isPicking(false)
-, _canvers(nullptr)
+, _canvas(nullptr)
 {
 	_pickMousePos = {0.f, 0.f};
 }
@@ -28,62 +28,9 @@ HRESULT mapTool::init()
 	_mapData = new mapData;
 	_mapData->init();
 
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_Floor, false);
-		_imgLnks.push_back(lnk);
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_BG, false);
-		_imgLnks.push_back(lnk);
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_BG_Big01, false);
-		_imgLnks.push_back(lnk);
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_BG_Big02, false);
-		_imgLnks.push_back(lnk);
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_Build, true);
-		for (int ii = eImage_Town_Build01; ii <= eImage_Town_Build07; ++ii)
-		{
-			lnk->pushBack((eImageUID)ii);
-		}
-		_imgLnks.push_back(lnk);
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_Ruddle, false);
-		_imgLnks.push_back(lnk);
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Object_Chair, false);
-		_imgLnks.push_back(lnk);
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Fence, false);
-		_imgLnks.push_back(lnk);
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_Well, false);
-		_imgLnks.push_back(lnk);
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_StreetLamp, false);
-		_imgLnks.push_back(lnk);
-	}
-
+	settingSampleImageLinks();
 	setSampleImage();
+	initUI();
 	_pick.clear();
 
 	_curLayer = eLayer_Play;
@@ -91,20 +38,9 @@ HRESULT mapTool::init()
 
 	_mode = eToolMode_DrawTerrain;
 
-	// »ùÇÃÆÇ
-	{
-		_samplePanel = new uiPanel;
-		_samplePanel->init(0.f, 0.f, 0.f, 0.f, nullptr);
 
-		_sampleCanvers = new uiPanel;
-		_sampleCanvers->init(3.f * DISTANCE, DISTANCE, 0.f, 0.f, _sampleImg);
-		_sampleCanvers->setOnClickFunction(std::bind(&mapTool::pickSampleStart, this));
-		_sampleCanvers->setPressFunction(std::bind(&mapTool::picking, this));
-		_sampleCanvers->setOnClickUPFunction(std::bind(&mapTool::pickSampleEnd, this));
-
-		_samplePanel->insertChild(_sampleCanvers);
-	}
-
+	CAMERA->setScope(_canvas->getRect());
+	
 	//_state = nullptr;
 
 	return S_OK;
@@ -124,22 +60,32 @@ void mapTool::update()
 		case eToolMode_Inspector:   { break; }
 	}
 
-	picking();
-	if (_isPicking)
-	{
-		pickSample();
-		pickCanvers();
-	}
-
 	_samplePanel->update();
 }
 
 void mapTool::render()
 {
-	_samplePanel->render();
+	uiBase::render();
+
+	// ¸Ê
+	if (_mapData)
+		_mapData->render();
 
 	if (_isPicking)
 		D2DMANAGER->drawRectangle(_pickArea);
+	
+	// ¹Ì´Ï¸Ê
+	{
+		vector<terrain*>* terrains = _mapData->getTerrains();
+		vector<terrain*>::iterator iter = terrains->begin();
+		vector<terrain*>::iterator end = terrains->end();
+
+		for (; iter != end; ++iter)
+		{
+			(*iter)->render(_miniMap->getWorldPosition().x, _miniMap->getWorldPosition().y, MINIMAP_PERCENT);
+		}
+		D2DMANAGER->drawRectangle(_miniScope);
+	}
 
 	switch (_mode)
 	{
@@ -147,24 +93,6 @@ void mapTool::render()
 		case eToolMode_DrawCollider:{ renderDrawCollider(); break; }
 		case eToolMode_DrawObject:  { break; }
 		case eToolMode_Inspector:   { break; }
-	}
-}
-
-void mapTool::terrainRender()
-{
-	if (_mapData)
-		_mapData->render();
-}
-
-void mapTool::terrainRender(float destX, float destY, float percent)
-{
-	vector<terrain*>* terrains = _mapData->getTerrains();
-	vector<terrain*>::iterator iter = terrains->begin();
-	vector<terrain*>::iterator end = terrains->end();
-
-	for (; iter != end; ++iter)
-	{
-		(*iter)->render(destX, destY, percent);
 	}
 }
 
@@ -188,8 +116,8 @@ void mapTool::pickSampleEnd()
 	// ÇÁ·¹ÀÓ ÀÌ¹ÌÁö
 	if (curLnk->isFrameImg)
 	{
-		int frameX = (int)(_ptMouse.x - _sampleCanvers->getPositionX()) / _sampleImg->GetFrameWidth();
-		int frameY = (int)(_ptMouse.y - _sampleCanvers->getPositionY()) / _sampleImg->GetFrameHeight();
+		int frameX = (int)(_ptMouse.x - _samplecanvas->getPositionX()) / _sampleImg->GetFrameWidth();
+		int frameY = (int)(_ptMouse.y - _samplecanvas->getPositionY()) / _sampleImg->GetFrameHeight();
 
 		int idx = frameY * (_sampleImg->GetMaxFrameX() + 1) + frameX;
 
@@ -242,7 +170,7 @@ void mapTool::pickSampleEnd()
 	_pick.isPick = true;
 }
 
-void mapTool::pickCanversStart()
+void mapTool::pickcanvasStart()
 {
 	if (eToolMode_DrawCollider == _mode)
 	{
@@ -252,7 +180,7 @@ void mapTool::pickCanversStart()
 	}
 }
 
-void mapTool::pickCanversEnd()
+void mapTool::pickcanvasEnd()
 {
 	// 0,0 ±âÁØÀ¸·Î À§Ä¡ ÁöÁ¤
 	float destX = 0;
@@ -328,19 +256,42 @@ void mapTool::picking()
 	_pickArea.bottom = _ptMouse.y;
 }
 
-void mapTool::pickSample()
+void mapTool::clickingMinimap()
 {
-}
+	RECTD2D rc = _miniMap->getRect();
+	_miniScope = { _ptMouse.x - _miniScopeWidth / 2.f, _ptMouse.y - _miniScopeHeight / 2.f
+		, _ptMouse.x + _miniScopeWidth / 2.f, _ptMouse.y + _miniScopeHeight / 2.f };
 
-void mapTool::pickCanvers()
-{
-	if (!PtInRectD2D(*_canvers, _ptMouse))
-		return;
-
-	if (KEYMANAGER->isOnceKeyUp(VK_LBUTTON))
+	if (_miniScope.left < rc.left)
 	{
-		
+		_miniScope.left = rc.left;
+		_miniScope.right  = rc.left + _miniScopeWidth;
 	}
+	else if (rc.right < _miniScope.right)
+	{
+		_miniScope.left = rc.right - _miniScopeWidth;
+		_miniScope.right = rc.right;
+	}
+
+	if (_miniScope.top < rc.top)
+	{
+		_miniScope.top = rc.top;
+		_miniScope.bottom = rc.top + _miniScopeHeight;
+
+		_miniScope = { _miniScope.left, rc.top
+			,_miniScope.right, rc.top + _miniScopeHeight };
+	}
+	else if (rc.bottom < _miniScope.bottom)
+	{
+		_miniScope.top = rc.bottom - _miniScopeHeight;
+		_miniScope.bottom = rc.bottom;
+	}
+
+	float destX = (((_miniScope.left - rc.left) / (rc.right - rc.left)) * MAPSIZEX);
+	float destY = (((_miniScope.top  - rc.top)/ (rc.bottom - rc.top)) * MAPSIZEY);
+
+	CAMERA->setPosX(destX);
+	CAMERA->setPosY(destY);
 }
 
 void mapTool::nextSample()
@@ -370,6 +321,64 @@ void mapTool::setToolMode(eToolMode mode)
 		_terType = eTerrain_Clear;
 }
 
+void mapTool::settingSampleImageLinks()
+{
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_Floor, false);
+		_imgLnks.push_back(lnk);
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_BG, false);
+		_imgLnks.push_back(lnk);
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_BG_Big01, false);
+		_imgLnks.push_back(lnk);
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_BG_Big02, false);
+		_imgLnks.push_back(lnk);
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_Build, true);
+		for (int ii = eImage_Town_Build01; ii <= eImage_Town_Build07; ++ii)
+		{
+			lnk->pushBack((eImageUID)ii);
+		}
+		_imgLnks.push_back(lnk);
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_Ruddle, false);
+		_imgLnks.push_back(lnk);
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Object_Chair, false);
+		_imgLnks.push_back(lnk);
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Fence, false);
+		_imgLnks.push_back(lnk);
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_Well, false);
+		_imgLnks.push_back(lnk);
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_StreetLamp, false);
+		_imgLnks.push_back(lnk);
+	}
+}
+
 void mapTool::setSampleImage()
 {
 	_sampleImg = IMGDATABASE->getImage(_imgLnks[_sampleIdx]->mainUID);
@@ -380,6 +389,114 @@ void mapTool::setSampleImage()
 		_terType = eTerrain_Drag;
 
 	_pick.clear();
+}
+
+void mapTool::initUI()
+{
+	// »ùÇÃ Äµ¹ö½º
+	{
+		image* bg = IMAGEMANAGER->findImage("uiBG4");
+		RECTD2D rc = {WINSIZEX - UI_SPACE, UI_SPACE / 2.f, SAMPLABOARD_WIDTH, WINSIZEY - UI_SPACE};
+
+		// ÆÇ
+		_samplePanel = new uiPanel;
+		_samplePanel->init(rc.left, rc.top, SAMPLABOARD_WIDTH, WINSIZEY - UI_SPACE, bg);
+
+		// »ùÇÃ
+		_samplecanvas = new uiPanel;
+		_samplecanvas->init(3.f * DISTANCE, DISTANCE, 0.f, 0.f, _sampleImg);
+		_samplecanvas->setOnClickFunction(std::bind(&mapTool::pickSampleStart, this));
+		_samplecanvas->setPressFunction(std::bind(&mapTool::picking, this));
+		_samplecanvas->setOnClickUPFunction(std::bind(&mapTool::pickSampleEnd, this));
+
+		_samplePanel->insertChild(_samplecanvas);
+
+		// ÀÌÀü »ùÇÃ
+		_beforeSample = new uiButton;
+		_beforeSample->init( "uiBG3", "uiBG"
+							, 3.f * UI_SPACE, (rc.bottom - rc.top) - 100.f
+							, 60.0f, 50.0f);
+		_beforeSample->setText(L"<<", 50);
+		_beforeSample->setOnClickFunction(bind(&mapTool::beforeSample, this));
+		
+		_samplePanel->insertChild(_beforeSample);
+
+		// ´ÙÀ½ »ùÇÃ
+		_nextSample = new uiButton;
+		_nextSample->init(  "uiBG3", "uiBG"
+						  , _beforeSample->getLocalPosition().x + 60.f + UI_SPACE
+						  , _beforeSample->getLocalPosition().y
+						  , 60.f, 50.f);
+		_nextSample->setText(L">>", 50);
+		_nextSample->setOnClickFunction(bind(&mapTool::nextSample, this));
+
+		_samplePanel->insertChild(_nextSample);
+
+		// »ùÇÃÆÇ ¿­°í ´Ý±â
+		_qickOpen = new uiButton;
+		_qickOpen->init( "uiBG3", "uiBG", "uiBG2"
+						, -20.f, 0.f
+						, 20.f, rc.bottom - rc.top);
+		_qickOpen->setText(L"¢¸\n¢¸\n¢¸", 20);
+		_qickOpen->setText(L"¢º\n¢º\n¢º", eButton_Down, 20);
+		_qickOpen->setOnClickFunction(bind(&mapTool::openSampleCanvas, this));
+		_qickOpen->setOnClickUPFunction(bind(&mapTool::closeSampleCanvas, this));
+
+		_samplePanel->insertChild(_qickOpen);
+
+		insertUIObject(_samplePanel);
+	}
+
+	// Äµ¹ö½º
+	{
+		image* bg = IMAGEMANAGER->findImage("uiBG5");
+		_canvas = new uiPanel;
+		_canvas->init( UI_SPACE, UI_SPACE
+					  ,WINSIZEX / 3.f * 2.f - UI_SPACE, WINSIZEY / 5.f * 4.f - UI_SPACE
+					  ,bg);
+		_canvas->setOnClickFunction(std::bind(&mapTool::pickcanvasStart, this));
+		_canvas->setPressFunction(std::bind(&mapTool::picking, this));
+		_canvas->setOnClickUPFunction(std::bind(&mapTool::pickcanvasEnd, this));
+
+		insertUIObject(_canvas);
+	}
+
+	// ¹Ì´Ï¸Ê
+	{
+		image* bg = IMAGEMANAGER->findImage("uiBG5");
+		RECTD2D rc = _canvas->getRect();
+		_miniMap = new uiPanel;
+		_miniMap->init( rc.left, rc.bottom + UI_SPACE
+					   ,rc.left + (MAPSIZEX * 0.019f), rc.bottom + UI_SPACE + (MAPSIZEY * 0.019f)
+					   ,bg);
+		_miniMap->setPressFunction(std::bind(&mapTool::clickingMinimap, this));
+
+		insertUIObject(_miniMap);
+	}
+
+	// ¹Ì´Ï¸Ê¿¡¼­ »ç¿ë
+	{
+		RECTD2D rc = _canvas->getRect();
+		RECTD2D miniRc = _miniMap->getRect();
+		_miniScopeWidth = (rc.right - rc.left) * (miniRc.right - miniRc.left) / MAPSIZEX;
+		_miniScopeHeight = (rc.bottom - rc.top) *  (miniRc.bottom - miniRc.top)  / MAPSIZEY;
+
+		_miniScope = {miniRc.left, miniRc.top, miniRc.left + _miniScopeWidth, miniRc.top + _miniScopeHeight};
+	}
+
+
+	_createCol = new uiButton;
+
+
+
+	_createCol->init("uiBG3", "uiBG", "uiBG2"
+					 , _canvas.right + UI_SPACE
+					 , _canvas.bottom - 50.f
+					 , 80.f, 50.f);
+	_createCol->setText(L"Collider", 20);
+	_createCol->setOnClickFunction(bind(&mapTool::setToolMode, _tool, eToolMode_DrawCollider));
+	_createCol->setOnClickUPFunction(bind(&mapTool::setToolMode, _tool, eToolMode_None));
+
 }
 
 void mapTool::updateDrawTerrain()
@@ -414,5 +531,13 @@ void mapTool::renderDrawTerrain()
 }
 
 void mapTool::renderDrawCollider()
+{
+}
+
+void mapTool::openSampleCanvas()
+{
+}
+
+void mapTool::closeSampleCanvas()
 {
 }

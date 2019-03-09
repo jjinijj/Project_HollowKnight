@@ -70,6 +70,8 @@ void uiButton::release()
 void uiButton::update()
 {
 	uiObject::update();
+	_rc = {getWorldPosition().x, getWorldPosition().y
+		  ,getWorldPosition().x + _width, getWorldPosition().y };
 }
 
 void uiButton::render()

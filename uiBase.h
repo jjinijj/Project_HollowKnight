@@ -23,6 +23,8 @@ public:
 	virtual void uiOpen();
 	virtual void uiClose();
 
+	void insertUIObject(uiObject* ui);
+
 	void setActive(bool isActive) { _isActive = isActive; }
 
 	bool isOpen()	{ return _isOpen;}

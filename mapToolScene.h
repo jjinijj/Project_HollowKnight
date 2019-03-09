@@ -3,8 +3,7 @@
 
 
 
-#define SAMPLABOARD_WIDTH 1010.f
-#define UI_SPACE 10.f
+
 
 class mapTool;
 class uiButton;
@@ -13,10 +12,7 @@ class mapToolScene:	public baseScene
 private:
 	mapTool* _tool;
 	
-	uiButton* _qickOpen;
-	uiButton* _beforeSample;
-	uiButton* _nextSample;
-	uiButton* _createCol;
+
 
 
 	image* _uiBG[5];
@@ -25,10 +21,6 @@ private:
 	bool _isCloseSampleBoard;
 	bool _isMoveMiniScope;
 	
-	RECTD2D _canvers;
-	RECTD2D _sampleBoard;
-	RECTD2D _miniMap;
-	RECTD2D _miniScope;
 	RECTD2D _fileZone;
 	RECTD2D _hierarchy;
 	RECTD2D _inspector;
