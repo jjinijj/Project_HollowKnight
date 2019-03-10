@@ -172,6 +172,7 @@
     <ClInclude Include="mapTool.h" />
     <ClInclude Include="mapToolScene.h" />
     <ClInclude Include="uiImage.h" />
+    <ClInclude Include="uiList.h" />
     <ClInclude Include="uiPanel.h" />
     <ClInclude Include="playGround.h" />
     <ClInclude Include="randomFunction.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="uiBase.h" />
     <ClInclude Include="uiManager.h" />
     <ClInclude Include="uiObject.h" />
+    <ClInclude Include="uiProgress.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +217,7 @@
     <ClCompile Include="mapTool.cpp" />
     <ClCompile Include="mapToolScene.cpp" />
     <ClCompile Include="uiImage.cpp" />
+    <ClCompile Include="uiList.cpp" />
     <ClCompile Include="uiPanel.cpp" />
     <ClCompile Include="playGround.cpp" />
     <ClCompile Include="sceneManager.cpp" />
@@ -233,6 +236,7 @@
     <ClCompile Include="uiBase.cpp" />
     <ClCompile Include="uiManager.cpp" />
     <ClCompile Include="uiObject.cpp" />
+    <ClCompile Include="uiProgress.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="windowsAPI.cpp" />
   </ItemGroup>

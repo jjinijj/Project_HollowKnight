@@ -88,6 +88,12 @@
     <Filter Include="2DFramework\ui\uiImage">
       <UniqueIdentifier>{a86587a5-7f9f-4db5-91c8-9ba95bfc6441}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFramework\ui\uiList">
+      <UniqueIdentifier>{f541c5ef-2610-456f-a58b-8f0a99f6f137}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2DFramework\ui\uiProgress">
+      <UniqueIdentifier>{6e567ef8-4d17-4abd-973f-93aa6f3d3452}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -213,11 +219,17 @@
     <ClInclude Include="uiButton.h">
       <Filter>2DFramework\ui\uiButton</Filter>
     </ClInclude>
-    <ClInclude Include="iTween.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="uiImage.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>2DFramework\ui\uiImage</Filter>
+    </ClInclude>
+    <ClInclude Include="iTween.h">
+      <Filter>2DFramework\iween</Filter>
+    </ClInclude>
+    <ClInclude Include="uiProgress.h">
+      <Filter>2DFramework\ui\uiProgress</Filter>
+    </ClInclude>
+    <ClInclude Include="uiList.h">
+      <Filter>2DFramework\ui\uiList</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -329,11 +341,17 @@
     <ClCompile Include="uiButton.cpp">
       <Filter>2DFramework\ui\uiButton</Filter>
     </ClCompile>
-    <ClCompile Include="iTween.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="uiImage.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>2DFramework\ui\uiImage</Filter>
+    </ClCompile>
+    <ClCompile Include="iTween.cpp">
+      <Filter>2DFramework\iween</Filter>
+    </ClCompile>
+    <ClCompile Include="uiProgress.cpp">
+      <Filter>2DFramework\ui\uiProgress</Filter>
+    </ClCompile>
+    <ClCompile Include="uiList.cpp">
+      <Filter>2DFramework\ui\uiList</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -10,7 +10,6 @@ mapTool::mapTool()
 : _sampleIdx(0)
 , _mapData(nullptr)
 , _sampleImg(nullptr)
-
 , _isPicking(false)
 , _canvas(nullptr)
 , _sampleBoardOpenX(WINSIZEX - SAMPLABOARD_WIDTH)
@@ -77,7 +76,6 @@ void mapTool::update()
 			closingSampleCanvas();
 		}
 	}
-
 }
 
 void mapTool::render()
@@ -103,6 +101,7 @@ void mapTool::render()
 			(*iter)->render(_miniMap->getWorldPosition().x, _miniMap->getWorldPosition().y, MINIMAP_PERCENT);
 		}
 		D2DMANAGER->drawRectangle(_miniScope);
+		terrains = nullptr;
 	}
 
 	switch (_mode)
@@ -116,9 +115,10 @@ void mapTool::render()
 
 void mapTool::pickSampleStart()
 {
+	setToolMode(eToolMode_DrawTerrain);
+	_createCol->setState(eButton_Up);
 	_isPicking = true;
 	_pickArea = { _ptMouse.x, _ptMouse.y, _ptMouse.x + 1.f, _ptMouse.y + 1.f };
-	_mode = eToolMode_DrawTerrain;
 }
 
 void mapTool::pickSampleEnd()
@@ -134,8 +134,8 @@ void mapTool::pickSampleEnd()
 	// 프레임 이미지
 	if (curLnk->isFrameImg)
 	{
-		int frameX = (int)(_ptMouse.x - _samplecanvas->getPositionX()) / _sampleImg->GetFrameWidth();
-		int frameY = (int)(_ptMouse.y - _samplecanvas->getPositionY()) / _sampleImg->GetFrameHeight();
+		int frameX = (int)(_ptMouse.x - _samplecanvas->getWorldPosition().x) / _sampleImg->GetFrameWidth();
+		int frameY = (int)(_ptMouse.y - _samplecanvas->getWorldPosition().y) / _sampleImg->GetFrameHeight();
 
 		int idx = frameY * (_sampleImg->GetMaxFrameX() + 1) + frameX;
 
@@ -151,37 +151,7 @@ void mapTool::pickSampleEnd()
 	}
 	else
 	{
-		float width = _pickArea.right - _pickArea.left;
-		float height = _pickArea.bottom - _pickArea.top;
-
-		if (-5.f < width &&  width <= 5.f
-			|| -5.f < height && height <= 5.f)
-		{
-			return;
-		}
-
-		// 역사각형일경우
-		if (_pickArea.right < _pickArea.left)
-		{
-			swap(_pickArea.left, _pickArea.right);
-			width *= -1.f;
-		}
-
-		// 역사각형일경우
-		if (_pickArea.bottom < _pickArea.top)
-		{
-			swap(_pickArea.top, _pickArea.bottom);
-			height *= -1;
-		}
-
-		POINTF pf = _samplecanvas->getWorldPosition();
-
-		_pick.x = _pickArea.left - pf.x;
-		_pick.y = _pickArea.top - pf.y;
-
-		_pick.width = width;
-		_pick.height = height;
-
+		pickingEnd();
 		_pick.uid = curLnk->mainUID;
 	}
 
@@ -205,18 +175,8 @@ void mapTool::pickcanvasEnd()
 		return;
 
 	// 0,0 기준으로 위치 지정
-	float destX = 0;
-	float destY = 0;
-	if (eToolMode_DrawCollider == _mode)
-	{
-		destX = _ptMouse.x + CAMERA->getPosX() - CAMERA->getScopeRect().left;
-		destY = _ptMouse.y + CAMERA->getPosY() - CAMERA->getScopeRect().top;
-	}
-	else
-	{
-		destX = (_ptMouse.x - _pick.width / 2.f) + CAMERA->getPosX() - CAMERA->getScopeRect().left;
-		destY = (_ptMouse.y - _pick.height / 2.f) + CAMERA->getPosY() - CAMERA->getScopeRect().top;
-	}
+	float destX = (_ptMouse.x - _pick.width / 2.f) + CAMERA->getPosX() - CAMERA->getScopeRect().left;
+	float destY = (_ptMouse.y - _pick.height / 2.f) + CAMERA->getPosY() - CAMERA->getScopeRect().top;
 
 	switch (_terType)
 	{
@@ -240,33 +200,12 @@ void mapTool::pickcanvasEnd()
 			_pickArea.right = _ptMouse.x;
 			_pickArea.bottom = _ptMouse.y;
 
-			float width = _pickArea.right - _pickArea.left;
-			float height = _pickArea.bottom - _pickArea.top;
-
-			if (-5.f < width &&  width <= 5.f
-				|| -5.f < height && height <= 5.f)
-			{
-				return;
-			}
-
-			// 역사각형일경우
-			if (_pickArea.right < _pickArea.left)
-			{
-				swap(_pickArea.left, _pickArea.right);
-				width *= -1.f;
-			}
-
-			// 역사각형일경우
-			if (_pickArea.bottom < _pickArea.top)
-			{
-				swap(_pickArea.top, _pickArea.bottom);
-				height *= -1;
-			}
+			pickingEnd();
 
 			destX = _pickArea.left + CAMERA->getPosX() - CAMERA->getScopeRect().left;
 			destY = _pickArea.top + CAMERA->getPosY() - CAMERA->getScopeRect().top;
 
-			_mapData->addTerrainClear(_curLayer, destX, destY, width, height);
+			_mapData->addTerrainClear(_curLayer, destX, destY, _pick.width, _pick.height);
 			break;
 		}
 
@@ -279,6 +218,40 @@ void mapTool::picking()
 {
 	_pickArea.right = _ptMouse.x;
 	_pickArea.bottom = _ptMouse.y;
+}
+
+void mapTool::pickingEnd()
+{
+	float width = _pickArea.right - _pickArea.left;
+	float height = _pickArea.bottom - _pickArea.top;
+
+	if (-5.f < width &&  width <= 5.f
+		|| -5.f < height && height <= 5.f)
+	{
+		return;
+	}
+
+	// 역사각형일경우
+	if (_pickArea.right < _pickArea.left)
+	{
+		swap(_pickArea.left, _pickArea.right);
+		width *= -1.f;
+	}
+
+	// 역사각형일경우
+	if (_pickArea.bottom < _pickArea.top)
+	{
+		swap(_pickArea.top, _pickArea.bottom);
+		height *= -1;
+	}
+
+	POINTF pf = _samplecanvas->getWorldPosition();
+
+	_pick.x = _pickArea.left - pf.x;
+	_pick.y = _pickArea.top - pf.y;
+
+	_pick.width = width;
+	_pick.height = height;
 }
 
 void mapTool::clickingMinimap()
@@ -345,7 +318,12 @@ void mapTool::setToolMode(eToolMode mode)
 	if(eToolMode_DrawCollider == mode)
 		_terType = eTerrain_Clear;
 	else
-		_terType = eTerrain_Drag;
+	{
+		if(_imgLnks[_sampleIdx]->isFrameImg)
+			_terType = eTerrain_Frame;
+		else
+			_terType = eTerrain_Drag;
+	}
 }
 
 void mapTool::settingSampleImageLinks()

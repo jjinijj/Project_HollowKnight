@@ -44,10 +44,6 @@ public:
 
 	bool isActive() { return _isActive; }
 
-	POINTF getPosition() { return PointFMake(_x, _y); }
-	float getPositionX() { return _x; }
-	float getPositionY() { return _y; }
-	
 	POINTF getWorldPosition();
 	POINTF getLocalPosition();
 

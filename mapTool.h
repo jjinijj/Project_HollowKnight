@@ -189,6 +189,8 @@ public:
 	// µå·¡±×
 	void picking();
 
+	void pickingEnd();
+
 	void clickingMinimap();
 	
 	void nextSample();
