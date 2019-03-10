@@ -192,6 +192,7 @@ void mapTool::pickcanvasStart()
 {
 	if (eToolMode_DrawCollider == _mode)
 	{
+		_isPicking = true;
 		_pick.clear();
 		_pick.isPick = true;
 		_pickArea = { _ptMouse.x, _ptMouse.y, _ptMouse.x + 1.f, _ptMouse.y + 1.f };
@@ -261,6 +262,9 @@ void mapTool::pickcanvasEnd()
 				swap(_pickArea.top, _pickArea.bottom);
 				height *= -1;
 			}
+
+			destX = _pickArea.left + CAMERA->getPosX() - CAMERA->getScopeRect().left;
+			destY = _pickArea.top + CAMERA->getPosY() - CAMERA->getScopeRect().top;
 
 			_mapData->addTerrainClear(_curLayer, destX, destY, width, height);
 			break;
@@ -340,6 +344,8 @@ void mapTool::setToolMode(eToolMode mode)
 	_isPicking = false;
 	if(eToolMode_DrawCollider == mode)
 		_terType = eTerrain_Clear;
+	else
+		_terType = eTerrain_Drag;
 }
 
 void mapTool::settingSampleImageLinks()
@@ -492,15 +498,6 @@ void mapTool::initUI()
 		insertUIObject(_canvas);
 	}
 
-	// canvas와 미니맵 사이
-	{
-		RECTD2D rc = _canvas->getRect();
-		uiPanel* uiImg = new uiPanel;
-		uiImg->init(rc.left, rc.bottom, rc.right - rc.left, UI_SPACE, uiBG);
-
-		insertUIObject(uiImg);
-	}
-
 	// 미니맵
 	{
 		image* bg = IMAGEMANAGER->findImage("uiBG5");
@@ -513,6 +510,33 @@ void mapTool::initUI()
 
 		insertUIObject(_miniMap);
 	}
+
+	// 충돌체 생성 버튼
+	{
+		_createCol = new uiButton;
+		RECTD2D rc = _canvas->getRect();
+
+		_createCol->init("uiBG3", "uiBG", "uiBG2"
+						 , rc.right + UI_SPACE
+						 , rc.bottom - 50.f
+						 , 80.f, 50.f);
+		_createCol->setText(L"Collider", 20);
+		_createCol->setOnClickFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawCollider));
+		_createCol->setOnClickUPFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawTerrain));
+
+		insertUIObject(_createCol);
+	}
+
+	// canvas와 미니맵 사이
+	{
+		RECTD2D rc = _canvas->getRect();
+		uiPanel* uiImg = new uiPanel;
+		uiImg->init(rc.left, rc.bottom, rc.right - rc.left, UI_SPACE, uiBG);
+
+		insertUIObject(uiImg);
+	}
+
+
 
 	// 미니맵에서 사용
 	{
@@ -557,19 +581,7 @@ void mapTool::initUI()
 	}
 
 
-	// 충돌체 생성 버튼
-	{
-		_createCol = new uiButton;
-		RECTD2D rc = _canvas->getRect();
 
-		_createCol->init("uiBG3", "uiBG", "uiBG2"
-						 , rc.right + UI_SPACE
-						 , rc.bottom - 50.f
-						 , 80.f, 50.f);
-		_createCol->setText(L"Collider", 20);
-		_createCol->setOnClickFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawCollider));
-		_createCol->setOnClickUPFunction(bind(&mapTool::setToolMode, this, eToolMode_None));
-	}
 
 }
 

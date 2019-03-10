@@ -31,8 +31,8 @@ HRESULT terrain::init(const UID uid, const float destX, const float destY)
 {
 	init();
 	_uid = uid;
-	_x = destX;
-	_y = destY;
+	_x = destX + CAMERA->getScopeRect().left;
+	_y = destY + CAMERA->getScopeRect().top;
 
 	return S_OK;
 }
@@ -158,8 +158,8 @@ void terrainDrag::render()
 	terrain::render();
 
 	if(CAMERA->isRangeInCamera(_rc.left, _rc.top, _rc.right, _rc.bottom))
-		_img->render( _x + CAMERA->getScopeRect().left
-					 ,_y + CAMERA->getScopeRect().top
+		_img->render( _x
+					 ,_y
 					 ,_sourX, _sourY
 					 ,_width, _height
 					 ,1.0f, false);
@@ -246,8 +246,8 @@ void terrainFrame::update()
 void terrainFrame::render()
 {
 	terrain::render();
-	_img->render( _x + CAMERA->getScopeRect().left
-				 ,_y + CAMERA->getScopeRect().top
+	_img->render( _x 
+				 ,_y
 				 ,1.f
 				 ,false);
 }
@@ -308,7 +308,8 @@ HRESULT terrainClear::init(const UID uid, float destX, float destY, float width,
 	_width = width;
 	_height = height;
 
-	_rc = { destX, destY, destX + width, destY + height };
+
+	_rc = { _x, _y, _x + width, _y + height };
 
 	return S_OK;
 }
