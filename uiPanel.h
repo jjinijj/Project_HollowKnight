@@ -1,13 +1,19 @@
 #pragma once
 #include "uiObject.h"
+
+class iTween;
 class uiPanel: public uiObject
 {
 private:
 	image* _img;
+	iTween* _itween;
+
+	POINTF _worldPosition;
 
 	function<void(void)> _onFunction;
 	function<void(void)> _pressFunction;
 	function<void(void)> _offFunction;
+	function<void(void)> _hoverFunction;
 
 public:
 	uiPanel();
@@ -28,5 +34,20 @@ public:
 	void setPressFunction(function<void(void)> func);
 	// 누르기 해제 했을 때 함수
 	void setOnClickUPFunction(function<void(void)> func);
+	// hover일 때 함수
+	void setHoverFunction(function<void(void)> func);
+	
+	// itween
+	void setiTween(iTween* it) { _itween = it; }
+	iTween* getiTween() { return _itween; }
+
+private:
+	void onceKeyDownMouseL();
+	void onceKeyUpMouseL();
+	void stayKeyMouseL();
+
+	void onceKeyDownMouseR();
+	void onceKeyUpMouseR();
+	void stayKeyMouseR();
 };
 

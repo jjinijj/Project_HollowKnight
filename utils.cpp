@@ -96,6 +96,12 @@ namespace JJIN_UTIL
 		return false;
 	}
 
+	RECTD2D RectMake(float x, float y, float width, float height)
+	{
+		RECTD2D rc = { x, y, x + width, y + height };
+		return rc;
+	}
+
 
 
 	ELLIPSE EllipseMake(float x, float y, float r)

@@ -33,6 +33,7 @@ public:
 	void insertChild(uiObject* ui);
 	uiObject* getChild(int idx);
 	
+	void setParent(uiObject* ui) { _parent = ui; }
 	void setActive(bool active) { _isActive = active; }
 	void setWorldPosition(float x, float y);
 	void setLocalPosition(float x, float y);
@@ -58,6 +59,8 @@ public:
 
 	vector<uiObject*>* getChilds()	{ return &_childs; }
 	int getChildCount()				{ return _childs.size();}
+
+	uiObject* getParent() {return _parent; }
 
 protected:
 	virtual void inputKey();

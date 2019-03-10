@@ -37,9 +37,9 @@ void playGround::update()
 	if (KEYMANAGER->isOnceKeyDown(VK_ESCAPE))
 		PostQuitMessage(0);
 
-	SCENEMANAGER->update();
 	CAMERA->update();
 	UIMANAGER->update();
+	SCENEMANAGER->update();
 
 #ifdef _DEBUG
 	DEVTOOL->pushBackDebugText(format(L"cameraX : %.2f", CAMERA->getPosX()));

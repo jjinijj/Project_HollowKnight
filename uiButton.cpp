@@ -71,7 +71,8 @@ void uiButton::update()
 {
 	uiObject::update();
 	_rc = {getWorldPosition().x, getWorldPosition().y
-		  ,getWorldPosition().x + _width, getWorldPosition().y };
+		  ,getWorldPosition().x + _width
+		  ,getWorldPosition().y + _height };
 }
 
 void uiButton::render()
@@ -184,24 +185,28 @@ void uiButton::onceKeyUpMouseL()
 		if (_isToggleOn)
 		{
 			_isToggleOn = false;
-			_offFunction();
+			if(_offFunction )
+				_offFunction();
 		}
 		else
 		{
 			_isToggleOn = true;
-			_onFunction();
+			if(_onFunction )
+				_onFunction();
 			_state = eButton_Down;
 		}
 	}
 	else
 	{
-		_onFunction();
+		if( _onFunction )
+			_onFunction();
 	}
 }
 
 void uiButton::stayKeyMouseL()
 {
-	_pressFunction();
+	if( _pressFunction )
+		_pressFunction();
 }
 
 void uiButton::onceKeyDownMouseR()

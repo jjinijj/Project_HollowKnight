@@ -3,6 +3,7 @@
 #include "mapData.h"
 #include "uiButton.h";
 #include "uiPanel.h"
+#include "uiImage.h"
 
 
 mapTool::mapTool()
@@ -12,6 +13,9 @@ mapTool::mapTool()
 
 , _isPicking(false)
 , _canvas(nullptr)
+, _sampleBoardOpenX(WINSIZEX - SAMPLABOARD_WIDTH)
+, _sampleBoardCloseX(WINSIZEX - 5.f)
+, _sampleBoardSpeed(15.f)
 {
 	_pickMousePos = {0.f, 0.f};
 }
@@ -29,8 +33,9 @@ HRESULT mapTool::init()
 	_mapData->init();
 
 	settingSampleImageLinks();
-	setSampleImage();
 	initUI();
+	setSampleImage();
+
 	_pick.clear();
 
 	_curLayer = eLayer_Play;
@@ -38,6 +43,7 @@ HRESULT mapTool::init()
 
 	_mode = eToolMode_DrawTerrain;
 
+	_isCloseSampleBoard = true;
 
 	CAMERA->setScope(_canvas->getRect());
 	
@@ -52,6 +58,8 @@ void mapTool::release()
 
 void mapTool::update()
 {
+	uiBase::update();
+
 	switch (_mode)
 	{
 		case eToolMode_DrawTerrain: { updateDrawTerrain();	break;}
@@ -60,16 +68,26 @@ void mapTool::update()
 		case eToolMode_Inspector:   { break; }
 	}
 
-	_samplePanel->update();
+	_samplePanelRc = _samplePanel->getRect();
+
+	if (!_isCloseSampleBoard && !PtInRectD2D(_samplePanelRc, _ptMouse) )
+	{
+		if ( !_isPicking )
+		{
+			closingSampleCanvas();
+		}
+	}
+
 }
 
 void mapTool::render()
 {
-	uiBase::render();
-
 	// ¸Ê
 	if (_mapData)
 		_mapData->render();
+	
+	uiBase::render();
+
 
 	if (_isPicking)
 		D2DMANAGER->drawRectangle(_pickArea);
@@ -156,7 +174,7 @@ void mapTool::pickSampleEnd()
 			height *= -1;
 		}
 
-		POINTF pf = _samplePanel->getWorldPosition();
+		POINTF pf = _samplecanvas->getWorldPosition();
 
 		_pick.x = _pickArea.left - pf.x;
 		_pick.y = _pickArea.top - pf.y;
@@ -182,6 +200,9 @@ void mapTool::pickcanvasStart()
 
 void mapTool::pickcanvasEnd()
 {
+	if(!_pick.isPick)
+		return;
+
 	// 0,0 ±âÁØÀ¸·Î À§Ä¡ ÁöÁ¤
 	float destX = 0;
 	float destY = 0;
@@ -382,6 +403,9 @@ void mapTool::settingSampleImageLinks()
 void mapTool::setSampleImage()
 {
 	_sampleImg = IMGDATABASE->getImage(_imgLnks[_sampleIdx]->mainUID);
+	_sampleImage->init(0.f, 0.f, _sampleImg);
+	_samplecanvas->setWidth(_sampleImg->GetWidth());
+	_samplecanvas->setHeight(_sampleImg->GetHeight());
 
 	if(_imgLnks[_sampleIdx]->isFrameImg)
 		_terType = eTerrain_Frame;
@@ -393,6 +417,8 @@ void mapTool::setSampleImage()
 
 void mapTool::initUI()
 {
+	image* uiBG = IMAGEMANAGER->findImage("uiBG");
+
 	// »ùÇÃ Äµ¹ö½º
 	{
 		image* bg = IMAGEMANAGER->findImage("uiBG4");
@@ -401,14 +427,19 @@ void mapTool::initUI()
 		// ÆÇ
 		_samplePanel = new uiPanel;
 		_samplePanel->init(rc.left, rc.top, SAMPLABOARD_WIDTH, WINSIZEY - UI_SPACE, bg);
+		_samplePanel->setHoverFunction(std::bind(&mapTool::openingSampleCanvas, this));
 
 		// »ùÇÃ
 		_samplecanvas = new uiPanel;
-		_samplecanvas->init(3.f * DISTANCE, DISTANCE, 0.f, 0.f, _sampleImg);
+		_samplecanvas->init(3.f * DISTANCE, DISTANCE, 0.f, 0.f, nullptr);
 		_samplecanvas->setOnClickFunction(std::bind(&mapTool::pickSampleStart, this));
 		_samplecanvas->setPressFunction(std::bind(&mapTool::picking, this));
 		_samplecanvas->setOnClickUPFunction(std::bind(&mapTool::pickSampleEnd, this));
 
+		_sampleImage = new uiImage;
+		_sampleImage->init(0.f, 0.f, nullptr);
+		
+		_samplecanvas->insertChild(_sampleImage);
 		_samplePanel->insertChild(_samplecanvas);
 
 		// ÀÌÀü »ùÇÃ
@@ -453,12 +484,21 @@ void mapTool::initUI()
 		_canvas = new uiPanel;
 		_canvas->init( UI_SPACE, UI_SPACE
 					  ,WINSIZEX / 3.f * 2.f - UI_SPACE, WINSIZEY / 5.f * 4.f - UI_SPACE
-					  ,bg);
+					  ,nullptr);
 		_canvas->setOnClickFunction(std::bind(&mapTool::pickcanvasStart, this));
 		_canvas->setPressFunction(std::bind(&mapTool::picking, this));
 		_canvas->setOnClickUPFunction(std::bind(&mapTool::pickcanvasEnd, this));
 
 		insertUIObject(_canvas);
+	}
+
+	// canvas¿Í ¹Ì´Ï¸Ê »çÀÌ
+	{
+		RECTD2D rc = _canvas->getRect();
+		uiPanel* uiImg = new uiPanel;
+		uiImg->init(rc.left, rc.bottom, rc.right - rc.left, UI_SPACE, uiBG);
+
+		insertUIObject(uiImg);
 	}
 
 	// ¹Ì´Ï¸Ê
@@ -484,18 +524,52 @@ void mapTool::initUI()
 		_miniScope = {miniRc.left, miniRc.top, miniRc.left + _miniScopeWidth, miniRc.top + _miniScopeHeight};
 	}
 
+	// canvas »óÁÂ¿ì, ¹Ì´Ï¸Ê ¿ìÇÏ
+	{
+		{
+			uiPanel* uiImg = new uiPanel;
+			uiImg->init(0.f, 0.f, WINSIZEX, UI_SPACE, uiBG);
+			insertUIObject(uiImg);
+		}
+		{
+			uiPanel* uiImg = new uiPanel;
+			uiImg->init(0.f, 0.f, UI_SPACE, WINSIZEY, uiBG);
+			insertUIObject(uiImg);
+		}
 
-	_createCol = new uiButton;
+		RECTD2D canvas = _canvas->getRect();
+		{
+			uiPanel* uiImg = new uiPanel;
+			uiImg->init(canvas.right, 0.f,  WINSIZEX - canvas.right, WINSIZEY, uiBG);
+			insertUIObject(uiImg);
+		}
+		RECTD2D miniMap = _miniMap->getRect();
+		{
+			uiPanel* uiImg = new uiPanel;
+			uiImg->init(miniMap.right, canvas.bottom,  WINSIZEX - miniMap.right, WINSIZEY - canvas.bottom, uiBG);
+			insertUIObject(uiImg);
+		}
+		{
+			uiPanel* uiImg = new uiPanel;
+			uiImg->init(miniMap.right, miniMap.bottom,  miniMap.right - miniMap.left, WINSIZEY - miniMap.bottom, uiBG);
+			insertUIObject(uiImg);
+		}
+	}
 
 
+	// Ãæµ¹Ã¼ »ý¼º ¹öÆ°
+	{
+		_createCol = new uiButton;
+		RECTD2D rc = _canvas->getRect();
 
-	_createCol->init("uiBG3", "uiBG", "uiBG2"
-					 , _canvas.right + UI_SPACE
-					 , _canvas.bottom - 50.f
-					 , 80.f, 50.f);
-	_createCol->setText(L"Collider", 20);
-	_createCol->setOnClickFunction(bind(&mapTool::setToolMode, _tool, eToolMode_DrawCollider));
-	_createCol->setOnClickUPFunction(bind(&mapTool::setToolMode, _tool, eToolMode_None));
+		_createCol->init("uiBG3", "uiBG", "uiBG2"
+						 , rc.right + UI_SPACE
+						 , rc.bottom - 50.f
+						 , 80.f, 50.f);
+		_createCol->setText(L"Collider", 20);
+		_createCol->setOnClickFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawCollider));
+		_createCol->setOnClickUPFunction(bind(&mapTool::setToolMode, this, eToolMode_None));
+	}
 
 }
 
@@ -536,8 +610,66 @@ void mapTool::renderDrawCollider()
 
 void mapTool::openSampleCanvas()
 {
+	if (!_isOpenSampleBoard)
+	{
+		_samplePanel->setWorldPosition(_sampleBoardOpenX, _samplePanel->getWorldPosition().y);
+
+		_qickOpen->setLocalPosition(0.f, 0.f);
+
+		_qickOpen->setState(eButton_Down);
+		_isOpenSampleBoard = true;
+		_isCloseSampleBoard = false;
+	}
+}
+
+void mapTool::openingSampleCanvas()
+{
+	POINTF pf = _samplePanel->getWorldPosition();
+	if (_sampleBoardOpenX < pf.x)
+	{
+		pf.x -= _sampleBoardSpeed;
+		_samplePanel->setWorldPosition(pf.x, pf.y);
+		
+		_qickOpen->setLocalPosition(0.f, 0.f);
+
+		_isOpenSampleBoard = false;
+		_isCloseSampleBoard = false;
+	}
+
+	if (pf.x <= _sampleBoardOpenX)
+	{
+		openSampleCanvas();
+	}
+}
+
+void mapTool::closingSampleCanvas()
+{
+	POINTF pf = _samplePanel->getWorldPosition();
+	if (pf.x < _sampleBoardCloseX)
+	{
+		pf.x += _sampleBoardSpeed;
+		_samplePanel->setWorldPosition(pf.x, pf.y);
+
+		_isOpenSampleBoard = false;
+		_isCloseSampleBoard = false;
+	}
+
+	if (_sampleBoardCloseX <= pf.x)
+	{
+		closeSampleCanvas();
+	}
 }
 
 void mapTool::closeSampleCanvas()
 {
+	if (!_isCloseSampleBoard)
+	{
+		_samplePanel->setWorldPosition(_sampleBoardCloseX, _samplePanel->getWorldPosition().y);
+		_qickOpen->setState(eButton_Up);
+
+		_qickOpen->setLocalPosition(-20.f, 0.f);
+
+		_isOpenSampleBoard = false;
+		_isCloseSampleBoard = true;
+	}
 }

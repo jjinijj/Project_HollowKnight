@@ -2,12 +2,19 @@
 #include "singletonBase.h"
 #include "uiBase.h"
 
+enum eUIType
+{
+	eUI_MapTool,
+
+	eUI_None,
+	eUI_Count = eUI_None,
+};
 
 class uiManager: public singletonBase<uiManager>
 {
 private:
-	typedef map<UINT, uiBase*> uiMap;
-	typedef map<UINT, uiBase*>::iterator iterUiMap;
+	typedef map<eUIType, uiBase*> uiMap;
+	typedef map<eUIType, uiBase*>::iterator iterUiMap;
 
 private:
 	uiMap _uiMap;
@@ -21,7 +28,7 @@ public:
 	void update();
 	void render();
 
-	void insetUI(UINT uid, uiBase* ui);
-	uiBase* getUI(UINT uid);
+	void insertUI(eUIType uid, uiBase* ui);
+	uiBase* getUI(eUIType uid);
 };
 

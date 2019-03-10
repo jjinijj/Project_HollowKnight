@@ -25,7 +25,7 @@ void uiManager::update()
 	iterUiMap iter = _uiMap.begin();
 	iterUiMap end = _uiMap.end();
 
-	while (iter != end)
+	for ( ; iter != end; ++iter)
 	{
 		uiBase* ui = (*iter).second;
 		if (ui->isOpen() && ui->isActive())
@@ -38,7 +38,7 @@ void uiManager::render()
 	iterUiMap iter = _uiMap.begin();
 	iterUiMap end = _uiMap.end();
 
-	while (iter != end)
+	for ( ; iter != end; ++iter)
 	{
 		uiBase* ui = (*iter).second;
 		if(ui->isOpen())
@@ -46,11 +46,18 @@ void uiManager::render()
 	}
 }
 
-void uiManager::insetUI(UINT uid, uiBase * ui)
+void uiManager::insertUI(eUIType uid, uiBase* ui)
 {
+	if( _uiMap.find(uid) != _uiMap.end() )
+		return;
+
+	_uiMap.insert(make_pair(uid, ui));
 }
 
-uiBase* uiManager::getUI(UINT uid)
+uiBase* uiManager::getUI(eUIType uid)
 {
-	return nullptr;
+	if( _uiMap.find(uid) != _uiMap.end() )
+		return nullptr;
+
+	return _uiMap[uid];
 }

@@ -98,6 +98,8 @@ void uiObject::insertChild(uiObject* ui)
 
 	_childs.push_back(ui);
 	_childCount = _childs.size();
+
+	ui->setParent(this);
 }
 
 uiObject* uiObject::getChild(int idx)
@@ -108,6 +110,24 @@ uiObject* uiObject::getChild(int idx)
 		return _childs[idx];
 }
 
+void uiObject::setWorldPosition(float x, float y)
+{
+	_x = x;
+	_y = y;
+
+	if ( _parent )
+	{
+		POINTF pf = _parent->getWorldPosition();
+		_x -= pf.x;
+		_y -= pf.y;
+	}
+}
+
+void uiObject::setLocalPosition(float x, float y)
+{
+	_x = x;
+	_y = y;
+}
 
 POINTF uiObject::getWorldPosition()
 {
@@ -129,14 +149,14 @@ POINTF uiObject::getLocalPosition()
 
 void uiObject::inputKey()
 {
-	if (KEYMANAGER->isStayKeyDown(VK_LBUTTON))
+	if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 		onceKeyDownMouseL();
 	if (KEYMANAGER->isOnceKeyUp(VK_LBUTTON))
 		onceKeyUpMouseL();
 	if(KEYMANAGER->isStayKeyDown(VK_LBUTTON))
 		stayKeyMouseL();
 
-	if (KEYMANAGER->isStayKeyDown(VK_RBUTTON))
+	if (KEYMANAGER->isOnceKeyDown(VK_RBUTTON))
 		onceKeyDownMouseR();
 	if (KEYMANAGER->isOnceKeyUp(VK_RBUTTON))
 		onceKeyUpMouseR();

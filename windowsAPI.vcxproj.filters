@@ -82,6 +82,12 @@
     <Filter Include="2DFramework\ui\uiButton">
       <UniqueIdentifier>{f04acabe-84cc-43ad-9830-9917275fa472}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFramework\iween">
+      <UniqueIdentifier>{f5578816-9658-482c-b47c-752e514e4be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2DFramework\ui\uiImage">
+      <UniqueIdentifier>{a86587a5-7f9f-4db5-91c8-9ba95bfc6441}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -207,6 +213,12 @@
     <ClInclude Include="uiButton.h">
       <Filter>2DFramework\ui\uiButton</Filter>
     </ClInclude>
+    <ClInclude Include="iTween.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="uiImage.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -316,6 +328,12 @@
     </ClCompile>
     <ClCompile Include="uiButton.cpp">
       <Filter>2DFramework\ui\uiButton</Filter>
+    </ClCompile>
+    <ClCompile Include="iTween.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="uiImage.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -113,6 +113,7 @@ class mapData;
 class terrain;
 class uiButton;
 class uiPanel;
+class uiImage;
 class mapTool : public uiBase
 {
 private:
@@ -121,6 +122,8 @@ private:
 	//toolState* _state;
 
 	int _sampleIdx;
+
+	image* _uiBG[5];
 
 	mapData* _mapData;					// 맵 데이터
 	vector<IMGLNK*> _imgLnks;			// 맵툴에서 사용할 이미지 번호들
@@ -133,10 +136,14 @@ private:
 
 	
 	bool _isPicking;
+	bool _isOpenSampleBoard;
+	bool _isCloseSampleBoard;
+
 	POINTF _pickMousePos;
 	
 	uiPanel* _samplePanel;			// 샘플 이미지가 ui
 	uiPanel* _samplecanvas;			// 샘플 이미지가 그려지는 부분
+	uiImage* _sampleImage;
 
 	uiPanel* _canvas;				// 실제 맵이 그려지는 부분
 
@@ -156,6 +163,13 @@ private:
 	RECTD2D _miniScope;
 	RECTD2D _pickArea;					// 드래그
 	RECTD2D _mapViewArea;				// 미니맵에서 현재 보여주는 맵 표시
+
+	RECTD2D _samplePanelRc;
+
+	const float _sampleBoardOpenX;
+	const float _sampleBoardCloseX;
+
+	const float _sampleBoardSpeed;
 
 public:
 	mapTool();
@@ -200,6 +214,8 @@ private:
 	void renderDrawCollider();
 
 	void openSampleCanvas();
+	void openingSampleCanvas();
+	void closingSampleCanvas();
 	void closeSampleCanvas();
 
 };

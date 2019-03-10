@@ -44,8 +44,23 @@ void uiBase::render()
 
 void uiBase::uiOpen()
 {
+	_isOpen = true;
 }
 
 void uiBase::uiClose()
 {
+	_isOpen = false;
+}
+
+void uiBase::insertUIObject(uiObject* ui)
+{
+	list<uiObject*>::iterator iter = _uiList.begin();
+	list<uiObject*>::iterator end = _uiList.end();
+	for ( ; end != iter; ++iter )
+	{
+		if(*iter == ui)
+			return;
+	}
+
+	_uiList.push_back(ui);
 }
