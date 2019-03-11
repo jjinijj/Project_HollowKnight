@@ -61,29 +61,12 @@ void loadingScene::loadImageData()
 	IMAGEMANAGER->addFrameImage("town_rubble", L"image/town_rubble.png", 960, 960, 1, 1);
 	IMAGEMANAGER->addFrameImage("well", L"image/well.png", 800, 800, 1, 1);
 
+	IMAGEMANAGER->addImage("bg", L"image/bg.png", 100, 100);
 	IMAGEMANAGER->addImage("uiBG", L"image/uibg.png", 100, 100);
 	IMAGEMANAGER->addImage("uiBG2", L"image/uibg2.png", 100, 100);
 	IMAGEMANAGER->addImage("uiBG3", L"image/uibg3.png", 100, 100);
 	IMAGEMANAGER->addImage("uiBG4", L"image/uibg4.png", 100, 100);
 	IMAGEMANAGER->addImage("uiBG5", L"image/uibg5.png", 100, 100);
-
-	// chair, 366, 90, 2, 1
-	// fence, 960, 800
-	// floor, 800, 800
-	// streetLamp, 800, 480
-	// town_bg, 960, 960
-	// town_bg_big_01, 960, 960
-	// town_bg_big_02, 960, 960
-	// town_build, 960, 384, 5, 2
-	// town_build_01, 512, 394,
-	// town_build_02, 508, 396,
-	// town_build_03, 512, 473,
-	// town_build_04, 852, 595,
-	// town_build_05, 540, 373,
-	// town_build_06, 364, 444
-	// town_build_07, 410, 539,
-	// town_rubble, 960, 960,
-	// well, 800, 800
 
 	IMGDATABASE->insertImage(eImage_Town_Floor, IMAGEMANAGER->findImage("floor"));
 	IMGDATABASE->insertImage(eImage_Town_BG, IMAGEMANAGER->findImage("town_bg"));
@@ -104,6 +87,16 @@ void loadingScene::loadImageData()
 	IMGDATABASE->insertImage(eImage_Fence, IMAGEMANAGER->findImage("fence"));
 	IMGDATABASE->insertImage(eImage_Town_Well, IMAGEMANAGER->findImage("well"));
 	IMGDATABASE->insertImage(eImage_StreetLamp, IMAGEMANAGER->findImage("streetLamp"));
+
+	IMGDATABASE->insertImage(eImage_UI_BG, IMAGEMANAGER->findImage("bg"));
+	IMGDATABASE->insertImage(eImage_UI_BG1, IMAGEMANAGER->findImage("uiBG"));
+	IMGDATABASE->insertImage(eImage_UI_BG2, IMAGEMANAGER->findImage("uiBG2"));
+	IMGDATABASE->insertImage(eImage_UI_BG3, IMAGEMANAGER->findImage("uiBG3"));
+	IMGDATABASE->insertImage(eImage_UI_BG4, IMAGEMANAGER->findImage("uiBG4"));
+	IMGDATABASE->insertImage(eImage_UI_BG5, IMAGEMANAGER->findImage("uiBG5"));
+	
+	IMGDATABASE->insertImage(eImage_UI_Scroll_Back_Default, IMAGEMANAGER->findImage("uiBG4"));
+	IMGDATABASE->insertImage(eImage_UI_Scroll_Front_Default, IMAGEMANAGER->findImage("uiBG3"));
 }
 
 void loadingScene::loadSoundData()

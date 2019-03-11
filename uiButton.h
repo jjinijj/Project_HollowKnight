@@ -71,7 +71,6 @@ public:
 	void setState(eButtonState state);
 	eButtonState getState() {return _state;}
 
-	void rePosition(float x, float y);
 	void reSize(float width, float height);
 
 	RECTD2D getRect() {return _rc;}

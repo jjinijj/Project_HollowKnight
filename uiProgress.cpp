@@ -71,3 +71,27 @@ void uiProgress::setScrollSize(float size)
 void uiProgress::setValue(float value)
 {
 }
+
+void uiProgress::onceKeyDownMouseL()
+{
+}
+
+void uiProgress::onceKeyUpMouseL()
+{
+}
+
+void uiProgress::stayKeyMouseL()
+{
+}
+
+void uiProgress::onceKeyDownMouseR()
+{
+}
+
+void uiProgress::onceKeyUpMouseR()
+{
+}
+
+void uiProgress::stayKeyMouseR()
+{
+}

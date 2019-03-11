@@ -95,28 +95,34 @@ void mapData::changeLayer(UINT destLayer, UINT sourLayer, int idx)
 }
 
 
-void mapData::addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid)
+terrain* mapData::addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid)
 {
 	terrainDrag* drag = new terrainDrag;
 	drag->init(_uidCount, destX, destY, sourX, sourY, width, height, imgUid);
 
 	addTerrain(layer, drag);
+
+	return drag;
 }
 
-void mapData::addTerrainFrame(UINT layer, float destX, float destY, UINT frameX, UINT frameY, eImageUID imgUid)
+terrain* mapData::addTerrainFrame(UINT layer, float destX, float destY, UINT frameX, UINT frameY, eImageUID imgUid)
 {
 	terrainFrame* frame = new terrainFrame;
 	frame->init(_uidCount, destX, destY, frameX, frameY, imgUid);
 
 	addTerrain(layer, frame);
+
+	return frame;
 }
 
-void mapData::addTerrainClear(UINT layer, float destX, float destY, float width, float height)
+terrain* mapData::addTerrainClear(UINT layer, float destX, float destY, float width, float height)
 {
 	terrainClear* clear = new terrainClear;
 	clear->init(_uidCount, destX, destY, width, height);
 
 	addTerrain(layer, clear);
+
+	return clear;
 }
 
 terrain* mapData::getTerrain(UINT layer, int idx)

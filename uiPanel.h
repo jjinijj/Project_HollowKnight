@@ -8,8 +8,6 @@ private:
 	image* _img;
 	iTween* _itween;
 
-	POINTF _worldPosition;
-
 	function<void(void)> _onFunction;
 	function<void(void)> _pressFunction;
 	function<void(void)> _offFunction;

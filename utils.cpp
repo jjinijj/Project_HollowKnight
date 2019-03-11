@@ -102,6 +102,16 @@ namespace JJIN_UTIL
 		return rc;
 	}
 
+	RECTD2D RectMakeCenter(float x, float y, float width, float height)
+	{
+		float halfW = width / 2.f;
+		float halfH = height / 2.f;
+
+		RECTD2D rc = {x - halfW, y - halfH, x + halfW, y + halfH };
+
+		return rc;
+	}
+
 
 
 	ELLIPSE EllipseMake(float x, float y, float r)

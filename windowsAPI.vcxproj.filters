@@ -94,6 +94,9 @@
     <Filter Include="2DFramework\ui\uiProgress">
       <UniqueIdentifier>{6e567ef8-4d17-4abd-973f-93aa6f3d3452}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFramework\ui\uiScroll">
+      <UniqueIdentifier>{d35208dd-d87a-4cd4-93b6-2fd64765948d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -231,6 +234,9 @@
     <ClInclude Include="uiList.h">
       <Filter>2DFramework\ui\uiList</Filter>
     </ClInclude>
+    <ClInclude Include="uiScroll.h">
+      <Filter>2DFramework\ui\uiScroll</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -352,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="uiList.cpp">
       <Filter>2DFramework\ui\uiList</Filter>
+    </ClCompile>
+    <ClCompile Include="uiScroll.cpp">
+      <Filter>2DFramework\ui\uiScroll</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,31 +1,38 @@
 #pragma once
 #include "uiObject.h"
-
-class uiProgress : public uiObject
+class uiScroll: public uiObject
 {
 protected:
 	image* _front;
 	image* _back;
 
-	RECTD2D _frontRc;
-
-	bool _isFrontSizeFix;	// 스크롤 크기 고정을 할것인가
 	bool _isHorizontal;		// 가로방향인가 false일 경우 세로방향
+	bool _isPickingScroll;	// 
 
+	float _scrollSize;
 	float _value;  // 0.f ~ 1.f
 
+	float _frontWidth;
+	float _frontHeight;
+
+	POINTF _start;
+	
+	RECTD2D _frontRc;
+
+
 public:
-	uiProgress();
-	~uiProgress();
+	uiScroll();
+	~uiScroll();
 
 	HRESULT init(float x, float y, float width, float height, image* front, image* back);
 	void release() override;
 	void update()  override;
 	void render()  override;
 
-	void setScrollDirect(bool isHorizontal) {_isHorizontal = isHorizontal;}
+	void setScrollDirect(bool isHorizontal) { _isHorizontal = isHorizontal; }
 
 	void setScrollSize(float size);
+	void setScrollSize();
 	void setValue(float value);
 
 	float getValue() { return _value; }

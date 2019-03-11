@@ -18,6 +18,8 @@ HRESULT uiImage::init(float x, float y, image* img)
 	{
 		uiObject::init(x, y, img->GetWidth(), img->GetHeight());
 		_img = img;
+		_width = 0.f;
+		_height = 0.f;
 		_rc = {};
 	}
 

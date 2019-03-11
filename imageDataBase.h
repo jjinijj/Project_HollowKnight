@@ -27,6 +27,16 @@ enum eImageUID
 	eImage_StreetLamp,
 
 
+	eImage_UI_BG = 10000,
+	eImage_UI_BG1,
+	eImage_UI_BG2,
+	eImage_UI_BG3,
+	eImage_UI_BG4,
+	eImage_UI_BG5,
+	eImage_UI_BG6,
+
+	eImage_UI_Scroll_Back_Default = 10100,
+	eImage_UI_Scroll_Front_Default,
 
 	eImage_None,
 };

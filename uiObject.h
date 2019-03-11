@@ -18,11 +18,12 @@ protected:
 	vector<uiObject*> _childs;
 	int _childCount;
 
+	POINTF _worldPosition;
 	RECTD2D _rc;
 
 	uiObject();
-	~uiObject();
 public:
+	~uiObject();
 
 	virtual HRESULT init();
 	virtual HRESULT init(float x, float y, float width, float height);
@@ -30,7 +31,7 @@ public:
 	virtual void update();
 	virtual void render();
 
-	void insertChild(uiObject* ui);
+	virtual void insertChild(uiObject* ui);
 	uiObject* getChild(int idx);
 	
 	void setParent(uiObject* ui) { _parent = ui; }

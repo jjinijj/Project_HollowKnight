@@ -70,9 +70,6 @@ void uiButton::release()
 void uiButton::update()
 {
 	uiObject::update();
-	_rc = {getWorldPosition().x, getWorldPosition().y
-		  ,getWorldPosition().x + _width
-		  ,getWorldPosition().y + _height };
 }
 
 void uiButton::render()
@@ -136,14 +133,6 @@ void uiButton::setState(eButtonState state)
 		else if(eButton_Down == state)
 			_isToggleOn = true;
 	}
-}
-
-void uiButton::rePosition(float x, float y)
-{
-	setPositionX(x);
-	setPositionY(y);
-
-	_rc = {_x, _y, _x + _width, _y + _height};
 }
 
 void uiButton::reSize(float width, float height)

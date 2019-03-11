@@ -29,9 +29,9 @@ public:
 	void changeLayer(UINT destLayer, UINT sourLayer, int idx);
 	
 	// 지형 추가
-	void addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid);
-	void addTerrainFrame(UINT layer, float destX, float destY, UINT frameX, UINT frameY, eImageUID imgUid);
-	void addTerrainClear(UINT layer, float destX, float destY, float width, float height);
+	terrain* addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid);
+	terrain* addTerrainFrame(UINT layer, float destX, float destY, UINT frameX, UINT frameY, eImageUID imgUid);
+	terrain* addTerrainClear(UINT layer, float destX, float destY, float width, float height);
 	
 	// 레이어, 레이어 상의 인덱스
 	terrain* getTerrain(UINT layer, int idx);

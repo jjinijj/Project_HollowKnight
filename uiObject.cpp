@@ -57,12 +57,17 @@ void uiObject::release()
 	}
 
 	_childs.clear();
+
+	_parent = nullptr;
 }
 
 void uiObject::update()
 {
 	if(!_isActive)
 		return;
+
+	_worldPosition = getWorldPosition();
+	_rc = RectMake(_worldPosition.x, _worldPosition.y, _width, _height);
 
 	// 제일 위에 있는 ui부터 실행
 	for (int ii = _childCount - 1; 0 <= ii; --ii)

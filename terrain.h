@@ -78,6 +78,8 @@ public:
 	// 속성 확인
 	bool checkAttribute(const UINT attr);
 
+	UID getUID() {return _uid;}
+
 	void setRect(RECTD2D rc) { _rc = rc; }
 
 	TERRAINATTR getAtrribute()	{ return _attr; }

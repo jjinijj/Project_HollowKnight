@@ -4,7 +4,6 @@ class uiImage : public uiObject
 {
 private:
 	image* _img;
-	POINTF _worldPosition;
 
 public:
 	uiImage();

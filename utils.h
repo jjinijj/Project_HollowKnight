@@ -34,6 +34,7 @@ namespace JJIN_UTIL
 	bool PtInRectD2D(RECTD2D& rc,  POINTF ptf);
 
 	RECTD2D RectMake(float x, float y, float width, float height);
+	RECTD2D RectMakeCenter(float x, float y, float width, float height);
 
 	//====================== 동 그 라 미 관련 ===============================
 	//        원 생성함수 (hdc, left, top, 가로크기, 세로크기)

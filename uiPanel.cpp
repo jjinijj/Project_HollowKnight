@@ -36,19 +36,11 @@ void uiPanel::update()
 	
 	if(_itween )
 		_itween->update();
-	_worldPosition = getWorldPosition();
-	_rc = RectMake(_worldPosition.x, _worldPosition.y, _width, _height);
-
+	
 
 	if ( PtInRectD2D(_rc, _ptMouse) )
 	{
-		//if( KEYMANAGER->isOnceKeyUp(VK_LBUTTON) && _offFunction)
-		//	_offFunction();
-		//if( KEYMANAGER->isOnceKeyDown(VK_LBUTTON) && _onFunction)
-		//	_onFunction();
-		//if(KEYMANAGER->isStayKeyDown(VK_LBUTTON) && _pressFunction )
-		//	_pressFunction();
-		if( _hoverFunction )
+		if( _hoverFunction && !KEYMANAGER->isStayKeyDown(VK_LBUTTON))
 			_hoverFunction();
 	}
 

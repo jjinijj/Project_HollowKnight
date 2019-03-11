@@ -114,6 +114,7 @@ class terrain;
 class uiButton;
 class uiPanel;
 class uiImage;
+class uiList;
 class mapTool : public uiBase
 {
 private:
@@ -153,6 +154,8 @@ private:
 	uiButton* _beforeSample;
 	uiButton* _nextSample;
 	uiButton* _createCol;
+
+	uiList*	_hierarchy;
 
 	float _miniScopeWidth;
 	float _miniScopeHeight;

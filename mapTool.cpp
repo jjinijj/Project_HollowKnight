@@ -4,6 +4,8 @@
 #include "uiButton.h";
 #include "uiPanel.h"
 #include "uiImage.h"
+#include "uiList.h"
+#include "uiScroll.h"
 
 
 mapTool::mapTool()
@@ -178,17 +180,18 @@ void mapTool::pickcanvasEnd()
 	float destX = (_ptMouse.x - _pick.width / 2.f) + CAMERA->getPosX() - CAMERA->getScopeRect().left;
 	float destY = (_ptMouse.y - _pick.height / 2.f) + CAMERA->getPosY() - CAMERA->getScopeRect().top;
 
+	terrain* ter = nullptr;
 	switch (_terType)
 	{
 		case eTerrain_Frame:
 		{
-			_mapData->addTerrainFrame(_curLayer, destX, destY, _pick.frameX, _pick.frameY, _pick.uid);
+			ter = _mapData->addTerrainFrame(_curLayer, destX, destY, _pick.frameX, _pick.frameY, _pick.uid);
 			break;
 		}
 
 		case eTerrain_Drag:
 		{
-			_mapData->addTerrainDrag(_curLayer, destX, destY, _pick.x, _pick.y, _pick.width, _pick.height, _pick.uid);
+			ter = _mapData->addTerrainDrag(_curLayer, destX, destY, _pick.x, _pick.y, _pick.width, _pick.height, _pick.uid);
 			break;
 		}
 
@@ -205,13 +208,24 @@ void mapTool::pickcanvasEnd()
 			destX = _pickArea.left + CAMERA->getPosX() - CAMERA->getScopeRect().left;
 			destY = _pickArea.top + CAMERA->getPosY() - CAMERA->getScopeRect().top;
 
-			_mapData->addTerrainClear(_curLayer, destX, destY, _pick.width, _pick.height);
+			ter = _mapData->addTerrainClear(_curLayer, destX, destY, _pick.width, _pick.height);
 			break;
 		}
 
 		default:
 			break;
 	}
+
+
+	if (ter)
+	{
+		uiButton* btn = new uiButton;
+		btn->init("uiBG2", "uiBG3", 0.f, 0.f, 10.f, 10.f);
+		btn->setText(format(L"%d", ter->getUID()));
+
+		_hierarchy->insertChild(btn);
+	}
+
 }
 
 void mapTool::picking()
@@ -401,7 +415,7 @@ void mapTool::setSampleImage()
 
 void mapTool::initUI()
 {
-	image* uiBG = IMAGEMANAGER->findImage("uiBG");
+	image* uiBG = IMAGEMANAGER->findImage("bg");
 
 	// 샘플 캔버스
 	{
@@ -482,11 +496,47 @@ void mapTool::initUI()
 		RECTD2D rc = _canvas->getRect();
 		_miniMap = new uiPanel;
 		_miniMap->init( rc.left, rc.bottom + UI_SPACE
-					   ,rc.left + (MAPSIZEX * 0.019f), rc.bottom + UI_SPACE + (MAPSIZEY * 0.019f)
+					   ,MAPSIZEX * MINIMAP_PERCENT, MAPSIZEY * MINIMAP_PERCENT
 					   ,bg);
 		_miniMap->setPressFunction(std::bind(&mapTool::clickingMinimap, this));
 
 		insertUIObject(_miniMap);
+
+		// 미니맵에서 사용
+		{
+			RECTD2D rc = _canvas->getRect();
+			RECTD2D miniRc = _miniMap->getRect();
+			_miniScopeWidth = (rc.right - rc.left) * (miniRc.right - miniRc.left) / MAPSIZEX;
+			_miniScopeHeight = (rc.bottom - rc.top) *  (miniRc.bottom - miniRc.top) / MAPSIZEY;
+
+			_miniScope = { miniRc.left, miniRc.top, miniRc.left + _miniScopeWidth, miniRc.top + _miniScopeHeight };
+		}
+	}
+
+	{
+		RECTD2D canvas = _canvas->getRect();
+		RECTD2D miniMap = _miniMap->getRect();
+		uiPanel* uiImg = new uiPanel;
+		uiImg->init(miniMap.right, canvas.bottom, WINSIZEX - miniMap.right, WINSIZEY - canvas.bottom, uiBG);
+		insertUIObject(uiImg);
+	}
+
+	// 지형 목록
+	{
+		RECTD2D rc = _canvas->getRect();
+		_hierarchy = new uiList;
+		_hierarchy->init(rc.right + UI_SPACE, UI_SPACE, 300.f, 780.f);
+		_hierarchy->setGap(2.f, 2.f);
+		_hierarchy->setCountPerLine(1);
+
+		uiScroll* scroll = new uiScroll;
+		scroll->init(290.f, 0.f, 10.f, 780.f, nullptr, nullptr);
+		scroll->setScrollDirect(false);
+
+		_hierarchy->setScroll(scroll);
+		_hierarchy->setCellHeight(100.f);
+
+		insertUIObject(_hierarchy);
 	}
 
 	// 충돌체 생성 버튼
@@ -512,18 +562,6 @@ void mapTool::initUI()
 		uiImg->init(rc.left, rc.bottom, rc.right - rc.left, UI_SPACE, uiBG);
 
 		insertUIObject(uiImg);
-	}
-
-
-
-	// 미니맵에서 사용
-	{
-		RECTD2D rc = _canvas->getRect();
-		RECTD2D miniRc = _miniMap->getRect();
-		_miniScopeWidth = (rc.right - rc.left) * (miniRc.right - miniRc.left) / MAPSIZEX;
-		_miniScopeHeight = (rc.bottom - rc.top) *  (miniRc.bottom - miniRc.top)  / MAPSIZEY;
-
-		_miniScope = {miniRc.left, miniRc.top, miniRc.left + _miniScopeWidth, miniRc.top + _miniScopeHeight};
 	}
 
 	// canvas 상좌우, 미니맵 우하
