@@ -115,12 +115,14 @@ class uiButton;
 class uiPanel;
 class uiImage;
 class uiList;
+class terrain;
 class mapTool : public uiBase
 {
 private:
 
 	eToolMode _mode;
 	//toolState* _state;
+	terrain* _terrain;
 
 	int _sampleIdx;
 
@@ -154,6 +156,9 @@ private:
 	uiButton* _beforeSample;
 	uiButton* _nextSample;
 	uiButton* _createCol;
+
+	uiButton* _uiBtnHierarcy[eLayer_Count];
+	uiList* _uiListHierarcy[eLayer_Count];
 
 	uiList*	_hierarchy;
 
@@ -223,4 +228,8 @@ private:
 	void closingSampleCanvas();
 	void closeSampleCanvas();
 
+	void clickBtnHierarcy(eLayer layer);
+	void clickUpBtnHierarcy(eLayer layer);
+
+	void clickBtnTerrain(int idx);
 };

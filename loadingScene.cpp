@@ -96,7 +96,7 @@ void loadingScene::loadImageData()
 	IMGDATABASE->insertImage(eImage_UI_BG5, IMAGEMANAGER->findImage("uiBG5"));
 	
 	IMGDATABASE->insertImage(eImage_UI_Scroll_Back_Default, IMAGEMANAGER->findImage("uiBG4"));
-	IMGDATABASE->insertImage(eImage_UI_Scroll_Front_Default, IMAGEMANAGER->findImage("uiBG3"));
+	IMGDATABASE->insertImage(eImage_UI_Scroll_Front_Default, IMAGEMANAGER->findImage("uiBG2"));
 }
 
 void loadingScene::loadSoundData()

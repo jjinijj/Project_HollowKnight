@@ -6,6 +6,7 @@ class uiList : public uiObject
 {
 protected:
 	uiScroll* _scroll;
+	image* _img;
 
 	int _countPerLine;
 	int _linePerPage;
@@ -24,6 +25,7 @@ public:
 	~uiList();
 
 	HRESULT init(float x, float y, float width, float height) override;
+	HRESULT init(float x, float y, float width, float height, image* img);
 	void release() override;
 	void update() override;
 	void render() override;

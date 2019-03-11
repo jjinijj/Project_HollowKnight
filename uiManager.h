@@ -5,6 +5,8 @@
 enum eUIType
 {
 	eUI_MapTool,
+	eUI_Store,
+	eUI_Title,
 
 	eUI_None,
 	eUI_Count = eUI_None,

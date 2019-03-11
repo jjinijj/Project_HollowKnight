@@ -127,10 +127,12 @@ terrain* mapData::addTerrainClear(UINT layer, float destX, float destY, float wi
 
 terrain* mapData::getTerrain(UINT layer, int idx)
 {
-	if (_terrainsByLayer[layer].size() <= idx)
-		return nullptr;
-	else
-		_terrainsByLayer[layer][idx];
+	terrain* ter = nullptr;
+
+	if ( idx < _terrainsByLayer[layer].size())
+		ter = _terrainsByLayer[layer][idx];
+
+	return ter;
 }
 
 

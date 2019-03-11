@@ -6,6 +6,7 @@
 #include "uiImage.h"
 #include "uiList.h"
 #include "uiScroll.h"
+#include "terrain.h"
 
 
 mapTool::mapTool()
@@ -113,6 +114,9 @@ void mapTool::render()
 		case eToolMode_DrawObject:  { break; }
 		case eToolMode_Inspector:   { break; }
 	}
+
+	if(_terrain)
+		D2DMANAGER->drawRectangle(RGB(0, 0, 255), _terrain->getRect(), false);
 }
 
 void mapTool::pickSampleStart()
@@ -222,8 +226,9 @@ void mapTool::pickcanvasEnd()
 		uiButton* btn = new uiButton;
 		btn->init("uiBG2", "uiBG3", 0.f, 0.f, 10.f, 10.f);
 		btn->setText(format(L"%d", ter->getUID()));
+		btn->setOnClickFunction(std::bind(&mapTool::clickBtnTerrain, this, _uiListHierarcy[_curLayer]->getChildCount()));
 
-		_hierarchy->insertChild(btn);
+		_uiListHierarcy[_curLayer]->insertChild(btn);
 	}
 
 }
@@ -477,8 +482,8 @@ void mapTool::initUI()
 	}
 
 	// 캔버스
+	RECTD2D canvas = {};
 	{
-		image* bg = IMAGEMANAGER->findImage("uiBG5");
 		_canvas = new uiPanel;
 		_canvas->init( UI_SPACE, UI_SPACE
 					  ,WINSIZEX / 3.f * 2.f - UI_SPACE, WINSIZEY / 5.f * 4.f - UI_SPACE
@@ -486,10 +491,12 @@ void mapTool::initUI()
 		_canvas->setOnClickFunction(std::bind(&mapTool::pickcanvasStart, this));
 		_canvas->setPressFunction(std::bind(&mapTool::picking, this));
 		_canvas->setOnClickUPFunction(std::bind(&mapTool::pickcanvasEnd, this));
+		canvas = _canvas->getRect();
 
 		insertUIObject(_canvas);
 	}
 
+	RECTD2D miniMap = {};
 	// 미니맵
 	{
 		image* bg = IMAGEMANAGER->findImage("uiBG5");
@@ -499,6 +506,7 @@ void mapTool::initUI()
 					   ,MAPSIZEX * MINIMAP_PERCENT, MAPSIZEY * MINIMAP_PERCENT
 					   ,bg);
 		_miniMap->setPressFunction(std::bind(&mapTool::clickingMinimap, this));
+		miniMap = _miniMap->getRect();
 
 		insertUIObject(_miniMap);
 
@@ -514,8 +522,6 @@ void mapTool::initUI()
 	}
 
 	{
-		RECTD2D canvas = _canvas->getRect();
-		RECTD2D miniMap = _miniMap->getRect();
 		uiPanel* uiImg = new uiPanel;
 		uiImg->init(miniMap.right, canvas.bottom, WINSIZEX - miniMap.right, WINSIZEY - canvas.bottom, uiBG);
 		insertUIObject(uiImg);
@@ -523,20 +529,55 @@ void mapTool::initUI()
 
 	// 지형 목록
 	{
-		RECTD2D rc = _canvas->getRect();
-		_hierarchy = new uiList;
-		_hierarchy->init(rc.right + UI_SPACE, UI_SPACE, 300.f, 780.f);
-		_hierarchy->setGap(2.f, 2.f);
-		_hierarchy->setCountPerLine(1);
+		//_hierarchy = new uiList;
+		//_hierarchy->init(rc.right + UI_SPACE, UI_SPACE, 300.f, 780.f);
+		//_hierarchy->setGap(2.f, 2.f);
+		//_hierarchy->setCountPerLine(1);
+		//
+		//uiScroll* scroll = new uiScroll;
+		//scroll->init(290.f, 0.f, 10.f, 780.f, nullptr, nullptr);
+		//scroll->setScrollDirect(false);
+		//
+		//_hierarchy->setScroll(scroll);
+		//_hierarchy->setCellHeight(100.f);
+		//
+		//insertUIObject(_hierarchy);
+	}
 
-		uiScroll* scroll = new uiScroll;
-		scroll->init(290.f, 0.f, 10.f, 780.f, nullptr, nullptr);
-		scroll->setScrollDirect(false);
+	// 레이어 별 지형목록
+	{
+		float btnWitdh = 60.f;
+		float btnHeight = 30.f;
+		for (int ii = 0; ii < eLayer_Count; ++ii)
+		{
+			// 레이어 버튼
+			_uiBtnHierarcy[ii] = new uiButton;
+			_uiBtnHierarcy[ii]->init("uiBG3", "uiBG", "uiBG5"
+									, canvas.right + UI_SPACE + (btnWitdh * ii), UI_SPACE, btnWitdh, btnHeight);
+			_uiBtnHierarcy[ii]->setText(format(L"%d", (ii + 1)));
+			_uiBtnHierarcy[ii]->setOnClickFunction(std::bind(&mapTool::clickBtnHierarcy, this, (eLayer)ii));
+			_uiBtnHierarcy[ii]->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnHierarcy, this, (eLayer)ii));
 
-		_hierarchy->setScroll(scroll);
-		_hierarchy->setCellHeight(100.f);
+			// 리스트
+			_uiListHierarcy[ii] = new uiList;
+			_uiListHierarcy[ii]->init( canvas.right + UI_SPACE, _uiBtnHierarcy[ii]->getRect().bottom
+									 , btnWitdh * eLayer_Count, 700.f);
+			_uiListHierarcy[ii]->setGap(2.f, 2.f);
+			_uiListHierarcy[ii]->setCountPerLine(3);
 
-		insertUIObject(_hierarchy);
+			// 리스트 스크롤
+			uiScroll* scroll = new uiScroll;
+			scroll->init(btnWitdh * eLayer_Count - 10.f, 0.f, 10.f, 700.f, nullptr, nullptr);
+			scroll->setScrollDirect(false);
+
+			_uiListHierarcy[ii]->setScroll(scroll);
+			_uiListHierarcy[ii]->setCellHeight(30.f);
+
+			insertUIObject(_uiBtnHierarcy[ii]);
+			insertUIObject(_uiListHierarcy[ii]);
+		}
+
+		clickBtnHierarcy(eLayer_FarBack);
 	}
 
 	// 충돌체 생성 버튼
@@ -577,13 +618,13 @@ void mapTool::initUI()
 			insertUIObject(uiImg);
 		}
 
-		RECTD2D canvas = _canvas->getRect();
+		
 		{
 			uiPanel* uiImg = new uiPanel;
 			uiImg->init(canvas.right, 0.f,  WINSIZEX - canvas.right, WINSIZEY, uiBG);
 			insertUIObject(uiImg);
 		}
-		RECTD2D miniMap = _miniMap->getRect();
+		
 		{
 			uiPanel* uiImg = new uiPanel;
 			uiImg->init(miniMap.right, canvas.bottom,  WINSIZEX - miniMap.right, WINSIZEY - canvas.bottom, uiBG);
@@ -700,4 +741,35 @@ void mapTool::closeSampleCanvas()
 		_isOpenSampleBoard = false;
 		_isCloseSampleBoard = true;
 	}
+}
+
+void mapTool::clickBtnHierarcy(eLayer layer)
+{
+	_curLayer = layer;
+
+	for (int ii = 0; ii < eLayer_Count; ++ii)
+	{
+		if (ii == layer)
+		{
+			_uiListHierarcy[ii]->setActive(true);
+			_uiListHierarcy[ii]->setViewing(true);
+		}
+		else
+		{
+			_uiListHierarcy[ii]->setActive(false);
+			_uiListHierarcy[ii]->setViewing(false);
+
+			_uiBtnHierarcy[ii]->setState(eButton_Up);
+		}
+	}
+}
+
+void mapTool::clickUpBtnHierarcy(eLayer layer)
+{
+	_uiBtnHierarcy[layer]->setState(eButton_Down);
+}
+
+void mapTool::clickBtnTerrain(int idx)
+{
+	_terrain = _mapData->getTerrain(_curLayer, idx);
 }

@@ -7,6 +7,7 @@ protected:
 	
 	bool _isActive;
 	bool _isCollider;
+	bool _isViewing;
 
 	float _x;
 	float _y;
@@ -36,6 +37,7 @@ public:
 	
 	void setParent(uiObject* ui) { _parent = ui; }
 	void setActive(bool active) { _isActive = active; }
+	void setViewing(bool flag) {_isViewing = flag; }
 	void setWorldPosition(float x, float y);
 	void setLocalPosition(float x, float y);
 	void setPositionX(float x) {_x = x;}
@@ -44,6 +46,7 @@ public:
 	void setHeight(float height) { _height = height;}
 
 	bool isActive() { return _isActive; }
+	bool isViewing(){ return _isViewing;}
 
 	POINTF getWorldPosition();
 	POINTF getLocalPosition();

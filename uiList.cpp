@@ -22,6 +22,16 @@ uiList::~uiList()
 HRESULT uiList::init(float x, float y, float width, float height)
 {
 	uiObject::init(x, y, width, height);
+	_img = IMGDATABASE->getImage(eImage_UI_BG5);
+	return S_OK;
+}
+
+HRESULT uiList::init(float x, float y, float width, float height, image* img)
+{
+	uiObject::init(x, y, width, height);
+	_img = img;
+	if(!_img)
+		_img = IMGDATABASE->getImage(eImage_UI_BG5);
 
 	return S_OK;
 }
@@ -32,6 +42,9 @@ void uiList::release()
 
 void uiList::update()
 {
+	if(!_isActive)
+		return;
+
 	if (_scroll)
 	{
 		_scroll->update();
@@ -52,6 +65,11 @@ void uiList::update()
 
 void uiList::render()
 {
+	if(!_isViewing)
+		return;
+
+	_img->render(_rc, 1.f, true);
+
 	int lines = _childCount / _countPerLine;
 	int count = (_linePerPage + _curLine + 1) * _countPerLine - 1;
 
