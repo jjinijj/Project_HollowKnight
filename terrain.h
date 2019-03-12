@@ -19,6 +19,7 @@ typedef struct tagTerrainPack
 	int framxY;
 
 	RECTD2D rc;
+	RECTD2D collider;
 	TERRAINATTR attr;
 	
 	void clear()
@@ -33,6 +34,7 @@ typedef struct tagTerrainPack
 		frameX = 0;
 		framxY = 0;
 		rc = {};
+		collider = {};
 		attr = NULL;
 	}
 
@@ -49,6 +51,7 @@ protected:
 	float	_x;			// 困摹
 	float	_y;			// 困摹
 	RECTD2D	_rc;		
+	RECTD2D _collider;	// 面倒眉
 
 	TERRAINATTR _attr;	// 加己
 
@@ -75,15 +78,18 @@ public:
 	void addAttribute(const UINT attr);
 	// 加己 力芭
 	void removeAttribute(const UINT attr);
+	// 加己 力芭
+	void clearAttribute();
 	// 加己 犬牢
 	bool checkAttribute(const UINT attr);
 
 	UID getUID() {return _uid;}
 
-	void setRect(RECTD2D rc) { _rc = rc; }
+	void setCollider(RECTD2D rc) { _collider = rc; }
 
 	TERRAINATTR getAtrribute()	{ return _attr; }
 	RECTD2D getRect()			{ return _rc;	}
+	RECTD2D getCollider()		{ return _collider;	}
 }; 
 
 

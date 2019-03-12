@@ -20,6 +20,7 @@ mapTool::mapTool()
 , _sampleBoardSpeed(15.f)
 {
 	_pickMousePos = {0.f, 0.f};
+	_terrain.clear();
 }
 
 
@@ -86,9 +87,13 @@ void mapTool::render()
 	// 맵
 	if (_mapData)
 		_mapData->render();
+	if (_terrain.isSet)
+	{
+		D2DMANAGER->drawRectangle(RGB(0, 0, 255), _terrain.ter->getRect(), false);
+		D2DMANAGER->drawRectangle(RGB(0, 255, 0), _terrain.ter->getCollider(), false);
+	}
 	
 	uiBase::render();
-
 
 	if (_isPicking)
 		D2DMANAGER->drawRectangle(_pickArea);
@@ -114,9 +119,6 @@ void mapTool::render()
 		case eToolMode_DrawObject:  { break; }
 		case eToolMode_Inspector:   { break; }
 	}
-
-	if(_terrain)
-		D2DMANAGER->drawRectangle(RGB(0, 0, 255), _terrain->getRect(), false);
 }
 
 void mapTool::pickSampleStart()
@@ -224,11 +226,14 @@ void mapTool::pickcanvasEnd()
 	if (ter)
 	{
 		uiButton* btn = new uiButton;
-		btn->init("uiBG2", "uiBG3", 0.f, 0.f, 10.f, 10.f);
+		btn->init("uiBG2", "uiBG3", "uiBG", 0.f, 0.f, 10.f, 10.f);
 		btn->setText(format(L"%d", ter->getUID()));
-		btn->setOnClickFunction(std::bind(&mapTool::clickBtnTerrain, this, _uiListHierarcy[_curLayer]->getChildCount()));
+		btn->setOnClickFunction(std::bind(&mapTool::clickBtnTerrain, this, _uiListHierarcy[_curLayer]->getChildCount(), btn));
+		btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnTerrain, this, _uiListHierarcy[_curLayer]->getChildCount()));
 
 		_uiListHierarcy[_curLayer]->insertChild(btn);
+
+		btn = nullptr;
 	}
 
 }
@@ -351,21 +356,25 @@ void mapTool::settingSampleImageLinks()
 		IMGLNK* lnk = new IMGLNK;
 		lnk->makeImageLnk(eImage_Town_Floor, false);
 		_imgLnks.push_back(lnk);
+		lnk = nullptr;
 	}
 	{
 		IMGLNK* lnk = new IMGLNK;
 		lnk->makeImageLnk(eImage_Town_BG, false);
 		_imgLnks.push_back(lnk);
+		lnk = nullptr;
 	}
 	{
 		IMGLNK* lnk = new IMGLNK;
 		lnk->makeImageLnk(eImage_Town_BG_Big01, false);
 		_imgLnks.push_back(lnk);
+		lnk = nullptr;
 	}
 	{
 		IMGLNK* lnk = new IMGLNK;
 		lnk->makeImageLnk(eImage_Town_BG_Big02, false);
 		_imgLnks.push_back(lnk);
+		lnk = nullptr;
 	}
 	{
 		IMGLNK* lnk = new IMGLNK;
@@ -375,31 +384,37 @@ void mapTool::settingSampleImageLinks()
 			lnk->pushBack((eImageUID)ii);
 		}
 		_imgLnks.push_back(lnk);
+		lnk = nullptr;
 	}
 	{
 		IMGLNK* lnk = new IMGLNK;
 		lnk->makeImageLnk(eImage_Town_Ruddle, false);
 		_imgLnks.push_back(lnk);
+		lnk = nullptr;
 	}
 	{
 		IMGLNK* lnk = new IMGLNK;
 		lnk->makeImageLnk(eImage_Object_Chair, false);
 		_imgLnks.push_back(lnk);
+		lnk = nullptr;
 	}
 	{
 		IMGLNK* lnk = new IMGLNK;
 		lnk->makeImageLnk(eImage_Fence, false);
 		_imgLnks.push_back(lnk);
+		lnk = nullptr;
 	}
 	{
 		IMGLNK* lnk = new IMGLNK;
 		lnk->makeImageLnk(eImage_Town_Well, false);
 		_imgLnks.push_back(lnk);
+		lnk = nullptr;
 	}
 	{
 		IMGLNK* lnk = new IMGLNK;
 		lnk->makeImageLnk(eImage_StreetLamp, false);
 		_imgLnks.push_back(lnk);
+		lnk = nullptr;
 	}
 }
 
@@ -525,23 +540,7 @@ void mapTool::initUI()
 		uiPanel* uiImg = new uiPanel;
 		uiImg->init(miniMap.right, canvas.bottom, WINSIZEX - miniMap.right, WINSIZEY - canvas.bottom, uiBG);
 		insertUIObject(uiImg);
-	}
-
-	// 지형 목록
-	{
-		//_hierarchy = new uiList;
-		//_hierarchy->init(rc.right + UI_SPACE, UI_SPACE, 300.f, 780.f);
-		//_hierarchy->setGap(2.f, 2.f);
-		//_hierarchy->setCountPerLine(1);
-		//
-		//uiScroll* scroll = new uiScroll;
-		//scroll->init(290.f, 0.f, 10.f, 780.f, nullptr, nullptr);
-		//scroll->setScrollDirect(false);
-		//
-		//_hierarchy->setScroll(scroll);
-		//_hierarchy->setCellHeight(100.f);
-		//
-		//insertUIObject(_hierarchy);
+		uiImg = nullptr;
 	}
 
 	// 레이어 별 지형목록
@@ -561,13 +560,18 @@ void mapTool::initUI()
 			// 리스트
 			_uiListHierarcy[ii] = new uiList;
 			_uiListHierarcy[ii]->init( canvas.right + UI_SPACE, _uiBtnHierarcy[ii]->getRect().bottom
-									 , btnWitdh * eLayer_Count, 700.f);
-			_uiListHierarcy[ii]->setGap(2.f, 2.f);
-			_uiListHierarcy[ii]->setCountPerLine(3);
+									 , btnWitdh * eLayer_Count, TERRAIN_LIST_HEIGHT);
+			_uiListHierarcy[ii]->setGap(TERRAIN_LIST_CELL_GAP, TERRAIN_LIST_CELL_GAP);
+			_uiListHierarcy[ii]->setCountPerLine(TERRAIN_COUNT_PER_LINE);
 
 			// 리스트 스크롤
 			uiScroll* scroll = new uiScroll;
-			scroll->init(btnWitdh * eLayer_Count - 10.f, 0.f, 10.f, 700.f, nullptr, nullptr);
+			scroll->init( btnWitdh * eLayer_Count - TERRAIN_LIST_SCROLL_WIDTH
+						 ,0.f
+						 ,TERRAIN_LIST_SCROLL_WIDTH
+						 ,TERRAIN_LIST_HEIGHT
+						 ,nullptr
+						 ,nullptr);
 			scroll->setScrollDirect(false);
 
 			_uiListHierarcy[ii]->setScroll(scroll);
@@ -575,9 +579,42 @@ void mapTool::initUI()
 
 			insertUIObject(_uiBtnHierarcy[ii]);
 			insertUIObject(_uiListHierarcy[ii]);
+
+			scroll = nullptr;
 		}
 
 		clickBtnHierarcy(eLayer_FarBack);
+	}
+
+	// 속성창 & 버튼
+	{
+		RECTD2D hieracy = _uiListHierarcy[0]->getRect();
+		float width = _sampleBoardCloseX - _qickOpen->getWidth() - (hieracy.right + UI_SPACE) - UI_SPACE;
+		_uiPanelInspector = new uiPanel;
+		_uiPanelInspector->init(hieracy.right + UI_SPACE, UI_SPACE, width, width, IMGDATABASE->getImage(eImage_UI_BG5));
+		
+		UINT attr = 0;
+		wstring txts[ATTR_COUNT + 1] = { L"Collistion"
+										,L"Collider"
+										,L"Trigger"
+										,L"Breakable"
+										,L"Interaction"
+										,L"Trap" };
+		for (int ii = 0; ii < ATTR_COUNT + 1; ++ii)
+		{
+			if(0 == ii)
+				attr = 0;
+			else
+				attr = pow(2, (ii - 1));
+			_uiBtnInspectors[ii] = new uiButton;
+			_uiBtnInspectors[ii]->init("uiBG2", "uiBG3", "uiBG", 5.f, 5.f + (ii * 25.f), width - 10.f, 20.f);
+			_uiBtnInspectors[ii]->setText(txts[ii], 15);
+			_uiBtnInspectors[ii]->setOnClickFunction(std::bind(&mapTool::clickBtnInspector, this, attr, _uiBtnInspectors[ii]));
+			_uiBtnInspectors[ii]->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnInspector, this, attr));
+			_uiPanelInspector->insertChild(_uiBtnInspectors[ii]);
+		}
+		
+		insertUIObject(_uiPanelInspector);
 	}
 
 	// 충돌체 생성 버튼
@@ -603,6 +640,8 @@ void mapTool::initUI()
 		uiImg->init(rc.left, rc.bottom, rc.right - rc.left, UI_SPACE, uiBG);
 
 		insertUIObject(uiImg);
+
+		uiImg = nullptr;
 	}
 
 	// canvas 상좌우, 미니맵 우하
@@ -611,29 +650,31 @@ void mapTool::initUI()
 			uiPanel* uiImg = new uiPanel;
 			uiImg->init(0.f, 0.f, WINSIZEX, UI_SPACE, uiBG);
 			insertUIObject(uiImg);
+			uiImg = nullptr;
 		}
 		{
 			uiPanel* uiImg = new uiPanel;
 			uiImg->init(0.f, 0.f, UI_SPACE, WINSIZEY, uiBG);
 			insertUIObject(uiImg);
+			uiImg = nullptr;
 		}
-
-		
 		{
 			uiPanel* uiImg = new uiPanel;
 			uiImg->init(canvas.right, 0.f,  WINSIZEX - canvas.right, WINSIZEY, uiBG);
 			insertUIObject(uiImg);
+			uiImg = nullptr;
 		}
-		
 		{
 			uiPanel* uiImg = new uiPanel;
 			uiImg->init(miniMap.right, canvas.bottom,  WINSIZEX - miniMap.right, WINSIZEY - canvas.bottom, uiBG);
 			insertUIObject(uiImg);
+			uiImg = nullptr;
 		}
 		{
 			uiPanel* uiImg = new uiPanel;
 			uiImg->init(miniMap.right, miniMap.bottom,  miniMap.right - miniMap.left, WINSIZEY - miniMap.bottom, uiBG);
 			insertUIObject(uiImg);
+			uiImg = nullptr;
 		}
 	}
 
@@ -769,7 +810,106 @@ void mapTool::clickUpBtnHierarcy(eLayer layer)
 	_uiBtnHierarcy[layer]->setState(eButton_Down);
 }
 
-void mapTool::clickBtnTerrain(int idx)
+void mapTool::clickBtnTerrain(int idx, uiButton* btn)
 {
-	_terrain = _mapData->getTerrain(_curLayer, idx);
+	int count = ATTR_COUNT + 1;
+	terrain* ter = _mapData->getTerrain(_curLayer, idx);
+	if (ter)
+	{
+		_terrain.clear();
+		_terrain.infoSet(ter, _curLayer, idx);
+		
+		if (_curBtnTerrain)
+		{
+			if(_curBtnTerrain != btn)
+				_curBtnTerrain->setState(eButton_Up);
+		}
+		_curBtnTerrain = btn;
+
+		_pick.clear();
+
+
+		// 상태창
+		UINT attr = 0;
+		RECTD2D col = _terrain.ter->getCollider();
+		if (0 < (col.right - col.left) && 0 < (col.bottom - col.top))
+			_uiBtnInspectors[0]->setState(eButton_Down);
+		else
+			_uiBtnInspectors[0]->setState(eButton_Up);
+
+		for (int ii = 1; ii < count; ++ii)
+		{
+			if (_terrain.ter->checkAttribute(pow(2, (ii - 1))))
+				_uiBtnInspectors[ii]->setState(eButton_Down);
+			else
+				_uiBtnInspectors[ii]->setState(eButton_Up);
+		}
+
+		// 카메라 밖에 있다면 카메라 이동
+		RECTD2D rc = ter->getRect();
+		if (!CAMERA->isRangeInCamera(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top))
+		{
+			float offsetX = _canvas->getWidth() / 2.f;
+			float offsetY = _canvas->getHeight() / 2.f;
+
+			CAMERA->setPosX(rc.left - offsetX);
+			CAMERA->setPosY(rc.top - offsetY);
+		}
+	}
+	else
+	{
+		for (int ii = 0; ii < count; ++ii)
+		{
+			_uiBtnInspectors[ii]->setState(eButton_Up);
+		}
+	}
+}
+
+void mapTool::clickUpBtnTerrain(int idx)
+{
+	_terrain.clear();
+	_curBtnTerrain = nullptr;
+	int count = ATTR_COUNT + 1;
+	for (int ii = 0; ii < count; ++ii)
+	{
+		_uiBtnInspectors[ii]->setState(eButton_Up);
+	}
+}
+
+void mapTool::clickBtnInspector(UINT attr, uiButton* btn)
+{
+	if (_terrain.ter)
+	{
+		if (0 == attr)
+		{
+			RECTD2D rc = _terrain.ter->getRect();
+			_terrain.ter->setCollider(rc);
+		}
+		else
+		{
+			_terrain.ter->addAttribute(attr);
+		}
+		_mapData->changeTerrain(_terrain.layer, _terrain.idx, _terrain.ter);
+	}
+	else
+	{
+		btn->setState(eButton_Up);
+	}
+}
+
+void mapTool::clickUpBtnInspector(UINT attr)
+{
+	if (_terrain.ter)
+	{
+		if (0 == attr)
+		{
+			RECTD2D rc = {};
+			_terrain.ter->setCollider(rc);
+		}
+		else
+		{
+			_terrain.ter->removeAttribute(attr);
+		}
+		_mapData->changeTerrain(_terrain.layer, _terrain.idx, _terrain.ter);
+	}
 }

@@ -23,6 +23,7 @@ HRESULT terrain::init()
 	_y = 0.f;
 	_attr = NULL;
 	_rc = {};
+	_collider = {};
 
 	return S_OK;
 }
@@ -62,6 +63,10 @@ TARRAINPACK* terrain::makePack()
 					,_rc.top - CAMERA->getScopeRect().top
 					,_rc.right - CAMERA->getScopeRect().left
 					,_rc.bottom - CAMERA->getScopeRect().top};
+	pack->collider = { _collider.left - CAMERA->getScopeRect().left
+					  ,_collider.top - CAMERA->getScopeRect().top
+					  ,_collider.right - CAMERA->getScopeRect().left
+					  ,_collider.bottom - CAMERA->getScopeRect().top };
 	pack->attr	= _attr;
 
 	return pack;
@@ -80,6 +85,10 @@ void terrain::loadPack(TARRAINPACK* pack)
 					,pack->rc.top + CAMERA->getScopeRect().top
 					,pack->rc.right + CAMERA->getScopeRect().left
 					,pack->rc.bottom + CAMERA->getScopeRect().top };
+		_collider = {pack->collider.left + CAMERA->getScopeRect().left
+					,pack->collider.top + CAMERA->getScopeRect().top
+					,pack->collider.right + CAMERA->getScopeRect().left
+					,pack->collider.bottom + CAMERA->getScopeRect().top };
 		_attr	= pack->attr;
 	}
 }
@@ -98,6 +107,11 @@ void terrain::removeAttribute(const UINT attr)
 		return;
 
 	_attr ^= attr;
+}
+
+void terrain::clearAttribute()
+{
+	_attr = NULL;
 }
 
 bool terrain::checkAttribute(const UINT attr)

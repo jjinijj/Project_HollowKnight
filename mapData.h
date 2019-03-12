@@ -27,6 +27,8 @@ public:
 	void swapTerrain(UINT layer, int dest, int sour);
 	// 레이어 변경
 	void changeLayer(UINT destLayer, UINT sourLayer, int idx);
+	// 지형 변경
+	void changeTerrain(UINT layer, int idx, terrain* ter);
 	
 	// 지형 추가
 	terrain* addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid);
@@ -42,9 +44,17 @@ public:
 
 	vTerrain* getTerrains() { return &_terrains; }
 	
-	
-	
+	HRESULT save(string fileName);
+	HRESULT load(string fileName);
+
+
 private:
 	void addTerrain(UINT layer, terrain* ter);
+	
+	void loadMapDate(string fileName);
+	void loadMapInfo(string fileName);
+
+	void saveMapDate(string fileName);
+	void saveMapInfo(string fileName);
 };
 

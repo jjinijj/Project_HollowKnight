@@ -5,7 +5,7 @@
 
 uiList::uiList()
 : _scroll(nullptr)
-, _countPerLine(0)
+, _countPerLine(1)
 , _linePerPage(0)
 , _countLine(0)
 , _curLine(0)
@@ -23,6 +23,9 @@ HRESULT uiList::init(float x, float y, float width, float height)
 {
 	uiObject::init(x, y, width, height);
 	_img = IMGDATABASE->getImage(eImage_UI_BG5);
+
+	_cellWidth = width;
+	_cellHeight = 10.f;
 	return S_OK;
 }
 
@@ -48,16 +51,18 @@ void uiList::update()
 	if (_scroll)
 	{
 		_scroll->update();
+		if (0 < _childCount)
+		{
+			float value = (_childCount / _countPerLine) - _linePerPage;
 
-		float value = (_childCount / _countPerLine) - _linePerPage;
-
-		if(value < 0.f)
-			_curLine = 0;
-		else
-			_curLine = static_cast<int>(_scroll->getValue() * value );
-		
-		reSort();
+			if(value < 0.f)
+				_curLine = 0;
+			else
+				_curLine = static_cast<int>(_scroll->getValue() * value );
+			
+		}
 	}
+	reSort();
 
 	uiObject::update();
 	DEVTOOL->pushBackDebugText(format(L"list Count : %d", _childCount));
@@ -69,8 +74,6 @@ void uiList::render()
 		return;
 
 	_img->render(_rc, 1.f, true);
-
-	int lines = _childCount / _countPerLine;
 	int count = (_linePerPage + _curLine + 1) * _countPerLine - 1;
 
 	int idx = 0;
@@ -79,7 +82,8 @@ void uiList::render()
 		_childs[ii]->render();
 	}
 
-	_scroll->render();
+	if(_scroll)
+		_scroll->render();
 }
 
 void uiList::insertChild(uiObject* ui)

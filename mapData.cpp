@@ -3,6 +3,7 @@
 
 
 mapData::mapData()
+: _uidCount(1)
 {
 	_terrains.clear();
 	_colTerrains.clear();
@@ -94,6 +95,11 @@ void mapData::changeLayer(UINT destLayer, UINT sourLayer, int idx)
 	_terrainsByLayer[sourLayer].push_back(ter);
 }
 
+void mapData::changeTerrain(UINT layer, int idx, terrain* ter)
+{
+	//terrain* ter = getTerrain(layer, idx);
+}
+
 
 terrain* mapData::addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid)
 {
@@ -136,6 +142,16 @@ terrain* mapData::getTerrain(UINT layer, int idx)
 }
 
 
+HRESULT mapData::save(string fileName)
+{
+	return E_NOTIMPL;
+}
+
+HRESULT mapData::load(string fileName)
+{
+	return E_NOTIMPL;
+}
+
 void mapData::addTerrain(UINT layer, terrain* ter)
 {
 	_terrains.push_back(ter);
@@ -143,4 +159,22 @@ void mapData::addTerrain(UINT layer, terrain* ter)
 
 	if (ter->checkAttribute(ATTR_COLLIDER))
 		_colTerrains.push_back(ter);
+
+	++_uidCount;
+}
+
+void mapData::loadMapDate(string fileName)
+{
+}
+
+void mapData::loadMapInfo(string fileName)
+{
+}
+
+void mapData::saveMapDate(string fileName)
+{
+}
+
+void mapData::saveMapInfo(string fileName)
+{
 }

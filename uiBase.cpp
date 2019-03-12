@@ -38,8 +38,10 @@ void uiBase::render()
 
 	list<uiObject*>::reverse_iterator iter = _uiList.rbegin();
 	list<uiObject*>::reverse_iterator end = _uiList.rend();
-	for ( ; iter != end; ++iter)
+	for (; iter != end; ++iter)
+	{
 		(*iter)->render();
+	}
 }
 
 void uiBase::uiOpen()

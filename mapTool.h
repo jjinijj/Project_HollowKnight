@@ -7,6 +7,19 @@
 #define DISTANCE 10.f
 #define MINIMAP_PERCENT 0.019f				// 미니맵 배율
 
+#define TERRAIN_COUNT_PER_LINE 5
+#define TERRAIN_LIST_CELL_GAP 2.f
+#define TERRAIN_LIST_HEIGHT 700.f
+#define TERRAIN_LIST_SCROLL_WIDTH 10.f
+
+class mapData;
+class terrain;
+class uiButton;
+class uiPanel;
+class uiImage;
+class uiList;
+class terrain;
+
 // 지형 종류
 enum eTerrainType
 {
@@ -109,20 +122,44 @@ typedef struct tagImageLink
 
 }IMGLNK;
 
-class mapData;
-class terrain;
-class uiButton;
-class uiPanel;
-class uiImage;
-class uiList;
-class terrain;
+typedef struct tagTerrainInfo
+{
+	terrain*	ter;
+	eLayer		layer;
+	int			idx;
+	bool		isSet;
+
+	void infoSet(terrain* inTer, eLayer inLayer, int inIdx)
+	{
+		ter = inTer;
+		layer = inLayer;
+		idx = inIdx;
+		isSet = true;
+	}
+	void clear()
+	{
+		ter = nullptr;
+		layer = eLayer_None;
+		idx -1;
+		isSet = false;
+	}
+	void operator= (tagTerrainInfo info)
+	{
+		ter = info.ter;
+		layer = info.layer;
+		idx = info.idx;
+		isSet = info.isSet;
+	}
+}TERRAIN;
+
 class mapTool : public uiBase
 {
 private:
 
 	eToolMode _mode;
 	//toolState* _state;
-	terrain* _terrain;
+	TERRAIN _terrain;
+	uiButton* _curBtnTerrain;
 
 	int _sampleIdx;
 
@@ -157,10 +194,17 @@ private:
 	uiButton* _nextSample;
 	uiButton* _createCol;
 
+	// hierarcy
 	uiButton* _uiBtnHierarcy[eLayer_Count];
 	uiList* _uiListHierarcy[eLayer_Count];
 
-	uiList*	_hierarchy;
+	// 상태창(옵션)
+	uiPanel* _uiPanelInspector;
+	uiButton* _uiBtnInspectors[ATTR_COUNT + 1];
+
+	// 하위 상태창
+	uiPanel* _uiPanelInspectorSub;
+	uiButton* _uiBtnInstpectorSubs;
 
 	float _miniScopeWidth;
 	float _miniScopeHeight;
@@ -231,5 +275,9 @@ private:
 	void clickBtnHierarcy(eLayer layer);
 	void clickUpBtnHierarcy(eLayer layer);
 
-	void clickBtnTerrain(int idx);
+	void clickBtnTerrain(int idx, uiButton* btn);
+	void clickUpBtnTerrain(int idx);
+
+	void clickBtnInspector(UINT attr, uiButton* btn);
+	void clickUpBtnInspector(UINT attr);
 };
