@@ -38,6 +38,7 @@
 #define ATTR_BREAKABLE	0x000004UL		// 파괴 가능
 #define ATTR_INTERATION	0x000008UL		// 상호작용
 #define ATTR_TRAP		0x000010UL		// 함정
+#define ATTR_PORTAL		0x000020UL		// 씬 이동
 
 //=============================================
 //   define enum

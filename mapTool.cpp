@@ -583,7 +583,8 @@ void mapTool::initUI()
 			scroll = nullptr;
 		}
 
-		clickBtnHierarcy(eLayer_FarBack);
+		clickBtnHierarcy(eLayer_Play);
+		_uiBtnHierarcy[eLayer_Play]->setState(eButton_Down);
 	}
 
 	// 속성창 & 버튼
@@ -677,10 +678,6 @@ void mapTool::initUI()
 			uiImg = nullptr;
 		}
 	}
-
-
-
-
 }
 
 void mapTool::updateDrawTerrain()

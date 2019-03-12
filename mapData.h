@@ -13,6 +13,8 @@ private:
 	vTerrain _terrainsByLayer[MAP_LAYER_COUNT];	// 레이어단위로 분류
 
 	UINT _uidCount;
+
+	map<WORD, map<UINT, UINT>> _attrMap;
 	
 public:
 	mapData();
@@ -29,6 +31,10 @@ public:
 	void changeLayer(UINT destLayer, UINT sourLayer, int idx);
 	// 지형 변경
 	void changeTerrain(UINT layer, int idx, terrain* ter);
+
+	void addAttribute(UINT layer, int idx, WORD attr, int value);
+	void removeAttribute(UINT layer, int idx, WORD attr);
+
 	
 	// 지형 추가
 	terrain* addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid);

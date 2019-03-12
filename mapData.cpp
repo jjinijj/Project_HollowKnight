@@ -100,6 +100,24 @@ void mapData::changeTerrain(UINT layer, int idx, terrain* ter)
 	//terrain* ter = getTerrain(layer, idx);
 }
 
+void mapData::addAttribute(UINT layer, int idx, WORD attr, int value)
+{
+	terrain* ter = getTerrain(layer, idx);
+	if (ter)
+	{
+		ter->addAttribute(attr);
+		if (_attrMap[attr].find(ter->getUID()) == _attrMap[attr].end())
+			_attrMap[attr].insert(make_pair(ter->getUID(), value));
+		else
+			_attrMap[attr][ter->getUID()] = value;
+		
+	}
+}
+
+void mapData::removeAttribute(UINT layer, int idx, WORD attr)
+{
+}
+
 
 terrain* mapData::addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid)
 {
@@ -140,7 +158,6 @@ terrain* mapData::getTerrain(UINT layer, int idx)
 
 	return ter;
 }
-
 
 HRESULT mapData::save(string fileName)
 {
