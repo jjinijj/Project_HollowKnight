@@ -204,19 +204,20 @@ private:
 
 	// 하위 상태창
 	uiPanel* _uiPanelInspectorSub;
-	uiButton* _uiBtnInstpectorSubs;
+	uiButton* _uiBtnInstpectorSubs[10];
 
-	float _miniScopeWidth;
-	float _miniScopeHeight;
-
-	//RECTD2D* _canvas;					
-	//RECTD2D  _samplecanvas;			
 	
+
+
+
 	RECTD2D _miniScope;
 	RECTD2D _pickArea;					// 드래그
 	RECTD2D _mapViewArea;				// 미니맵에서 현재 보여주는 맵 표시
 
 	RECTD2D _samplePanelRc;
+	
+	float _miniScopeWidth;
+	float _miniScopeHeight;
 
 	const float _sampleBoardOpenX;
 	const float _sampleBoardCloseX;
