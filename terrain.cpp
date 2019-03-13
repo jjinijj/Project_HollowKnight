@@ -56,6 +56,7 @@ TARRAINPACK* terrain::makePack()
 	pack->clear();
 
 	pack->uid	= _uid;
+	pack->type = _type;
 	// 0,0 기준으로 저장하기 위해 카메라의 scope 범위를 빼줌
 	pack->x		= _x - CAMERA->getScopeRect().left;
 	pack->y		= _y - CAMERA->getScopeRect().top;
@@ -77,7 +78,7 @@ void terrain::loadPack(TARRAINPACK* pack)
 	if (pack)
 	{
 		_uid	= pack->uid;
-		
+		_type	= pack->type;
 		// 0,0 기준으로 저장이 되어있기 때문에 카메라의 scope 범위를 더해줌
 		_x		= pack->x + CAMERA->getScopeRect().left;
 		_y		= pack->y + CAMERA->getScopeRect().top;
@@ -122,20 +123,20 @@ void terrain::setCollision()
 }
 
 
-void terrain::addAttribute(const UINT attr)
+void terrain::addAttribute(const eAttribute attr)
 {
 	if(checkAttribute(attr))
 		return;
 
-	_attr |= attr;
+	_attr |= attribute(attr);
 }
 
-void terrain::removeAttribute(const UINT attr)
+void terrain::removeAttribute(const eAttribute attr)
 {
 	if (!checkAttribute(attr))
 		return;
 
-	_attr ^= attr;
+	_attr ^= attribute(attr);
 }
 
 void terrain::clearAttribute()
@@ -143,9 +144,11 @@ void terrain::clearAttribute()
 	_attr = NULL;
 }
 
-bool terrain::checkAttribute(const UINT attr)
+bool terrain::checkAttribute(const eAttribute attr)
 {
-	if((attr & _attr) == attr)
+	WORD attrBit = attribute(attr);
+
+	if((_attr & attrBit) == attrBit)
 		return true;
 	else 
 		return false;
@@ -174,6 +177,9 @@ HRESULT terrainDrag::init( UID uid
 						  ,eImageUID imgUid)
 {
 	terrain::init(uid, destX, destY);
+	
+	_type = eTerrain_Drag;
+	
 	_width = width;
 	_height = height;
 	_sourX = sourX;
@@ -269,12 +275,20 @@ HRESULT terrainFrame::init( UID uid
 						   ,eImageUID imgUid)
 {
 	terrain::init(uid, destX, destY);
+	
+	_type = eTerrain_Frame;
+	
 	_frameX = frameX;
 	_frameY = frameY;
 
 	_img = IMGDATABASE->getImage(imgUid);
 	assert(_img != nullptr);
 	_imgUid = imgUid;
+
+	_rc = {destX + CAMERA->getScopeRect().left
+		 , destY + CAMERA->getScopeRect().top
+		 , destX + static_cast<float>(_img->GetWidth()) + CAMERA->getScopeRect().left
+		 , destY + static_cast<float>(_img->GetHeight()) + CAMERA->getScopeRect().top };
 
 	return S_OK;
 }
@@ -350,9 +364,10 @@ HRESULT terrainClear::init(const UID uid, float destX, float destY, float width,
 {
 	terrain::init(uid, destX, destY);
 
+	_type = eTerrain_Clear;
+
 	_width = width;
 	_height = height;
-
 
 	_rc = { _x, _y, _x + width, _y + height };
 

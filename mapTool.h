@@ -18,18 +18,10 @@ class uiButton;
 class uiPanel;
 class uiImage;
 class uiList;
+class uiText;
 class terrain;
 
-// 지형 종류
-enum eTerrainType
-{
-	eTerrain_Frame,
-	eTerrain_Drag,
-	eTerrain_Clear,
 
-	eTarrain_None,
-	eTerrain_Count = eTarrain_None,
-};
 
 // 레이어
 enum eLayer
@@ -140,7 +132,7 @@ typedef struct tagTerrainInfo
 	{
 		ter = nullptr;
 		layer = eLayer_None;
-		idx -1;
+		idx = -1;
 		isSet = false;
 	}
 	void operator= (tagTerrainInfo info)
@@ -166,7 +158,9 @@ private:
 	image* _uiBG[5];
 
 	mapData* _mapData;					// 맵 데이터
-	vector<IMGLNK*> _imgLnks;			// 맵툴에서 사용할 이미지 번호들
+	vector<IMGLNK*> _imgLnksTerrain;			// 맵툴에서 사용할 이미지 번호들
+	vector<IMGLNK*> _imgLnksObject;			// 맵툴에서 사용할 이미지 번호들
+	vector<IMGLNK*> _imgLnksNpc;			// 맵툴에서 사용할 이미지 번호들
 	
 	eLayer _curLayer;
 
@@ -192,6 +186,11 @@ private:
 	uiButton* _qickOpen;
 	uiButton* _beforeSample;
 	uiButton* _nextSample;
+
+	uiButton* _uiBtnTerrain;
+	uiButton* _uiBtnObject;
+	uiButton* _uiBtnNpc;
+
 	uiButton* _createCol;
 
 	// hierarcy
@@ -199,12 +198,14 @@ private:
 	uiList* _uiListHierarcy[eLayer_Count];
 
 	// 상태창(옵션)
+	uiText* _uiTextInspector;
 	uiPanel* _uiPanelInspector;
 	uiButton* _uiBtnInspectors[eAttr_Count];
 
 	// 하위 상태창
-	uiPanel* _uiPanelInspectorSub;
-	uiButton* _uiBtnInstpectorSubs[10];
+	uiText* _uiTextInspectorSub;
+	uiPanel* _uiPanelInspectorInfo;
+	uiText* _uiTextInspectorSubInfo;
 
 	
 
@@ -258,9 +259,11 @@ public:
 	bool isPicking() {return _isPicking;}
 
 private:
-	void settingSampleImageLinks();
 	void setSampleImage();
 	void initUI();
+	void initTerrainImgLinks();
+	void initObjectImgLinks();
+	void initNpcImgLinks();
 
 	void updateDrawTerrain();
 	void updateDrawCollider();
@@ -279,6 +282,8 @@ private:
 	void clickBtnTerrain(int idx, uiButton* btn);
 	void clickUpBtnTerrain(int idx);
 
-	void clickBtnInspector(UINT attr, uiButton* btn);
-	void clickUpBtnInspector(UINT attr);
+	void clickBtnInspector(eAttribute attr, uiButton* btn);
+	void clickUpBtnInspector(eAttribute attr);
+
+	void refreshDetailText();
 };

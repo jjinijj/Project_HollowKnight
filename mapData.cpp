@@ -119,6 +119,17 @@ void mapData::deleteTrigger(WORD terrainUID)
 	}
 }
 
+int mapData::getTriggerIndex(WORD terrinUID)
+{
+	for (int ii = 0; ii < TRRIGER_MAX_COUNT; ++ii)
+	{
+		if(terrinUID == _triggerPool[ii])
+			return ii;
+	}
+
+	return TRRIGER_MAX_COUNT;
+}
+
 terrain* mapData::addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid)
 {
 	terrainDrag* drag = new terrainDrag;
@@ -174,7 +185,7 @@ void mapData::addTerrain(UINT layer, terrain* ter)
 	_terrains.push_back(ter);
 	_terrainsByLayer[layer].push_back(ter);
 
-	if (ter->checkAttribute(attribute(eAttr_Collide)))
+	if (ter->checkAttribute(eAttr_Collide))
 		_colTerrains.push_back(ter);
 
 	++_uidCount;

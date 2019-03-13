@@ -162,5 +162,5 @@ void uiList::setCountPerLine(int count)
 void uiList::setCellHeight(float height)
 {
 	_cellHeight = height;
-	_linePerPage = (_height / (_gapY + _cellHeight));
+	_linePerPage = static_cast<int>(_height / (_gapY + _cellHeight));
 }

@@ -2,9 +2,11 @@
 
 typedef struct tagTerrainPack
 {
+	
 	UID uid;
 	UINT imgUid;
 	UINT layer;
+	eTerrainType type;
 
 	float x;
 	float y;
@@ -27,6 +29,7 @@ typedef struct tagTerrainPack
 		uid = NULL;
 		imgUid = NULL;
 		layer = 0;
+		type = eTarrain_None;
 		x = 0.f;
 		y = 0.f;
 		width = 0.f;
@@ -47,6 +50,8 @@ class terrain
 {
 protected:
 	UID		_uid;		// 고유 번호
+
+	eTerrainType _type;
 
 	float	_x;			// 위치
 	float	_y;			// 위치
@@ -88,19 +93,20 @@ public:
 	void setCollision();
 
 	// 속성 추가
-	void addAttribute(const UINT attr);
+	void addAttribute(const eAttribute attr);
 	// 속성 제거
-	void removeAttribute(const UINT attr);
+	void removeAttribute(const eAttribute attr);
 	// 속성 제거
 	void clearAttribute();
 	// 속성 확인
-	bool checkAttribute(const UINT attr);
+	bool checkAttribute(const eAttribute attr);
 
 	UID getUID() {return _uid;}
 
 	WORD getAtrribute()			{ return _attr; }
 	RECTD2D getRect()			{ return _rc;	}
 	RECTD2D getCollision()		{ return _collision;	}
+	eTerrainType getType()		{ return _type; }
 }; 
 
 

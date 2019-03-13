@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "mapTool.h"
 #include "mapData.h"
-#include "uiButton.h";
+#include "uiButton.h"
 #include "uiPanel.h"
 #include "uiImage.h"
 #include "uiList.h"
 #include "uiScroll.h"
+#include "uiText.h"
 #include "terrain.h"
 
 
@@ -35,7 +36,10 @@ HRESULT mapTool::init()
 	_mapData = new mapData;
 	_mapData->init();
 
-	settingSampleImageLinks();
+	initTerrainImgLinks();
+	initObjectImgLinks();
+	initNpcImgLinks();
+
 	initUI();
 	setSampleImage();
 
@@ -137,7 +141,7 @@ void mapTool::pickSampleEnd()
 	_pickArea.right = _ptMouse.x;
 	_pickArea.bottom = _ptMouse.y;
 
-	IMGLNK* curLnk = _imgLnks[_sampleIdx];
+	IMGLNK* curLnk = _imgLnksTerrain[_sampleIdx];
 
 	// 프레임 이미지
 	if (curLnk->isFrameImg)
@@ -154,8 +158,8 @@ void mapTool::pickSampleEnd()
 		_pick.isFrame = true;
 
 		image* img = IMGDATABASE->getImage(_pick.uid);
-		_pick.width = img->GetWidth();
-		_pick.height = img->GetHeight();
+		_pick.width =  static_cast<float>(img->GetWidth());
+		_pick.height = static_cast<float>(img->GetHeight());
 	}
 	else
 	{
@@ -319,7 +323,7 @@ void mapTool::clickingMinimap()
 void mapTool::nextSample()
 {
 	++_sampleIdx;
-	if(_imgLnks.size() <= _sampleIdx)
+	if(_imgLnksTerrain.size() <= _sampleIdx)
 		_sampleIdx = 0;
 	
 	setSampleImage();
@@ -329,7 +333,7 @@ void mapTool::beforeSample()
 {
 	--_sampleIdx;
 	if (_sampleIdx < 0)
-		_sampleIdx = _imgLnks.size() - 1;
+		_sampleIdx = static_cast<int>(_imgLnksTerrain.size()) - 1;
 	
 	setSampleImage();
 }
@@ -343,89 +347,21 @@ void mapTool::setToolMode(eToolMode mode)
 		_terType = eTerrain_Clear;
 	else
 	{
-		if(_imgLnks[_sampleIdx]->isFrameImg)
+		if(_imgLnksTerrain[_sampleIdx]->isFrameImg)
 			_terType = eTerrain_Frame;
 		else
 			_terType = eTerrain_Drag;
 	}
 }
 
-void mapTool::settingSampleImageLinks()
-{
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_Floor, false);
-		_imgLnks.push_back(lnk);
-		lnk = nullptr;
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_BG, false);
-		_imgLnks.push_back(lnk);
-		lnk = nullptr;
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_BG_Big01, false);
-		_imgLnks.push_back(lnk);
-		lnk = nullptr;
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_BG_Big02, false);
-		_imgLnks.push_back(lnk);
-		lnk = nullptr;
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_Build, true);
-		for (int ii = eImage_Town_Build01; ii <= eImage_Town_Build07; ++ii)
-		{
-			lnk->pushBack((eImageUID)ii);
-		}
-		_imgLnks.push_back(lnk);
-		lnk = nullptr;
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_Ruddle, false);
-		_imgLnks.push_back(lnk);
-		lnk = nullptr;
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Object_Chair, false);
-		_imgLnks.push_back(lnk);
-		lnk = nullptr;
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Fence, false);
-		_imgLnks.push_back(lnk);
-		lnk = nullptr;
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_Town_Well, false);
-		_imgLnks.push_back(lnk);
-		lnk = nullptr;
-	}
-	{
-		IMGLNK* lnk = new IMGLNK;
-		lnk->makeImageLnk(eImage_StreetLamp, false);
-		_imgLnks.push_back(lnk);
-		lnk = nullptr;
-	}
-}
-
 void mapTool::setSampleImage()
 {
-	_sampleImg = IMGDATABASE->getImage(_imgLnks[_sampleIdx]->mainUID);
+	_sampleImg = IMGDATABASE->getImage(_imgLnksTerrain[_sampleIdx]->mainUID);
 	_sampleImage->init(0.f, 0.f, _sampleImg);
-	_samplecanvas->setWidth(_sampleImg->GetWidth());
-	_samplecanvas->setHeight(_sampleImg->GetHeight());
+	_samplecanvas->setWidth(static_cast<float>(_sampleImg->GetWidth()));
+	_samplecanvas->setHeight(static_cast<float>(_sampleImg->GetHeight()));
 
-	if(_imgLnks[_sampleIdx]->isFrameImg)
+	if(_imgLnksTerrain[_sampleIdx]->isFrameImg)
 		_terType = eTerrain_Frame;
 	else
 		_terType = eTerrain_Drag;
@@ -463,7 +399,7 @@ void mapTool::initUI()
 		// 이전 샘플
 		_beforeSample = new uiButton;
 		_beforeSample->init( "uiBG3", "uiBG"
-							, 3.f * UI_SPACE, (rc.bottom - rc.top) - 100.f
+							, 3.f * UI_SPACE, (rc.bottom - rc.top) - 80.f
 							, 60.0f, 50.0f);
 		_beforeSample->setText(L"<<", 50);
 		_beforeSample->setOnClickFunction(bind(&mapTool::beforeSample, this));
@@ -480,6 +416,36 @@ void mapTool::initUI()
 		_nextSample->setOnClickFunction(bind(&mapTool::nextSample, this));
 
 		_samplePanel->insertChild(_nextSample);
+
+
+		// 지형
+		_uiBtnTerrain = new uiButton;
+		_uiBtnTerrain->init( "uiBG3", "uiBG", "uiBG2"
+							,_nextSample->getRect().right + UI_SPACE
+							,_nextSample->getLocalPosition().y
+							,180.f, 50.f);
+		_uiBtnTerrain->setText(L"Terrain", 50);
+		_samplePanel->insertChild(_uiBtnTerrain);
+
+
+		// 오브젝트
+		_uiBtnObject = new uiButton;
+		_uiBtnObject->init("uiBG3", "uiBG", "uiBG2"
+							, _uiBtnTerrain->getRect().right + UI_SPACE
+							, _uiBtnTerrain->getLocalPosition().y
+							, 150.f, 50.f);
+		_uiBtnObject->setText(L"Object", 50);
+		_samplePanel->insertChild(_uiBtnObject);
+
+		// npc
+		_uiBtnNpc = new uiButton;
+		_uiBtnNpc->init("uiBG3", "uiBG", "uiBG2"
+						   , _uiBtnObject->getRect().right + UI_SPACE
+						   , _uiBtnObject->getLocalPosition().y
+						   , 80.f, 50.f);
+		_uiBtnNpc->setText(L"NPC", 50);
+		_samplePanel->insertChild(_uiBtnNpc);
+
 
 		// 샘플판 열고 닫기
 		_qickOpen = new uiButton;
@@ -590,11 +556,19 @@ void mapTool::initUI()
 	// 속성창 & 버튼
 	{
 		RECTD2D hieracy = _uiListHierarcy[0]->getRect();
+		
 		float width = _sampleBoardCloseX - _qickOpen->getWidth() - (hieracy.right + UI_SPACE) - UI_SPACE;
 		_uiPanelInspector = new uiPanel;
-		_uiPanelInspector->init(hieracy.right + UI_SPACE, UI_SPACE, width, width, IMGDATABASE->getImage(eImage_UI_BG5));
+		_uiPanelInspector->init( hieracy.right + UI_SPACE, UI_SPACE, width, width
+								,IMGDATABASE->getImage(eImage_UI_BG5));
 		
-		UINT attr = 0;
+		_uiTextInspector = new uiText;
+		_uiTextInspector->init(hieracy.right + UI_SPACE, UI_SPACE);
+		_uiTextInspector->setText(L"\tAttribute");
+		_uiTextInspector->setFontSize(20);
+		_uiTextInspector->setFontColor(RGB(255,255,255));
+		insertUIObject(_uiTextInspector);
+
 		wstring txts[eAttr_Count] = {L"Collide"
 									,L"Trigger"
 									,L"Breakable"
@@ -604,19 +578,38 @@ void mapTool::initUI()
 									,L"Dialog" };
 		for (int ii = 0; ii < eAttr_Count; ++ii)
 		{
-			if(0 == ii)
-				attr = 0;
-			else
-				attr = pow(2, (ii - 1));
 			_uiBtnInspectors[ii] = new uiButton;
-			_uiBtnInspectors[ii]->init("uiBG2", "uiBG3", "uiBG", 5.f, 5.f + (ii * 25.f), width - 10.f, 20.f);
+			_uiBtnInspectors[ii]->init("uiBG2", "uiBG3", "uiBG", 5.f, 25.f + (ii * 25.f), width - 10.f, 20.f);
 			_uiBtnInspectors[ii]->setText(txts[ii], 15);
-			_uiBtnInspectors[ii]->setOnClickFunction(std::bind(&mapTool::clickBtnInspector, this, attr, _uiBtnInspectors[ii]));
-			_uiBtnInspectors[ii]->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnInspector, this, attr));
+			_uiBtnInspectors[ii]->setOnClickFunction(std::bind(&mapTool::clickBtnInspector, this, (eAttribute)ii, _uiBtnInspectors[ii]));
+			_uiBtnInspectors[ii]->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnInspector, this, (eAttribute)ii));
 			_uiPanelInspector->insertChild(_uiBtnInspectors[ii]);
 		}
 		
 		insertUIObject(_uiPanelInspector);
+
+
+		RECTD2D inspector = _uiPanelInspector->getRect();
+		_uiPanelInspectorInfo = new uiPanel;
+		_uiPanelInspectorInfo->init( inspector.left, inspector.bottom + UI_SPACE
+									,_uiPanelInspector->getWidth(), hieracy.bottom - (inspector.bottom + UI_SPACE)
+									,IMGDATABASE->getImage(eImage_UI_BG5));
+
+		_uiTextInspectorSub = new uiText;
+		_uiTextInspectorSub->init(inspector.left + UI_SPACE, _uiPanelInspectorInfo->getRect().top + UI_SPACE);
+		_uiTextInspectorSub->setText(L"\tDetail\n--------------------------");
+		_uiTextInspectorSub->setFontSize(20);
+		_uiTextInspectorSub->setFontColor(RGB(255, 255, 255));
+		insertUIObject(_uiTextInspectorSub);
+
+		_uiTextInspectorSubInfo = new uiText;
+		_uiTextInspectorSubInfo->init(inspector.left + UI_SPACE, _uiPanelInspectorInfo->getRect().top + 60);
+		_uiTextInspectorSubInfo->setText(L"None");
+		_uiTextInspectorSubInfo->setFontSize(20);
+		_uiTextInspectorSubInfo->setFontColor(RGB(255, 255, 255));
+		insertUIObject(_uiTextInspectorSubInfo);
+		
+		insertUIObject(_uiPanelInspectorInfo);
 	}
 
 	// 충돌체 생성 버튼
@@ -681,6 +674,85 @@ void mapTool::initUI()
 	}
 }
 
+void mapTool::initTerrainImgLinks()
+{
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_Floor, false);
+		_imgLnksTerrain.push_back(lnk);
+		lnk = nullptr;
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_BG, false);
+		_imgLnksTerrain.push_back(lnk);
+		lnk = nullptr;
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_BG_Big01, false);
+		_imgLnksTerrain.push_back(lnk);
+		lnk = nullptr;
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_BG_Big02, false);
+		_imgLnksTerrain.push_back(lnk);
+		lnk = nullptr;
+	}
+
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_Ruddle, false);
+		_imgLnksTerrain.push_back(lnk);
+		lnk = nullptr;
+	}
+
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Fence, false);
+		_imgLnksTerrain.push_back(lnk);
+		lnk = nullptr;
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_Well, false);
+		_imgLnksTerrain.push_back(lnk);
+		lnk = nullptr;
+	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_StreetLamp, false);
+		_imgLnksTerrain.push_back(lnk);
+		lnk = nullptr;
+	}
+}
+
+void mapTool::initObjectImgLinks()
+{
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_Build, true);
+		for (int ii = eImage_Town_Build01; ii <= eImage_Town_Build07; ++ii)
+		{
+			lnk->pushBack((eImageUID)ii);
+		}
+		_imgLnksObject.push_back(lnk);
+		lnk = nullptr;
+	}
+
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Object_Chair, false);
+		_imgLnksObject.push_back(lnk);
+		lnk = nullptr;
+	}
+}
+
+void mapTool::initNpcImgLinks()
+{
+}
+
 void mapTool::updateDrawTerrain()
 {
 	// 마우스 입력이 없다면 picking해제
@@ -708,7 +780,10 @@ void mapTool::renderDrawTerrain()
 		if (_pick.isFrame)
 			IMGDATABASE->getImage(_pick.uid)->render(destX, destY, 0.5f);
 		else
-			_sampleImg->render(destX, destY, _pick.x, _pick.y, _pick.width, _pick.height, 0.5f);
+			_sampleImg->render(destX, destY, _pick.x, _pick.y
+							   , static_cast<int>(_pick.width)
+							   , static_cast<int>(_pick.height)
+							   , 0.5f);
 	}
 }
 
@@ -830,7 +905,7 @@ void mapTool::clickBtnTerrain(int idx, uiButton* btn)
 		UINT attr = 0;
 		for (int ii = 0; ii < eAttr_Count; ++ii)
 		{
-			if (_terrain.ter->checkAttribute(pow(2, (ii))))
+			if (_terrain.ter->checkAttribute((eAttribute)ii))
 				_uiBtnInspectors[ii]->setState(eButton_Down);
 			else
 				_uiBtnInspectors[ii]->setState(eButton_Up);
@@ -838,7 +913,9 @@ void mapTool::clickBtnTerrain(int idx, uiButton* btn)
 
 		// 카메라 밖에 있다면 카메라 이동
 		RECTD2D rc = ter->getRect();
-		if (!CAMERA->isRangeInCamera(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top))
+		if (!CAMERA->isRangeInCamera(rc.left, rc.top
+									, static_cast<int>(rc.right - rc.left)
+									, static_cast<int>(rc.bottom - rc.top)))
 		{
 			float offsetX = _canvas->getWidth() / 2.f;
 			float offsetY = _canvas->getHeight() / 2.f;
@@ -854,6 +931,8 @@ void mapTool::clickBtnTerrain(int idx, uiButton* btn)
 			_uiBtnInspectors[ii]->setState(eButton_Up);
 		}
 	}
+
+	refreshDetailText();
 }
 
 void mapTool::clickUpBtnTerrain(int idx)
@@ -864,9 +943,11 @@ void mapTool::clickUpBtnTerrain(int idx)
 	{
 		_uiBtnInspectors[ii]->setState(eButton_Up);
 	}
+
+	refreshDetailText();
 }
 
-void mapTool::clickBtnInspector(UINT attr, uiButton* btn)
+void mapTool::clickBtnInspector(eAttribute attr, uiButton* btn)
 {
 	if (_terrain.ter)
 	{
@@ -879,24 +960,106 @@ void mapTool::clickBtnInspector(UINT attr, uiButton* btn)
 		_terrain.ter->addAttribute(attr);
 		_mapData->changeTerrain(_terrain.layer, _terrain.idx, _terrain.ter);
 
+		switch (attr)
+		{
+			case eAttr_Collide: 	{ break; }
+			case eAttr_Trigger:		
+			{
+				_mapData->useTrigger(_terrain.ter->getUID());
+				break; 
+			}
+			case eAttr_Breakable:	{ break; }
+			case eAttr_Usable:		{ break; }
+			case eAttr_Trap:		{ break; }
+			case eAttr_Portal:		{ break; }
+			case eAttr_Dialog:		{ break; }
+		}
 	}
 	else
 	{
 		btn->setState(eButton_Up);
 	}
+
+	refreshDetailText();
 }
 
-void mapTool::clickUpBtnInspector(UINT attr)
+void mapTool::clickUpBtnInspector(eAttribute attr)
 {
 	if (_terrain.ter)
 	{
 		_terrain.ter->removeAttribute(attr);
 		_mapData->changeTerrain(_terrain.layer, _terrain.idx, _terrain.ter);
 
+		switch (attr)
+		{
+			case eAttr_Collide: { break; }
+			case eAttr_Trigger:
+			{
+				_mapData->deleteTrigger(_terrain.ter->getUID());
+				break;
+			}
+			case eAttr_Breakable: { break; }
+			case eAttr_Usable: { break; }
+			case eAttr_Trap: { break; }
+			case eAttr_Portal: { break; }
+			case eAttr_Dialog: { break; }
+		}
+
+
 		// 속성값이 아무것도 없다면 충돌체 제거
 		if (_terrain.ter->getAtrribute() == NULL)
 		{
 			_terrain.ter->removeCollision();
 		}
+
+		refreshDetailText();
 	}
+}
+
+void mapTool::refreshDetailText()
+{
+	wstring txt;
+	txt.clear();
+
+
+	if (!_terrain.isSet || !_terrain.ter)
+	{
+		_terrain.clear();
+		txt.append(L"None");
+	}
+	else
+	{
+		txt.append(format(L"[UID : %d] \n", _terrain.ter->getUID()));
+		for (int ii = 0; ii < eAttr_Count; ++ii)
+		{
+			if (!_terrain.ter->checkAttribute((eAttribute)ii))
+				continue;
+
+			switch (ii)
+			{
+				case eAttr_Collide:			{ txt.append(L"Collide\n");break; }
+				case eAttr_Trigger:			
+				{
+					int uid = _mapData->getTriggerIndex(_terrain.ter->getUID());
+					txt.append(format(L"Trigger : %d\n", uid));
+					break; 
+				}
+				case eAttr_Breakable:		{ txt.append(L"Breakable\n");break; }
+				case eAttr_Usable:			{ txt.append(L"Usable\n");break; }
+				case eAttr_Trap:			{ txt.append(L"Trap\n");break; }
+				case eAttr_Portal:			
+				{
+					eSceneName name = eSceneName_None;
+					txt.append(format(L"Portal : %d\n", name));
+					break; 
+				}
+				case eAttr_Dialog:			{ txt.append(L"Dialog");break; }
+
+				default:
+					break;
+			}
+		}
+	}
+
+	_uiTextInspectorSubInfo->setText(txt);
 }

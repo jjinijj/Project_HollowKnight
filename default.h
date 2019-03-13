@@ -44,6 +44,17 @@ enum eAttribute
 	eAttr_Count = eAttr_None,
 };
 
+// 지형 종류
+enum eTerrainType
+{
+	eTerrain_Frame,
+	eTerrain_Drag,
+	eTerrain_Clear,
+
+	eTarrain_None,
+	eTerrain_Count = eTarrain_None,
+};
+
 //=============================================
 //   define enum
 //=============================================

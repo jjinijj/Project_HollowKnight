@@ -40,6 +40,8 @@ public:
 	void useTrigger(WORD terrainUID);
 	void deleteTrigger(WORD terrainUID);	
 
+	int getTriggerIndex(WORD terrinUID);
+
 	// 지형 추가
 	terrain* addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid);
 	terrain* addTerrainFrame(UINT layer, float destX, float destY, UINT frameX, UINT frameY, eImageUID imgUid);

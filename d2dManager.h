@@ -6,6 +6,22 @@ class camera;
 class d2dManager : public singletonBase<d2dManager>
 {
 public:
+	enum eFontType
+	{
+		eFontType_DungTeunMo,
+
+		eFontType_None,
+		eFontType_Count = eFontType_None,
+	};
+
+private:
+	typedef map<COLORREF, ID2D1SolidColorBrush*>			mBrush;
+	typedef map<COLORREF, ID2D1SolidColorBrush*>::iterator	iterMBrush;
+
+	typedef map<UINT, IDWriteTextFormat*>					mTextFormat;
+	typedef map<UINT, IDWriteTextFormat*>::iterator			iterMTextFormat;
+
+public:
 	ID2D1Factory*				_d2dFactory;
 	ID2D1HwndRenderTarget*		_renderTarget;
 	IDWriteFactory*				_writeFactory;
@@ -17,7 +33,8 @@ public:
 	
 	IWICImagingFactory*		WICImagingFactory;
 
-	map<wstring, map<UINT, IDWriteTextFormat*>> _fontFormatMap;
+	map<wstring, mTextFormat>	_fontFormatMap;
+	mBrush						_brushMap;
 
 public:
 	d2dManager();
@@ -71,8 +88,8 @@ public:
 
 	
 	void drawText(LPCWSTR string, float x, float y, bool isAbsolute = true);
-	void drawText(LPCWSTR string, float x, float y, int fontSize, bool isAbsolute = true);
-	void drawText(LPCWSTR string, float x, float y, int fontSize, COLORREF rgb, bool isAbsolute = true);
+	void drawText(LPCWSTR string, float x, float y, UINT fontSize, bool isAbsolute = true);
+	void drawText(LPCWSTR string, float x, float y, UINT fontSize, COLORREF rgb, bool isAbsolute = true);
 	//출력할 문자열, 문자열을 그릴 Rect의 Left, Top, Right, Bottom, 그릴 브러쉬
 	void drawTextD2D(ID2D1SolidColorBrush* brush, LPCWSTR string, float startX, float startY, float endX, float endY);
 
@@ -90,6 +107,6 @@ private:
 	bool		isRectFInRangeWindow(const D2D1_RECT_F& rcf );
 
 	// 폰트
-	IDWriteTextFormat* getFontFormat(wstring fontName, UINT fontSize);
+	IDWriteTextFormat* getFontFormat(wstring str, UINT fontSize);
 };
 

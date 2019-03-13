@@ -61,6 +61,30 @@ HRESULT d2dManager::init()
 
 void d2dManager::release()
 {
+	for (iterMBrush iter = _brushMap.begin(); _brushMap.end() != iter;)
+	{
+		ID2D1SolidColorBrush* brush = (*iter).second;
+		iter = _brushMap.erase(iter);
+
+		SAFE_RELEASE2(brush);
+		SAFE_DELETE(brush);
+	}
+
+	map<wstring, mTextFormat>::iterator iter = _fontFormatMap.begin();
+	for (; _fontFormatMap.end() != iter; )
+	{
+		mTextFormat tf = (*iter).second;
+		for (iterMTextFormat it = tf.begin(); tf.end() != it; )
+		{
+			IDWriteTextFormat* wft = (*it).second;
+			it = tf.erase(it);
+
+			SAFE_RELEASE2(wft);
+			SAFE_DELETE(wft);
+		}
+		iter = _fontFormatMap.erase(iter);
+	}
+
 	SAFE_RELEASE2(_defaultBrush);
 	SAFE_RELEASE2(_defaultTextFormat);
 	SAFE_RELEASE2(_writeFactory);
@@ -91,8 +115,10 @@ void d2dManager::endDraw()
 ID2D1SolidColorBrush * d2dManager::createBrush(COLORREF rgb, float opacity)
 {
 	HRESULT hr;
-	ID2D1SolidColorBrush* brush;
-	brush = nullptr;
+	ID2D1SolidColorBrush* brush = nullptr;
+	
+	if(_brushMap.find(rgb) != _brushMap.end())
+		return _brushMap[rgb];
 
 	hr = _renderTarget->CreateSolidColorBrush(ColorF(rgb, opacity), &brush);
 
@@ -303,12 +329,12 @@ void d2dManager::drawText(LPCWSTR string, float x, float y, bool isAbsolute)
 	drawText(string, x, y, DEFAULT_FONT_SIZE, isAbsolute);
 }
 
-void d2dManager::drawText(LPCWSTR string, float x, float y, int fontSize, bool isAbsolute)
+void d2dManager::drawText(LPCWSTR string, float x, float y, UINT fontSize, bool isAbsolute)
 {
 	drawText(string, x, y, fontSize, DEFAULT_FONT_COLOR, isAbsolute);
 }
 
-void d2dManager::drawText(LPCWSTR string, float x, float y, int fontSize, COLORREF rgb, bool isAbsolute)
+void d2dManager::drawText(LPCWSTR string, float x, float y, UINT fontSize, COLORREF rgb, bool isAbsolute)
 {
 	D2D1_RECT_F rcf = { x, y, x + lstrlenW(string) * fontSize, y + 20 };
 
@@ -321,7 +347,6 @@ void d2dManager::drawText(LPCWSTR string, float x, float y, int fontSize, COLORR
 	IDWriteTextFormat* font = getFontFormat(L"µÕ±Ù¸ð²Ã", fontSize);
 	_renderTarget->DrawTextA(string, lstrlenW(string), font, rcf, createBrush(rgb, 1));
 }
-
 
 void d2dManager::drawTextD2D(ID2D1SolidColorBrush * brush, LPCWSTR string, float startX, float startY, float endX, float endY)
 {
