@@ -41,7 +41,7 @@ enum eToolMode
 	eToolMode_DrawTerrain,
 	eToolMode_DrawCollider,
 	eToolMode_DrawObject,
-	eToolMode_Inspector,
+	eToolMode_DrawNpc,
 
 	eToolMode_None,
 	eToolMode_Count = eToolMode_None,
@@ -149,6 +149,7 @@ class mapTool : public uiBase
 private:
 
 	eToolMode _mode;
+	eToolMode _beforeMode;
 	//toolState* _state;
 	TERRAIN _terrain;
 	uiButton* _curBtnTerrain;
@@ -166,7 +167,6 @@ private:
 
 	image* _sampleImg;					// 샘플 지형들
 	SAMPLE _pick;						// 선택한 지형
-	eTerrainType _terType;				// 지형 종류
 
 	
 	bool _isPicking;
@@ -184,14 +184,12 @@ private:
 	uiPanel* _miniMap;				// 미니맵 
 
 	uiButton* _qickOpen;
-	uiButton* _beforeSample;
-	uiButton* _nextSample;
 
-	uiButton* _uiBtnTerrain;
-	uiButton* _uiBtnObject;
-	uiButton* _uiBtnNpc;
+	uiButton* _uiBtnDrawTerrain;
+	uiButton* _uiBtnDrawObject;
+	uiButton* _uiBtnDrawNpc;
 
-	uiButton* _createCol;
+	uiButton* _uiBtnDrawCollision;
 
 	// hierarcy
 	uiButton* _uiBtnHierarcy[eLayer_Count];
@@ -270,6 +268,8 @@ private:
 
 	void renderDrawTerrain();
 	void renderDrawCollider();
+	void renderDrawObject();
+	void renderDrawNpc();
 
 	void openSampleCanvas();
 	void openingSampleCanvas();
@@ -284,6 +284,8 @@ private:
 
 	void clickBtnInspector(eAttribute attr, uiButton* btn);
 	void clickUpBtnInspector(eAttribute attr);
+
+	void clickBtnUpNone(uiButton* btn);
 
 	void refreshDetailText();
 };

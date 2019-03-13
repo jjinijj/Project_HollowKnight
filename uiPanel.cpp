@@ -32,8 +32,11 @@ void uiPanel::release()
 
 void uiPanel::update()
 {
-	uiObject::update();
+	if(!_isActive)
+		return;
 	
+	uiObject::update();
+
 	if(_itween )
 		_itween->update();
 	
@@ -50,6 +53,9 @@ void uiPanel::update()
 
 void uiPanel::render()
 {
+	if(!_isViewing)
+		return;
+
 	D2DMANAGER->drawRectangle(_rc);
 	if(_img)
 		_img->render(_rc, 1.f, true);

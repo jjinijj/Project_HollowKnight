@@ -46,7 +46,6 @@ HRESULT mapTool::init()
 	_pick.clear();
 
 	_curLayer = eLayer_Play;
-	_terType = eTerrain_Drag;
 
 	_mode = eToolMode_DrawTerrain;
 
@@ -72,7 +71,7 @@ void mapTool::update()
 		case eToolMode_DrawTerrain: { updateDrawTerrain();	break;}
 		case eToolMode_DrawCollider:{ updateDrawCollider(); break;}
 		case eToolMode_DrawObject:  { break; }
-		case eToolMode_Inspector:   { break; }
+		case eToolMode_DrawNpc:   { break; }
 	}
 
 	_samplePanelRc = _samplePanel->getRect();
@@ -98,6 +97,7 @@ void mapTool::render()
 	}
 	
 	uiBase::render();
+	_sampleImage;
 
 	if (_isPicking)
 		D2DMANAGER->drawRectangle(_pickArea);
@@ -120,15 +120,19 @@ void mapTool::render()
 	{
 		case eToolMode_DrawTerrain: { renderDrawTerrain();	break; }
 		case eToolMode_DrawCollider:{ renderDrawCollider(); break; }
-		case eToolMode_DrawObject:  { break; }
-		case eToolMode_Inspector:   { break; }
+		case eToolMode_DrawObject:  { renderDrawObject();	break; }
+		case eToolMode_DrawNpc:		{ renderDrawNpc();		break; }
 	}
 }
 
 void mapTool::pickSampleStart()
 {
-	setToolMode(eToolMode_DrawTerrain);
-	_createCol->setState(eButton_Up);
+	if(eToolMode_DrawCollider == _mode)
+		setToolMode(_beforeMode);
+	
+	if(!_sampleImg)
+		return;
+
 	_isPicking = true;
 	_pickArea = { _ptMouse.x, _ptMouse.y, _ptMouse.x + 1.f, _ptMouse.y + 1.f };
 }
@@ -138,33 +142,64 @@ void mapTool::pickSampleEnd()
 	_pick.clear();
 	_isPicking = false;
 
+	if(!_sampleImg)
+		return;
+
+	IMGLNK* curLnk = nullptr;
+	
 	_pickArea.right = _ptMouse.x;
 	_pickArea.bottom = _ptMouse.y;
-
-	IMGLNK* curLnk = _imgLnksTerrain[_sampleIdx];
-
-	// 프레임 이미지
-	if (curLnk->isFrameImg)
+	
+	switch (_mode)
 	{
-		int frameX = (int)(_ptMouse.x - _samplecanvas->getWorldPosition().x) / _sampleImg->GetFrameWidth();
-		int frameY = (int)(_ptMouse.y - _samplecanvas->getWorldPosition().y) / _sampleImg->GetFrameHeight();
+		case eToolMode_DrawTerrain :
+		{
+			if (_sampleImg)
+			{
+				curLnk = _imgLnksTerrain[_sampleIdx]; 
 
-		int idx = frameY * (_sampleImg->GetMaxFrameX() + 1) + frameX;
+				pickingEnd();
+				_pick.uid = curLnk->mainUID;
+			}
+			
+			break; 
+		}
 
-		if (curLnk->lnkSize <= idx)
-			return;
+		case eToolMode_DrawCollider :
+		{
+			break; 
+		}
+		case eToolMode_DrawObject :		
+		{
+			curLnk = _imgLnksObject[_sampleIdx]; 
 
-		_pick.uid = curLnk->lnkUIDs[idx];
-		_pick.isFrame = true;
+			int frameX = (int)(_ptMouse.x - _samplecanvas->getWorldPosition().x) / _sampleImg->GetFrameWidth();
+			int frameY = (int)(_ptMouse.y - _samplecanvas->getWorldPosition().y) / _sampleImg->GetFrameHeight();
 
-		image* img = IMGDATABASE->getImage(_pick.uid);
-		_pick.width =  static_cast<float>(img->GetWidth());
-		_pick.height = static_cast<float>(img->GetHeight());
-	}
-	else
-	{
-		pickingEnd();
-		_pick.uid = curLnk->mainUID;
+			int idx = frameY * (_sampleImg->GetMaxFrameX() + 1) + frameX;
+
+			if (curLnk->lnkSize <= idx)
+				return;
+
+			_pick.uid = curLnk->lnkUIDs[idx];
+			_pick.isFrame = true;
+
+			image* img = IMGDATABASE->getImage(_pick.uid);
+			_pick.width = static_cast<float>(img->GetWidth());
+			_pick.height = static_cast<float>(img->GetHeight());
+
+			break; 
+		}
+		case eToolMode_DrawNpc :	
+		{
+			curLnk = _imgLnksNpc[_sampleIdx]; 
+			break; 
+		}
+
+		default:
+		{
+			return;	// 모드가 없으므로
+		}
 	}
 
 	_pick.isPick = true;
@@ -191,21 +226,21 @@ void mapTool::pickcanvasEnd()
 	float destY = (_ptMouse.y - _pick.height / 2.f) + CAMERA->getPosY() - CAMERA->getScopeRect().top;
 
 	terrain* ter = nullptr;
-	switch (_terType)
+	switch (_mode)
 	{
-		case eTerrain_Frame:
-		{
-			ter = _mapData->addTerrainFrame(_curLayer, destX, destY, _pick.frameX, _pick.frameY, _pick.uid);
-			break;
-		}
-
-		case eTerrain_Drag:
+		case eToolMode_DrawTerrain:
 		{
 			ter = _mapData->addTerrainDrag(_curLayer, destX, destY, _pick.x, _pick.y, _pick.width, _pick.height, _pick.uid);
 			break;
 		}
 
-		case eTerrain_Clear:
+		case eToolMode_DrawObject:
+		{
+			ter = _mapData->addTerrainFrame(_curLayer, destX, destY, _pick.frameX, _pick.frameY, _pick.uid);
+			break;
+		}
+
+		case eToolMode_DrawCollider:
 		{
 			_pick.clear();
 			_isPicking = false;
@@ -219,6 +254,11 @@ void mapTool::pickcanvasEnd()
 			destY = _pickArea.top + CAMERA->getPosY() - CAMERA->getScopeRect().top;
 
 			ter = _mapData->addTerrainClear(_curLayer, destX, destY, _pick.width, _pick.height);
+			break;
+		}
+
+		case eToolMode_DrawNpc:
+		{
 			break;
 		}
 
@@ -323,8 +363,39 @@ void mapTool::clickingMinimap()
 void mapTool::nextSample()
 {
 	++_sampleIdx;
-	if(_imgLnksTerrain.size() <= _sampleIdx)
-		_sampleIdx = 0;
+	
+	switch (_mode)
+	{
+		case eToolMode_DrawTerrain:
+		{
+			if (_imgLnksTerrain.size() <= _sampleIdx)
+				_sampleIdx = 0;
+			break;
+		}
+
+		case eToolMode_DrawCollider:
+		{
+			break;
+		}
+
+		case eToolMode_DrawObject:
+		{
+			if (_imgLnksObject.size() <= _sampleIdx)
+				_sampleIdx = 0;
+			break;
+		}
+		case eToolMode_DrawNpc:
+		{
+			if (_imgLnksNpc.size() <= _sampleIdx)
+				_sampleIdx = 0;
+			break;
+		}
+
+		default:
+		{
+			return;	// 모드가 없으므로
+		}
+	}
 	
 	setSampleImage();
 }
@@ -332,39 +403,140 @@ void mapTool::nextSample()
 void mapTool::beforeSample()
 {
 	--_sampleIdx;
-	if (_sampleIdx < 0)
-		_sampleIdx = static_cast<int>(_imgLnksTerrain.size()) - 1;
 	
+	switch (_mode)
+	{
+		case eToolMode_DrawTerrain:
+		{
+			if (_sampleIdx < 0)
+				_sampleIdx = static_cast<int>(_imgLnksTerrain.size()) - 1;
+			break;
+		}
+
+		case eToolMode_DrawCollider:
+		{
+			break;
+		}
+
+		case eToolMode_DrawObject:
+		{
+			if (_sampleIdx < 0)
+				_sampleIdx = static_cast<int>(_imgLnksObject.size()) - 1;
+			break;
+		}
+		case eToolMode_DrawNpc:
+		{
+			if (_sampleIdx < 0)
+				_sampleIdx = static_cast<int>(_imgLnksNpc.size()) - 1;
+			break;
+		}
+	}
+
 	setSampleImage();
 }
 
 void mapTool::setToolMode(eToolMode mode)
 {
+	if (eToolMode_DrawCollider == _mode)
+	{
+		_beforeMode = _mode;
+		_uiBtnDrawCollision->setState(eButton_Up);
+	}
+	
+	switch (mode)
+	{
+		case eToolMode_DrawTerrain:
+		{
+			_uiBtnDrawObject->setState(eButton_Up);
+			_uiBtnDrawNpc->setState(eButton_Up);
+
+			break;
+		}
+		case eToolMode_DrawCollider:
+		{
+			break;
+		}
+		case eToolMode_DrawObject:
+		{
+			_uiBtnDrawTerrain->setState(eButton_Up);
+			_uiBtnDrawNpc->setState(eButton_Up);
+			break;
+		}
+		case eToolMode_DrawNpc:
+		{
+			_uiBtnDrawTerrain->setState(eButton_Up);
+			_uiBtnDrawObject->setState(eButton_Up);
+			break;
+		}
+	}
+
 	_mode = mode;
 	_pick.clear();
 	_isPicking = false;
-	if(eToolMode_DrawCollider == mode)
-		_terType = eTerrain_Clear;
-	else
-	{
-		if(_imgLnksTerrain[_sampleIdx]->isFrameImg)
-			_terType = eTerrain_Frame;
-		else
-			_terType = eTerrain_Drag;
-	}
+	_sampleIdx = 0;
+
+	setSampleImage();
 }
 
 void mapTool::setSampleImage()
 {
-	_sampleImg = IMGDATABASE->getImage(_imgLnksTerrain[_sampleIdx]->mainUID);
-	_sampleImage->init(0.f, 0.f, _sampleImg);
-	_samplecanvas->setWidth(static_cast<float>(_sampleImg->GetWidth()));
-	_samplecanvas->setHeight(static_cast<float>(_sampleImg->GetHeight()));
+	switch (_mode)
+	{
+		case eToolMode_DrawTerrain:
+		{
+			if (_sampleIdx < _imgLnksTerrain.size())
+				_sampleImg = IMGDATABASE->getImage(_imgLnksTerrain[_sampleIdx]->mainUID);
+			else
+				_sampleImg = nullptr;
 
-	if(_imgLnksTerrain[_sampleIdx]->isFrameImg)
-		_terType = eTerrain_Frame;
+			break;
+		}
+
+		case eToolMode_DrawCollider:
+		{
+			break;
+		}
+
+		case eToolMode_DrawObject:
+		{
+			if(_sampleIdx < _imgLnksObject.size())
+				_sampleImg = IMGDATABASE->getImage(_imgLnksObject[_sampleIdx]->mainUID);
+			else
+				_sampleImg = nullptr;
+
+			break;
+		}
+		case eToolMode_DrawNpc:
+		{
+			if(_sampleIdx < _imgLnksNpc.size())
+				_sampleImg = IMGDATABASE->getImage(_imgLnksNpc[_sampleIdx]->mainUID);
+			else
+				_sampleImg = nullptr;
+			break;
+		}
+
+		default:
+		{
+			_sampleImg = nullptr;
+			break;
+		}
+	}
+
+	if (_sampleImg)
+	{
+		_sampleImage->init(0.f, 0.f, _sampleImg);
+		_samplecanvas->setWidth(static_cast<float>(_sampleImg->GetWidth()));
+		_samplecanvas->setHeight(static_cast<float>(_sampleImg->GetHeight()));
+
+		_sampleImage->setViewing(true);
+		_sampleImage->setActive(true);
+
+	}
 	else
-		_terType = eTerrain_Drag;
+	{
+		_sampleImage->setViewing(false);
+		_sampleImage->setActive(false);
+	}
 
 	_pick.clear();
 }
@@ -397,55 +569,62 @@ void mapTool::initUI()
 		_samplePanel->insertChild(_samplecanvas);
 
 		// 이전 샘플
-		_beforeSample = new uiButton;
-		_beforeSample->init( "uiBG3", "uiBG"
+		uiButton* beforeSample = new uiButton;
+		beforeSample->init("uiBG3", "uiBG"
 							, 3.f * UI_SPACE, (rc.bottom - rc.top) - 80.f
 							, 60.0f, 50.0f);
-		_beforeSample->setText(L"<<", 50);
-		_beforeSample->setOnClickFunction(bind(&mapTool::beforeSample, this));
-		
-		_samplePanel->insertChild(_beforeSample);
+		beforeSample->setText(L"<<", 50);
+		beforeSample->setOnClickFunction(bind(&mapTool::beforeSample, this));
+
+		_samplePanel->insertChild(beforeSample);
 
 		// 다음 샘플
-		_nextSample = new uiButton;
-		_nextSample->init(  "uiBG3", "uiBG"
-						  , _beforeSample->getLocalPosition().x + 60.f + UI_SPACE
-						  , _beforeSample->getLocalPosition().y
+		uiButton* nextSample = new uiButton;
+		nextSample->init("uiBG3", "uiBG"
+						  , beforeSample->getLocalPosition().x + 60.f + UI_SPACE
+						  , beforeSample->getLocalPosition().y
 						  , 60.f, 50.f);
-		_nextSample->setText(L">>", 50);
-		_nextSample->setOnClickFunction(bind(&mapTool::nextSample, this));
+		nextSample->setText(L">>", 50);
+		nextSample->setOnClickFunction(bind(&mapTool::nextSample, this));
 
-		_samplePanel->insertChild(_nextSample);
+		_samplePanel->insertChild(nextSample);
 
 
 		// 지형
-		_uiBtnTerrain = new uiButton;
-		_uiBtnTerrain->init( "uiBG3", "uiBG", "uiBG2"
-							,_nextSample->getRect().right + UI_SPACE
-							,_nextSample->getLocalPosition().y
+		_uiBtnDrawTerrain = new uiButton;
+		_uiBtnDrawTerrain->init( "uiBG3", "uiBG", "uiBG2"
+							, nextSample->getRect().right + UI_SPACE
+							, nextSample->getLocalPosition().y
 							,180.f, 50.f);
-		_uiBtnTerrain->setText(L"Terrain", 50);
-		_samplePanel->insertChild(_uiBtnTerrain);
-
+		_uiBtnDrawTerrain->setText(L"Terrain", 50);
+		_uiBtnDrawTerrain->setOnClickFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawTerrain));
+		_uiBtnDrawTerrain->setOnClickUPFunction(bind(&mapTool::clickBtnUpNone, this, _uiBtnDrawTerrain));
+		_samplePanel->insertChild(_uiBtnDrawTerrain);
 
 		// 오브젝트
-		_uiBtnObject = new uiButton;
-		_uiBtnObject->init("uiBG3", "uiBG", "uiBG2"
-							, _uiBtnTerrain->getRect().right + UI_SPACE
-							, _uiBtnTerrain->getLocalPosition().y
+		_uiBtnDrawObject = new uiButton;
+		_uiBtnDrawObject->init("uiBG3", "uiBG", "uiBG2"
+							, _uiBtnDrawTerrain->getRect().right + UI_SPACE
+							, _uiBtnDrawTerrain->getLocalPosition().y
 							, 150.f, 50.f);
-		_uiBtnObject->setText(L"Object", 50);
-		_samplePanel->insertChild(_uiBtnObject);
+		_uiBtnDrawObject->setText(L"Object", 50);
+		_uiBtnDrawObject->setOnClickFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawObject));
+		_uiBtnDrawObject->setOnClickUPFunction(bind(&mapTool::clickBtnUpNone, this, _uiBtnDrawObject));
+		_samplePanel->insertChild(_uiBtnDrawObject);
 
 		// npc
-		_uiBtnNpc = new uiButton;
-		_uiBtnNpc->init("uiBG3", "uiBG", "uiBG2"
-						   , _uiBtnObject->getRect().right + UI_SPACE
-						   , _uiBtnObject->getLocalPosition().y
+		_uiBtnDrawNpc = new uiButton;
+		_uiBtnDrawNpc->init("uiBG3", "uiBG", "uiBG2"
+						   , _uiBtnDrawObject->getRect().right + UI_SPACE
+						   , _uiBtnDrawObject->getLocalPosition().y
 						   , 80.f, 50.f);
-		_uiBtnNpc->setText(L"NPC", 50);
-		_samplePanel->insertChild(_uiBtnNpc);
+		_uiBtnDrawNpc->setText(L"NPC", 50);
+		_uiBtnDrawNpc->setOnClickFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawNpc));
+		_uiBtnDrawNpc->setOnClickUPFunction(bind(&mapTool::clickBtnUpNone, this, _uiBtnDrawNpc));
+		_samplePanel->insertChild(_uiBtnDrawNpc);
 
+		setToolMode(_mode);
+		_uiBtnDrawTerrain->setState(eButton_Down);
 
 		// 샘플판 열고 닫기
 		_qickOpen = new uiButton;
@@ -614,18 +793,18 @@ void mapTool::initUI()
 
 	// 충돌체 생성 버튼
 	{
-		_createCol = new uiButton;
+		_uiBtnDrawCollision = new uiButton;
 		RECTD2D rc = _canvas->getRect();
 
-		_createCol->init("uiBG3", "uiBG", "uiBG2"
+		_uiBtnDrawCollision->init("uiBG3", "uiBG", "uiBG2"
 						 , rc.right + UI_SPACE
 						 , rc.bottom - 50.f
 						 , 80.f, 50.f);
-		_createCol->setText(L"Collider", 20);
-		_createCol->setOnClickFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawCollider));
-		_createCol->setOnClickUPFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawTerrain));
+		_uiBtnDrawCollision->setText(L"Collider", 20);
+		_uiBtnDrawCollision->setOnClickFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawCollider));
+		_uiBtnDrawCollision->setOnClickUPFunction(bind(&mapTool::setToolMode, this, _beforeMode));
 
-		insertUIObject(_createCol);
+		insertUIObject(_uiBtnDrawCollision);
 	}
 
 	// canvas와 미니맵 사이
@@ -773,22 +952,41 @@ void mapTool::updateDrawCollider()
 
 void mapTool::renderDrawTerrain()
 {
-	if (_pick.isPick)
-	{
-		float destX = _ptMouse.x - _pick.width / 2.f;
-		float destY = _ptMouse.y - _pick.height / 2.f;
-		if (_pick.isFrame)
-			IMGDATABASE->getImage(_pick.uid)->render(destX, destY, 0.5f);
-		else
-			_sampleImg->render(destX, destY, _pick.x, _pick.y
-							   , static_cast<int>(_pick.width)
-							   , static_cast<int>(_pick.height)
-							   , 0.5f);
-	}
+	if(!_pick.isPick || !_sampleImg)
+		return;
+	
+	float destX = _ptMouse.x - _pick.width / 2.f;
+	float destY = _ptMouse.y - _pick.height / 2.f;
+	_sampleImg->render(destX, destY, _pick.x, _pick.y
+						   , static_cast<int>(_pick.width)
+						   , static_cast<int>(_pick.height)
+						   , 0.5f);
 }
 
 void mapTool::renderDrawCollider()
 {
+}
+
+void mapTool::renderDrawObject()
+{
+	if (!_pick.isPick || !_sampleImg)
+		return;
+
+	float destX = _ptMouse.x - _pick.width / 2.f;
+	float destY = _ptMouse.y - _pick.height / 2.f;
+	
+	IMGDATABASE->getImage(_pick.uid)->render(destX, destY, 0.5f);
+}
+
+void mapTool::renderDrawNpc()
+{
+	if (!_pick.isPick || !_sampleImg)
+		return;
+
+	float destX = _ptMouse.x - _pick.width / 2.f;
+	float destY = _ptMouse.y - _pick.height / 2.f;
+	
+	IMGDATABASE->getImage(_pick.uid)->render(destX, destY, 0.5f);
 }
 
 void mapTool::openSampleCanvas()
@@ -1014,6 +1212,13 @@ void mapTool::clickUpBtnInspector(eAttribute attr)
 
 		refreshDetailText();
 	}
+}
+
+
+
+void mapTool::clickBtnUpNone(uiButton * btn)
+{
+	btn->setState(eButton_Down);
 }
 
 void mapTool::refreshDetailText()

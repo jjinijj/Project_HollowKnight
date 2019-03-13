@@ -6,6 +6,7 @@ uiObject::uiObject()
 : _uid(0)
 , _isActive(false)
 , _isCollider(false)
+, _isViewing(true)
 , _x(0.f)
 , _y(0.f)
 , _width(0.f)
@@ -89,7 +90,8 @@ void uiObject::render()
 	// 力老 关俊 乐绰 ui何磐 坊歹
 	for (int ii = 0; ii < _childCount; ++ii)
 	{
-		_childs[ii]->render();
+		if(_isViewing)
+			_childs[ii]->render();
 	}
 }
 

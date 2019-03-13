@@ -33,11 +33,17 @@ void uiImage::release()
 
 void uiImage::update()
 {
+	if(!_isActive)
+		return;
+
 	_worldPosition = getWorldPosition();
 }
 
 void uiImage::render()
 {
+	if(!_isViewing)
+		return;
+
 	_img->render(_worldPosition.x, _worldPosition.y, 1.f);
 	uiObject::render();
 }
