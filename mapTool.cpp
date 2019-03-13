@@ -90,7 +90,7 @@ void mapTool::render()
 	if (_terrain.isSet)
 	{
 		D2DMANAGER->drawRectangle(RGB(0, 0, 255), _terrain.ter->getRect(), false);
-		D2DMANAGER->drawRectangle(RGB(0, 255, 0), _terrain.ter->getCollider(), false);
+		D2DMANAGER->drawRectangle(RGB(0, 255, 0), _terrain.ter->getCollision(), false);
 	}
 	
 	uiBase::render();
@@ -595,13 +595,14 @@ void mapTool::initUI()
 		_uiPanelInspector->init(hieracy.right + UI_SPACE, UI_SPACE, width, width, IMGDATABASE->getImage(eImage_UI_BG5));
 		
 		UINT attr = 0;
-		wstring txts[ATTR_COUNT + 1] = { L"Collistion"
-										,L"Collider"
-										,L"Trigger"
-										,L"Breakable"
-										,L"Interaction"
-										,L"Trap" };
-		for (int ii = 0; ii < ATTR_COUNT + 1; ++ii)
+		wstring txts[eAttr_Count] = {L"Collide"
+									,L"Trigger"
+									,L"Breakable"
+									,L"Usable"
+									,L"Trap"
+									,L"Portal"
+									,L"Dialog" };
+		for (int ii = 0; ii < eAttr_Count; ++ii)
 		{
 			if(0 == ii)
 				attr = 0;
@@ -809,7 +810,6 @@ void mapTool::clickUpBtnHierarcy(eLayer layer)
 
 void mapTool::clickBtnTerrain(int idx, uiButton* btn)
 {
-	int count = ATTR_COUNT + 1;
 	terrain* ter = _mapData->getTerrain(_curLayer, idx);
 	if (ter)
 	{
@@ -828,15 +828,9 @@ void mapTool::clickBtnTerrain(int idx, uiButton* btn)
 
 		// 상태창
 		UINT attr = 0;
-		RECTD2D col = _terrain.ter->getCollider();
-		if (0 < (col.right - col.left) && 0 < (col.bottom - col.top))
-			_uiBtnInspectors[0]->setState(eButton_Down);
-		else
-			_uiBtnInspectors[0]->setState(eButton_Up);
-
-		for (int ii = 1; ii < count; ++ii)
+		for (int ii = 0; ii < eAttr_Count; ++ii)
 		{
-			if (_terrain.ter->checkAttribute(pow(2, (ii - 1))))
+			if (_terrain.ter->checkAttribute(pow(2, (ii))))
 				_uiBtnInspectors[ii]->setState(eButton_Down);
 			else
 				_uiBtnInspectors[ii]->setState(eButton_Up);
@@ -855,7 +849,7 @@ void mapTool::clickBtnTerrain(int idx, uiButton* btn)
 	}
 	else
 	{
-		for (int ii = 0; ii < count; ++ii)
+		for (int ii = 0; ii < eAttr_Count; ++ii)
 		{
 			_uiBtnInspectors[ii]->setState(eButton_Up);
 		}
@@ -866,8 +860,7 @@ void mapTool::clickUpBtnTerrain(int idx)
 {
 	_terrain.clear();
 	_curBtnTerrain = nullptr;
-	int count = ATTR_COUNT + 1;
-	for (int ii = 0; ii < count; ++ii)
+	for (int ii = 0; ii < eAttr_Count; ++ii)
 	{
 		_uiBtnInspectors[ii]->setState(eButton_Up);
 	}
@@ -877,16 +870,15 @@ void mapTool::clickBtnInspector(UINT attr, uiButton* btn)
 {
 	if (_terrain.ter)
 	{
-		if (0 == attr)
+		// 속성값이 아무것도 없었다면 충돌체 생성
+		if (_terrain.ter->getAtrribute() == NULL)
 		{
-			RECTD2D rc = _terrain.ter->getRect();
-			_terrain.ter->setCollider(rc);
+			_terrain.ter->createCollision();
 		}
-		else
-		{
-			_terrain.ter->addAttribute(attr);
-		}
+		
+		_terrain.ter->addAttribute(attr);
 		_mapData->changeTerrain(_terrain.layer, _terrain.idx, _terrain.ter);
+
 	}
 	else
 	{
@@ -898,15 +890,13 @@ void mapTool::clickUpBtnInspector(UINT attr)
 {
 	if (_terrain.ter)
 	{
-		if (0 == attr)
-		{
-			RECTD2D rc = {};
-			_terrain.ter->setCollider(rc);
-		}
-		else
-		{
-			_terrain.ter->removeAttribute(attr);
-		}
+		_terrain.ter->removeAttribute(attr);
 		_mapData->changeTerrain(_terrain.layer, _terrain.idx, _terrain.ter);
+
+		// 속성값이 아무것도 없다면 충돌체 제거
+		if (_terrain.ter->getAtrribute() == NULL)
+		{
+			_terrain.ter->removeCollision();
+		}
 	}
 }

@@ -117,4 +117,5 @@ namespace JJIN_UTIL
 	wstring format(const WCHAR *fmt, ...);
 	wstring format_arg_list(const WCHAR *fmt, va_list args);
 
+	WORD attribute(eAttribute attr);
 }

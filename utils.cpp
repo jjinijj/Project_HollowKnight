@@ -393,4 +393,16 @@ namespace JJIN_UTIL
 		return str;
 	}
 
+	WORD attribute(eAttribute attr)
+	{
+		if(eAttr_None == attr)
+			return 0;
+
+		WORD value = 1;
+		for (int ii = 0; ii < attr; ++ii)
+			value *= 2;
+
+		return value;
+	}
+
 }

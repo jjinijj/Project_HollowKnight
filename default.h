@@ -4,7 +4,6 @@
 //=============================================
 //   define type
 //=============================================
-#define TERRAINATTR		UINT
 #define MAPSIZE			UINT
 #define UID				UINT
 #define DEGUGMODE		UINT
@@ -28,17 +27,22 @@
 
 #define UI_SPACE 10.f
 
-#define ATTR_COUNT 5
-
 //=============================================
 //   지형 속성
 //=============================================
-#define ATTR_COLLIDER	0x000001UL		// 충돌
-#define ATTR_TRIGGER	0x000002UL		// 트리거
-#define ATTR_BREAKABLE	0x000004UL		// 파괴 가능
-#define ATTR_INTERATION	0x000008UL		// 상호작용
-#define ATTR_TRAP		0x000010UL		// 함정
-#define ATTR_PORTAL		0x000020UL		// 씬 이동
+enum eAttribute
+{
+	eAttr_Collide,		// 충돌
+	eAttr_Trigger,		// 트리거
+	eAttr_Breakable,	// 파괴 가능
+	eAttr_Usable,		// 상호작용
+	eAttr_Trap,			// 함정
+	eAttr_Portal,		// 씬 이동
+	eAttr_Dialog,		// 대화 가능
+
+	eAttr_None,
+	eAttr_Count = eAttr_None,
+};
 
 //=============================================
 //   define enum

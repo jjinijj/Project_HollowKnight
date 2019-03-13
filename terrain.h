@@ -20,7 +20,7 @@ typedef struct tagTerrainPack
 
 	RECTD2D rc;
 	RECTD2D collider;
-	TERRAINATTR attr;
+	WORD attr;
 	
 	void clear()
 	{
@@ -51,9 +51,11 @@ protected:
 	float	_x;			// 위치
 	float	_y;			// 위치
 	RECTD2D	_rc;		
-	RECTD2D _collider;	// 충돌체
+	RECTD2D _collision;	// 충돌체
 
-	TERRAINATTR _attr;	// 속성
+	WORD _attr;	// 속성
+
+	bool _isExistCollision;	// 충돌체 사용여부
 
 	terrain();
 
@@ -74,6 +76,17 @@ public:
 	virtual TARRAINPACK* makePack() = 0;
 	virtual void loadPack(TARRAINPACK* pack) = 0;
 	
+	// 충돌체 생성
+	void createCollision();
+	// 충돌체 제거
+	void removeCollision();
+	// 충돌체 변경
+	void setCollision(float x, float y, float width, float height);
+	// 충돌체 변경
+	void setCollision(float width, float height);
+	// 충돌체 변경 : 크기에 맞춤
+	void setCollision();
+
 	// 속성 추가
 	void addAttribute(const UINT attr);
 	// 속성 제거
@@ -85,11 +98,9 @@ public:
 
 	UID getUID() {return _uid;}
 
-	void setCollider(RECTD2D rc) { _collider = rc; }
-
-	TERRAINATTR getAtrribute()	{ return _attr; }
+	WORD getAtrribute()			{ return _attr; }
 	RECTD2D getRect()			{ return _rc;	}
-	RECTD2D getCollider()		{ return _collider;	}
+	RECTD2D getCollision()		{ return _collision;	}
 }; 
 
 

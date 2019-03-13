@@ -23,7 +23,7 @@ HRESULT terrain::init()
 	_y = 0.f;
 	_attr = NULL;
 	_rc = {};
-	_collider = {};
+	_collision = {};
 
 	return S_OK;
 }
@@ -63,10 +63,10 @@ TARRAINPACK* terrain::makePack()
 					,_rc.top - CAMERA->getScopeRect().top
 					,_rc.right - CAMERA->getScopeRect().left
 					,_rc.bottom - CAMERA->getScopeRect().top};
-	pack->collider = { _collider.left - CAMERA->getScopeRect().left
-					  ,_collider.top - CAMERA->getScopeRect().top
-					  ,_collider.right - CAMERA->getScopeRect().left
-					  ,_collider.bottom - CAMERA->getScopeRect().top };
+	pack->collider = { _collision.left - CAMERA->getScopeRect().left
+					  ,_collision.top - CAMERA->getScopeRect().top
+					  ,_collision.right - CAMERA->getScopeRect().left
+					  ,_collision.bottom - CAMERA->getScopeRect().top };
 	pack->attr	= _attr;
 
 	return pack;
@@ -85,13 +85,42 @@ void terrain::loadPack(TARRAINPACK* pack)
 					,pack->rc.top + CAMERA->getScopeRect().top
 					,pack->rc.right + CAMERA->getScopeRect().left
 					,pack->rc.bottom + CAMERA->getScopeRect().top };
-		_collider = {pack->collider.left + CAMERA->getScopeRect().left
+		_collision = {pack->collider.left + CAMERA->getScopeRect().left
 					,pack->collider.top + CAMERA->getScopeRect().top
 					,pack->collider.right + CAMERA->getScopeRect().left
 					,pack->collider.bottom + CAMERA->getScopeRect().top };
 		_attr	= pack->attr;
 	}
 }
+
+void terrain::createCollision()
+{
+	_isExistCollision = true;
+	_collision = _rc;
+}
+
+void terrain::removeCollision()
+{
+	_isExistCollision = false;
+	_collision = {};
+}
+
+void terrain::setCollision(float x, float y, float width, float height)
+{
+	_collision = RectMake(x, y, width, height);
+}
+
+void terrain::setCollision(float width, float height)
+{
+	_collision.right = _collision.left + width;
+	_collision.bottom = _collision.top + height;
+}
+
+void terrain::setCollision()
+{
+	_collision = { _rc.left, _rc.top, _rc.right, _rc.bottom };
+}
+
 
 void terrain::addAttribute(const UINT attr)
 {
@@ -121,6 +150,8 @@ bool terrain::checkAttribute(const UINT attr)
 	else 
 		return false;
 }
+
+
 
 
 

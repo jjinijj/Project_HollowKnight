@@ -6,6 +6,11 @@ class mapData
 	typedef vector<terrain*>			vTerrain;
 	typedef vector<terrain*>::iterator	iterVTerrain;
 
+	enum
+	{
+		TRRIGER_MAX_COUNT = 100,
+	};
+
 private:
 	vTerrain _terrains;		// 모든 지형들
 
@@ -14,7 +19,7 @@ private:
 
 	UINT _uidCount;
 
-	map<WORD, map<UINT, UINT>> _attrMap;
+	WORD _triggerPool[TRRIGER_MAX_COUNT];			// terrain uid
 	
 public:
 	mapData();
@@ -32,10 +37,9 @@ public:
 	// 지형 변경
 	void changeTerrain(UINT layer, int idx, terrain* ter);
 
-	void addAttribute(UINT layer, int idx, WORD attr, int value);
-	void removeAttribute(UINT layer, int idx, WORD attr);
+	void useTrigger(WORD terrainUID);
+	void deleteTrigger(WORD terrainUID);	
 
-	
 	// 지형 추가
 	terrain* addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid);
 	terrain* addTerrainFrame(UINT layer, float destX, float destY, UINT frameX, UINT frameY, eImageUID imgUid);
@@ -62,5 +66,7 @@ private:
 
 	void saveMapDate(string fileName);
 	void saveMapInfo(string fileName);
+
+	WORD getUsableTriggerIndex();
 };
 

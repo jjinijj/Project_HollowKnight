@@ -100,24 +100,24 @@ void mapData::changeTerrain(UINT layer, int idx, terrain* ter)
 	//terrain* ter = getTerrain(layer, idx);
 }
 
-void mapData::addAttribute(UINT layer, int idx, WORD attr, int value)
+void mapData::useTrigger(WORD terrainUID)
 {
-	terrain* ter = getTerrain(layer, idx);
-	if (ter)
+	WORD idx = getUsableTriggerIndex();
+	if(TRRIGER_MAX_COUNT != idx)
+		_triggerPool[idx] = terrainUID;
+}
+
+void mapData::deleteTrigger(WORD terrainUID)
+{
+	for (int ii = 0; ii < TRRIGER_MAX_COUNT; ++ii)
 	{
-		ter->addAttribute(attr);
-		if (_attrMap[attr].find(ter->getUID()) == _attrMap[attr].end())
-			_attrMap[attr].insert(make_pair(ter->getUID(), value));
-		else
-			_attrMap[attr][ter->getUID()] = value;
-		
+		if (terrainUID == _triggerPool[ii])
+		{
+			_triggerPool[ii] = 0;
+			break;
+		}
 	}
 }
-
-void mapData::removeAttribute(UINT layer, int idx, WORD attr)
-{
-}
-
 
 terrain* mapData::addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid)
 {
@@ -174,7 +174,7 @@ void mapData::addTerrain(UINT layer, terrain* ter)
 	_terrains.push_back(ter);
 	_terrainsByLayer[layer].push_back(ter);
 
-	if (ter->checkAttribute(ATTR_COLLIDER))
+	if (ter->checkAttribute(attribute(eAttr_Collide)))
 		_colTerrains.push_back(ter);
 
 	++_uidCount;
@@ -194,4 +194,15 @@ void mapData::saveMapDate(string fileName)
 
 void mapData::saveMapInfo(string fileName)
 {
+}
+
+WORD mapData::getUsableTriggerIndex()
+{
+	for (int ii = 0; ii < TRRIGER_MAX_COUNT; ++ii)
+	{
+		if(0 == _triggerPool[ii])
+			return ii;
+	}
+
+	return TRRIGER_MAX_COUNT;
 }

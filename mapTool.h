@@ -200,7 +200,7 @@ private:
 
 	// 상태창(옵션)
 	uiPanel* _uiPanelInspector;
-	uiButton* _uiBtnInspectors[ATTR_COUNT + 1];
+	uiButton* _uiBtnInspectors[eAttr_Count];
 
 	// 하위 상태창
 	uiPanel* _uiPanelInspectorSub;
