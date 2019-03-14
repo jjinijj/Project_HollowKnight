@@ -109,6 +109,23 @@ void uiList::insertChild(uiObject* ui)
 	}
 }
 
+void uiList::removeChild(uiObject* ui)
+{
+	uiObject::removeChild(ui);
+
+	if (_scroll)
+	{
+		float scrollSize;
+		float totalSize = ((_childCount / _countPerLine) * (_gapY + _cellHeight));
+		if (totalSize <= _height)
+			scrollSize = _height;
+		else
+			scrollSize = (_height * _height) / totalSize;
+		
+		_scroll->setScrollSize(scrollSize);
+	}
+}
+
 void uiList::reSort()
 {
 	POINTF pf = { -_cellWidth, -_cellHeight };

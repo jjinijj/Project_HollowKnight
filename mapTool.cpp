@@ -269,8 +269,8 @@ void mapTool::pickcanvasEnd()
 		uiButton* btn = new uiButton;
 		btn->init("uiBG2", "uiBG3", "uiBG", 0.f, 0.f, 10.f, 10.f);
 		btn->setText(format(L"%d", ter->getUID()));
-		btn->setOnClickFunction(std::bind(&mapTool::clickBtnTerrain, this, _uiListHierarcy[_curLayer]->getChildCount(), btn));
-		btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnTerrain, this, _uiListHierarcy[_curLayer]->getChildCount()));
+		btn->setOnClickFunction(std::bind(&mapTool::clickBtnTerrain, this, ter->getUID(), btn));
+		btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnTerrain, this, ter->getUID()));
 
 		_uiListHierarcy[_curLayer]->insertChild(btn);
 
@@ -742,11 +742,51 @@ void mapTool::initUI()
 		clickBtnHierarcy(eLayer_Play);
 		_uiBtnHierarcy[eLayer_Play]->setState(eButton_Down);
 	}
+	RECTD2D hieracy = _uiListHierarcy[0]->getRect();
+
+	// 지형 관리 버튼
+	{
+		// 지형 삭제
+		_uiBtnDelTerrain = new uiButton();
+		_uiBtnDelTerrain->init("uiBG3", "uiBG"
+							   ,hieracy.left, hieracy.bottom + UI_SPACE
+							   ,65.f, 50.f);
+		_uiBtnDelTerrain->setText(L"Del", 20.f);
+		_uiBtnDelTerrain->setOnClickFunction(std::bind(&mapTool::clickBtnDelTerrain, this));
+		insertUIObject(_uiBtnDelTerrain);
+
+		_uiBtnUpIndex = new uiButton();
+		_uiBtnUpIndex->init("uiBG3", "uiBG"
+							,_uiBtnDelTerrain->getRect().right + UI_SPACE
+							,_uiBtnDelTerrain->getRect().top
+							,65.f, 50.f);
+		_uiBtnUpIndex->setText(L"Up", 20.f);
+		_uiBtnUpIndex->setOnClickFunction(std::bind(&mapTool::clickBtnUpIndex, this));
+		insertUIObject(_uiBtnUpIndex);
+
+		_uiBtnDownIndex = new uiButton();
+		_uiBtnDownIndex->init("uiBG3", "uiBG"
+							  ,_uiBtnUpIndex->getRect().right + UI_SPACE
+							  ,_uiBtnUpIndex->getRect().top
+							  , 65.f, 50.f);
+		_uiBtnDownIndex->setText(L"Down", 20.f);
+		_uiBtnDownIndex->setOnClickFunction(std::bind(&mapTool::clickBtnDownIndex, this));
+		insertUIObject(_uiBtnDownIndex);
+
+		_uiBtnChangeLayer = new uiButton();
+		_uiBtnChangeLayer->init("uiBG3", "uiBG", "uiBG5"
+								,_uiBtnDownIndex->getRect().right + UI_SPACE
+								,_uiBtnDownIndex->getRect().top
+								, 65.f, 50.f);
+		_uiBtnChangeLayer->setText(L"Change\nLayer", 20.f);
+		_uiBtnChangeLayer->setOnClickFunction(std::bind(&mapTool::clickBtnChangeLayer, this));
+		insertUIObject(_uiBtnChangeLayer);
+	}
+
+
 
 	// 속성창 & 버튼
 	{
-		RECTD2D hieracy = _uiListHierarcy[0]->getRect();
-		
 		float width = _sampleBoardCloseX - _qickOpen->getWidth() - (hieracy.right + UI_SPACE) - UI_SPACE;
 		_uiPanelInspector = new uiPanel;
 		_uiPanelInspector->init( hieracy.right + UI_SPACE, UI_SPACE, width, width
@@ -938,7 +978,7 @@ void mapTool::updateDrawTerrain()
 	// 마우스 우클릭하면 픽 정보 클리어
 	if (_pick.isPick)
 	{
-		if (KEYMANAGER->isOnceKeyDown(VK_RBUTTON))
+		if ((GetAsyncKeyState(VK_RBUTTON) & 0x8000))
 			_pick.clear();
 	}
 }
@@ -1078,13 +1118,13 @@ void mapTool::clickUpBtnHierarcy(eLayer layer)
 	_uiBtnHierarcy[layer]->setState(eButton_Down);
 }
 
-void mapTool::clickBtnTerrain(int idx, uiButton* btn)
+void mapTool::clickBtnTerrain(UID uid, uiButton* btn)
 {
-	terrain* ter = _mapData->getTerrain(_curLayer, idx);
+	terrain* ter = _mapData->getTerrain(_curLayer, uid);
 	if (ter)
 	{
 		_terrain.clear();
-		_terrain.infoSet(ter, _curLayer, idx);
+		_terrain.infoSet(ter, _curLayer);
 		
 		if (_curBtnTerrain)
 		{
@@ -1129,7 +1169,7 @@ void mapTool::clickBtnTerrain(int idx, uiButton* btn)
 	refreshDetailText();
 }
 
-void mapTool::clickUpBtnTerrain(int idx)
+void mapTool::clickUpBtnTerrain(UID uid)
 {
 	_terrain.clear();
 	_curBtnTerrain = nullptr;
@@ -1145,7 +1185,7 @@ void mapTool::clickBtnInspector(eAttribute attr, uiButton* btn)
 {
 	if (_terrain.ter)
 	{
-		_mapData->addTerrainAttribute(_terrain.layer, _terrain.idx, attr);
+		_mapData->addTerrainAttribute(_terrain.layer, _terrain.ter->getUID(), attr);
 	}
 	else
 	{
@@ -1159,7 +1199,7 @@ void mapTool::clickUpBtnInspector(eAttribute attr)
 {
 	if (_terrain.ter)
 	{
-		_mapData->removeTerrainAttribute(_terrain.layer, _terrain.idx, attr);
+		_mapData->removeTerrainAttribute(_terrain.layer, _terrain.ter->getUID(), attr);
 		refreshDetailText();
 	}
 }
@@ -1168,6 +1208,114 @@ void mapTool::clickUpBtnInspector(eAttribute attr)
 void mapTool::clickBtnUpNone(uiButton * btn)
 {
 	btn->setState(eButton_Down);
+}
+
+void mapTool::clickBtnDelTerrain()
+{
+	if (_terrain.isSet)
+	{
+		if (_terrain.ter)
+		{
+			_mapData->deleteTerrain(_terrain.layer, _terrain.ter->getUID());
+			_uiListHierarcy[_terrain.layer]->removeChild(_curBtnTerrain);
+
+			_curBtnTerrain = nullptr;
+
+			_terrain.clear();
+			refreshDetailText();
+		}
+	}
+}
+
+void mapTool::clickBtnUpIndex()
+{
+	if (!_terrain.isSet || !_terrain.ter)
+	{
+		_terrain.clear();
+		return;
+	}
+
+	int idx = _mapData->getTerrainIndex(_curLayer, _terrain.ter->getUID());
+	if (0 < idx)
+	{
+		_mapData->terrainUp(_terrain.layer, _terrain.ter->getUID());
+
+		_uiListHierarcy[_curLayer]->removeChildAll();
+		vector<terrain*>* vTerrains = _mapData->getLayerTerrains(_curLayer);
+		
+		vector<terrain*>::iterator iter = vTerrains->begin();
+		vector<terrain*>::iterator end = vTerrains->end();
+		
+		for (; iter != end; ++iter)
+		{
+			terrain* ter = (*iter);
+			uiButton* btn = new uiButton;
+		
+			btn->init("uiBG2", "uiBG3", "uiBG", 0.f, 0.f, 10.f, 10.f);
+			btn->setText(format(L"%d", ter->getUID()));
+			btn->setOnClickFunction(std::bind(&mapTool::clickBtnTerrain, this, ter->getUID(), btn));
+			btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnTerrain, this, ter->getUID()));
+		
+			_uiListHierarcy[_curLayer]->insertChild(btn);
+
+			if (ter->getUID() == _terrain.ter->getUID())
+			{
+				_curBtnTerrain = btn;
+				_curBtnTerrain->setState(eButton_Down);
+			}
+		}
+	}
+
+	refreshDetailText();
+}
+
+void mapTool::clickBtnDownIndex()
+{
+	if (!_terrain.isSet || !_terrain.ter)
+	{
+		_terrain.clear();
+		return;
+	}
+
+	int idx = _mapData->getTerrainIndex(_curLayer, _terrain.ter->getUID());
+	if (0 < idx)
+	{
+		_mapData->terrainDown(_terrain.layer, _terrain.ter->getUID());
+
+		_uiListHierarcy[_curLayer]->removeChildAll();
+		vector<terrain*>* vTerrains = _mapData->getLayerTerrains(_curLayer);
+
+		if (idx < vTerrains->size() - 1)
+		{
+			vector<terrain*>::iterator iter = vTerrains->begin();
+			vector<terrain*>::iterator end = vTerrains->end();
+
+			for (; iter != end; ++iter)
+			{
+				terrain* ter = (*iter);
+				uiButton* btn = new uiButton;
+
+				btn->init("uiBG2", "uiBG3", "uiBG", 0.f, 0.f, 10.f, 10.f);
+				btn->setText(format(L"%d", ter->getUID()));
+				btn->setOnClickFunction(std::bind(&mapTool::clickBtnTerrain, this, ter->getUID(), btn));
+				btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnTerrain, this, ter->getUID()));
+
+				_uiListHierarcy[_curLayer]->insertChild(btn);
+
+				if (ter->getUID() == _terrain.ter->getUID())
+				{
+					_curBtnTerrain = btn;
+					_curBtnTerrain->setState(eButton_Down);
+				}
+			}
+		}
+	}
+
+	refreshDetailText();
+}
+
+void mapTool::clickBtnChangeLayer()
+{
 }
 
 void mapTool::refreshDetailText()

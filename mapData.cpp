@@ -74,14 +74,36 @@ void mapData::render()
 	}
 }
 
-void mapData::swapTerrain(UINT layer, int dest, int sour)
+void mapData::terrainUp(UINT layer, UINT uid)
 {
 	int size = _terrainsByLayer[layer].size();
+	for (int ii = 0; ii < size; ++ii)
+	{
+		if (_terrainsByLayer[layer][ii]->getUID() == uid)
+		{
+			if (ii != 0)
+			{
+				swap(_terrainsByLayer[layer][ii], _terrainsByLayer[layer][ii - 1]);
+			}
+			break;
+		}
+	}
+}
 
-	if ( size <= dest || size <= sour || dest < 0 || sour < 0)
-		return;
-
-	swap(_terrainsByLayer[layer][dest], _terrainsByLayer[layer][sour]);
+void mapData::terrainDown(UINT layer, UINT uid)
+{
+	int size = _terrainsByLayer[layer].size();
+	for (int ii = 0; ii < size; ++ii)
+	{
+		if (_terrainsByLayer[layer][ii]->getUID() == uid)
+		{
+			if (ii < _terrainsByLayer[layer].size() - 1)
+			{
+				swap(_terrainsByLayer[layer][ii], _terrainsByLayer[layer][ii + 1]);
+			}
+			break;
+		}
+	}
 }
 
 void mapData::changeLayer(UINT destLayer, UINT sourLayer, int idx)
@@ -160,9 +182,53 @@ terrain* mapData::addTerrainClear(UINT layer, float destX, float destY, float wi
 	return clear;
 }
 
-void mapData::addTerrainAttribute(UINT layer, int idx, eAttribute attr)
+void mapData::deleteTerrain(UINT layer, UID uid)
 {
-	terrain* ter = getTerrain(layer, idx);
+	terrain* ter = getTerrain(layer, uid);
+	if (ter)
+	{
+		iterVTerrain iter = _terrainsByLayer[layer].begin();
+		iterVTerrain end = _terrainsByLayer[layer].end();
+		for (; iter != end; ++iter)
+		{
+			terrain* it = (*iter);
+			if (it->getUID() == ter->getUID())
+			{
+				_terrainsByLayer[layer].erase(iter);
+				break;
+			}
+		}
+
+		iter = _terrains.begin();
+		end = _terrains.end();
+		for (; iter != end; ++iter)
+		{
+			terrain* it = (*iter);
+			if (it->getUID() == uid)
+			{
+				_terrains.erase(iter);
+
+				SAFE_RELEASE(it);
+				SAFE_DELETE(it);
+
+				break;
+			}
+		}
+
+		for (int ii = 0; ii < TRRIGER_MAX_COUNT; ++ii)
+		{
+			if (_triggerPool[ii] == uid)
+			{
+				_triggerPool[ii] = 0;
+				break;
+			}
+		}
+	}
+}
+
+void mapData::addTerrainAttribute(UINT layer, UID uid, eAttribute attr)
+{
+	terrain* ter = getTerrain(layer, uid);
 	WORD beforeAttr = ter->getAtrribute();
 	if (ter)
 	{
@@ -192,9 +258,9 @@ void mapData::addTerrainAttribute(UINT layer, int idx, eAttribute attr)
 	}
 }
 
-void mapData::removeTerrainAttribute(UINT layer, int idx, eAttribute attr)
+void mapData::removeTerrainAttribute(UINT layer, UID uid, eAttribute attr)
 {
-	terrain* ter = getTerrain(layer, idx);
+	terrain* ter = getTerrain(layer, uid);
 	if (ter)
 	{
 		ter->removeAttribute(attr);
@@ -233,14 +299,56 @@ void mapData::removeTerrainAttribute(UINT layer, int idx, eAttribute attr)
 	}
 }
 
-terrain* mapData::getTerrain(UINT layer, int idx)
+terrain* mapData::getTerrain(UINT layer, UINT uid)
 {
 	terrain* ter = nullptr;
 
-	if ( idx < _terrainsByLayer[layer].size())
-		ter = _terrainsByLayer[layer][idx];
+	int size = _terrainsByLayer[layer].size();
+	for (int ii = 0; ii < size; ++ii)
+	{
+		if (_terrainsByLayer[layer][ii]->getUID() == uid)
+		{
+			ter = _terrainsByLayer[layer][ii];
+			break;
+		}
+	}
 
 	return ter;
+}
+
+terrain* mapData::getTerrain(UINT uid)
+{
+	terrain* ter = nullptr;
+	int size = _terrains.size();
+	for (int ii = 0; ii < size; ++ii)
+	{
+		if (_terrains[ii]->getUID() == uid)
+		{
+			ter = _terrains[ii];
+			break;
+		}
+	}
+
+	return ter;
+}
+
+int mapData::getTerrainIndex(UINT layer, UINT uid)
+{
+	int size = _terrainsByLayer[layer].size();
+	for (int ii = 0; ii < size; ++ii)
+	{
+		if (_terrainsByLayer[layer][ii]->getUID() == uid)
+		{
+			return ii;
+		}
+	}
+
+	return -1;
+}
+
+int mapData::getTerrainIndex(UINT uid)
+{
+	return -1;
 }
 
 HRESULT mapData::save(string fileName)

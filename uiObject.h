@@ -33,6 +33,8 @@ public:
 	virtual void render();
 
 	virtual void insertChild(uiObject* ui);
+	virtual void removeChild(uiObject* ui);
+	virtual void removeChildAll();
 	uiObject* getChild(int idx);
 	
 	void setParent(uiObject* ui) { _parent = ui; }

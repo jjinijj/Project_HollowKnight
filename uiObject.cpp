@@ -109,6 +109,38 @@ void uiObject::insertChild(uiObject* ui)
 	ui->setParent(this);
 }
 
+void uiObject::removeChild(uiObject* ui)
+{
+	for (int ii = 0; ii < _childCount; ++ii)
+	{
+		if (ui == _childs[ii])
+		{
+			_childs.erase(_childs.begin() + ii);
+			break;
+		}
+	}
+
+	SAFE_RELEASE(ui);
+	SAFE_DELETE(ui);
+
+	_childCount = _childs.size();
+}
+
+void uiObject::removeChildAll()
+{
+	while (0 != _childs.size())
+	{
+		uiObject* obj = _childs.back();
+		_childs.pop_back();
+
+		SAFE_RELEASE(obj);
+		SAFE_DELETE(obj);
+	}
+
+	_childs.clear();
+	_childCount = 0;
+}
+
 uiObject* uiObject::getChild(int idx)
 {
 	if(idx < 0 || _childs.size() < idx )

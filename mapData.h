@@ -30,8 +30,10 @@ public:
 	void update();
 	void render();
 
-	// 레이어 상의 순서 변경
-	void swapTerrain(UINT layer, int dest, int sour);
+	// 레이어 순서 위로
+	void terrainUp(UINT layer, UINT uid);
+	// 레이어 순서 아래로
+	void terrainDown(UINT layer, UINT uid);
 	// 레이어 변경
 	void changeLayer(UINT destLayer, UINT sourLayer, int idx);
 	// 지형 변경
@@ -46,14 +48,23 @@ public:
 	terrain* addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid);
 	terrain* addTerrainFrame(UINT layer, float destX, float destY, UINT frameX, UINT frameY, eImageUID imgUid);
 	terrain* addTerrainClear(UINT layer, float destX, float destY, float width, float height);
+
+	void deleteTerrain(UINT layer, UID uid);
 	
 	// 지형에 속성 추가
-	void addTerrainAttribute(UINT layer, int idx, eAttribute attr);
+	void addTerrainAttribute(UINT layer, UID uid, eAttribute attr);
 	// 지형에 속성 제거
-	void removeTerrainAttribute(UINT layer, int idx, eAttribute attr);
+	void removeTerrainAttribute(UINT layer, UID uid, eAttribute attr);
 
-	// 레이어, 레이어 상의 인덱스
-	terrain* getTerrain(UINT layer, int idx);
+	// 레이어, uid
+	terrain* getTerrain(UINT layer, UINT uid);
+	// uid
+	terrain* getTerrain(UINT uid);
+	// layer, uid
+	int getTerrainIndex(UINT layer, UINT uid);
+	// uid
+	int getTerrainIndex(UINT uid);
+
 	// 레이어에 있는 지형들
 	vTerrain* getLayerTerrains(UINT layer)	{ return &_terrainsByLayer[layer]; }
 	// 충돌체 있는 지형들

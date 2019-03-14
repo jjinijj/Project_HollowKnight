@@ -31,6 +31,7 @@ public:
 	void render() override;
 
 	void insertChild(uiObject* ui) override;
+	void removeChild(uiObject* ui) override;
 
 	// ÀçÁ¤·Ä
 	void reSort();

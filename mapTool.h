@@ -118,28 +118,24 @@ typedef struct tagTerrainInfo
 {
 	terrain*	ter;
 	eLayer		layer;
-	int			idx;
 	bool		isSet;
 
-	void infoSet(terrain* inTer, eLayer inLayer, int inIdx)
+	void infoSet(terrain* inTer, eLayer inLayer)
 	{
 		ter = inTer;
 		layer = inLayer;
-		idx = inIdx;
 		isSet = true;
 	}
 	void clear()
 	{
 		ter = nullptr;
 		layer = eLayer_None;
-		idx = -1;
 		isSet = false;
 	}
 	void operator= (tagTerrainInfo info)
 	{
 		ter = info.ter;
 		layer = info.layer;
-		idx = info.idx;
 		isSet = info.isSet;
 	}
 }TERRAIN;
@@ -286,13 +282,18 @@ private:
 	void clickBtnHierarcy(eLayer layer);
 	void clickUpBtnHierarcy(eLayer layer);
 
-	void clickBtnTerrain(int idx, uiButton* btn);
-	void clickUpBtnTerrain(int idx);
+	void clickBtnTerrain(UID uid, uiButton* btn);
+	void clickUpBtnTerrain(UID uid);
 
 	void clickBtnInspector(eAttribute attr, uiButton* btn);
 	void clickUpBtnInspector(eAttribute attr);
 
 	void clickBtnUpNone(uiButton* btn);
+
+	void clickBtnDelTerrain();
+	void clickBtnUpIndex();
+	void clickBtnDownIndex();
+	void clickBtnChangeLayer();
 
 	void refreshDetailText();
 };
