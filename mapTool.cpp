@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "mapTool.h"
 #include "mapData.h"
-#include "uiButton.h"
+//#include "uiButton.h"
 #include "uiPanel.h"
 #include "uiImage.h"
 #include "uiList.h"
 #include "uiScroll.h"
 #include "uiText.h"
+#include "uiButtonDrop.h"
 #include "terrain.h"
 
 
@@ -692,12 +693,7 @@ void mapTool::initUI()
 		}
 	}
 
-	{
-		uiPanel* uiImg = new uiPanel;
-		uiImg->init(miniMap.right, canvas.bottom, WINSIZEX - miniMap.right, WINSIZEY - canvas.bottom, uiBG);
-		insertUIObject(uiImg);
-		uiImg = nullptr;
-	}
+
 
 	// 레이어 별 지형목록
 	{
@@ -755,6 +751,7 @@ void mapTool::initUI()
 		_uiBtnDelTerrain->setOnClickFunction(std::bind(&mapTool::clickBtnDelTerrain, this));
 		insertUIObject(_uiBtnDelTerrain);
 
+		// 순서 up
 		_uiBtnUpIndex = new uiButton();
 		_uiBtnUpIndex->init("uiBG3", "uiBG"
 							,_uiBtnDelTerrain->getRect().right + UI_SPACE
@@ -764,6 +761,7 @@ void mapTool::initUI()
 		_uiBtnUpIndex->setOnClickFunction(std::bind(&mapTool::clickBtnUpIndex, this));
 		insertUIObject(_uiBtnUpIndex);
 
+		// 순서 down
 		_uiBtnDownIndex = new uiButton();
 		_uiBtnDownIndex->init("uiBG3", "uiBG"
 							  ,_uiBtnUpIndex->getRect().right + UI_SPACE
@@ -773,17 +771,34 @@ void mapTool::initUI()
 		_uiBtnDownIndex->setOnClickFunction(std::bind(&mapTool::clickBtnDownIndex, this));
 		insertUIObject(_uiBtnDownIndex);
 
-		_uiBtnChangeLayer = new uiButton();
-		_uiBtnChangeLayer->init("uiBG3", "uiBG", "uiBG5"
+		// 레이어 변경
+		_uiBtnDropChangeLayer = new uiButtonDrop();
+		_uiBtnDropChangeLayer->init("uiBG3", "uiBG", "uiBG5"
 								,_uiBtnDownIndex->getRect().right + UI_SPACE
 								,_uiBtnDownIndex->getRect().top
 								, 65.f, 50.f);
-		_uiBtnChangeLayer->setText(L"Change\nLayer", 20.f);
-		_uiBtnChangeLayer->setOnClickFunction(std::bind(&mapTool::clickBtnChangeLayer, this));
-		insertUIObject(_uiBtnChangeLayer);
+		_uiBtnDropChangeLayer->setText(L"Change\nLayer", 20.f);
+
+		for (int ii = 0; ii < eLayer_Count; ++ii)
+		{
+			uiButton* btn = new uiButton;
+			btn->init("uiBG3", "uiBG"
+					  , _uiBtnUpIndex->getRect().right + UI_SPACE
+					  , _uiBtnUpIndex->getRect().top
+					  , 30.f, 30.f);
+			btn->setText(format(L"%d", (ii + 1)), 20.f);
+
+			btn->setActive(false);
+			btn->setViewing(false);
+			btn->setOnClickFunction(std::bind(&mapTool::clickBtnChangeLayer, this, (eLayer)ii));
+
+
+			_uiBtnDropChangeLayer->insertChild(btn);
+
+		}
+
+		insertUIObject(_uiBtnDropChangeLayer);
 	}
-
-
 
 	// 속성창 & 버튼
 	{
@@ -842,7 +857,12 @@ void mapTool::initUI()
 		insertUIObject(_uiPanelInspectorInfo);
 	}
 
-
+	{
+		uiPanel* uiImg = new uiPanel;
+		uiImg->init(miniMap.right, canvas.bottom, WINSIZEX - miniMap.right, WINSIZEY - canvas.bottom, uiBG);
+		insertUIObject(uiImg);
+		uiImg = nullptr;
+	}
 
 	// canvas와 미니맵 사이
 	{
@@ -1314,8 +1334,72 @@ void mapTool::clickBtnDownIndex()
 	refreshDetailText();
 }
 
-void mapTool::clickBtnChangeLayer()
+void mapTool::clickBtnChangeLayer(UINT layer)
 {
+	if (!_terrain.isSet || !_terrain.ter)
+	{
+		_terrain.clear();
+		return;
+	}
+
+	if(layer == _terrain.layer)
+		return;
+
+	_mapData->changeLayer(_terrain.layer, layer, _terrain.ter->getUID());
+
+	_uiListHierarcy[_terrain.layer]->removeChildAll();
+	vector<terrain*>* vTerrains = _mapData->getLayerTerrains(_terrain.layer);
+	vector<terrain*>::iterator iter = vTerrains->begin();
+	vector<terrain*>::iterator end = vTerrains->end();
+
+	for (; iter != end; ++iter)
+	{
+		terrain* ter = (*iter);
+		uiButton* btn = new uiButton;
+
+		btn->init("uiBG2", "uiBG3", "uiBG", 0.f, 0.f, 10.f, 10.f);
+		btn->setText(format(L"%d", ter->getUID()));
+		btn->setOnClickFunction(std::bind(&mapTool::clickBtnTerrain, this, ter->getUID(), btn));
+		btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnTerrain, this, ter->getUID()));
+
+		_uiListHierarcy[_terrain.layer]->insertChild(btn);
+
+		if (ter->getUID() == _terrain.ter->getUID())
+		{
+			_curBtnTerrain = btn;
+			_curBtnTerrain->setState(eButton_Down);
+
+			_terrain.layer = (eLayer)layer;
+		}
+	}
+
+	_uiListHierarcy[layer]->removeChildAll();
+	vTerrains = _mapData->getLayerTerrains(layer);
+	iter = vTerrains->begin();
+	end = vTerrains->end();
+
+	for (; iter != end; ++iter)
+	{
+		terrain* ter = (*iter);
+		uiButton* btn = new uiButton;
+
+		btn->init("uiBG2", "uiBG3", "uiBG", 0.f, 0.f, 10.f, 10.f);
+		btn->setText(format(L"%d", ter->getUID()));
+		btn->setOnClickFunction(std::bind(&mapTool::clickBtnTerrain, this, ter->getUID(), btn));
+		btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnTerrain, this, ter->getUID()));
+
+		_uiListHierarcy[layer]->insertChild(btn);
+
+		if (ter->getUID() == _terrain.ter->getUID())
+		{
+			_curBtnTerrain = btn;
+			_curBtnTerrain->setState(eButton_Down);
+			_terrain.layer = (eLayer)layer;
+		}
+	}
+
+	clickBtnHierarcy((eLayer)layer);
+	_uiBtnHierarcy[layer]->setState(eButton_Down);
 }
 
 void mapTool::refreshDetailText()

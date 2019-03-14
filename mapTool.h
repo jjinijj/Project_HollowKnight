@@ -15,6 +15,7 @@
 class mapData;
 class terrain;
 class uiButton;
+class uiButtonDrop;
 class uiPanel;
 class uiImage;
 class uiList;
@@ -187,11 +188,10 @@ private:
 	uiButton* _uiBtnDrawNpc;		// npc
 
 	uiButton* _uiBtnDelTerrain;		// 지형 삭제
-	uiButton* _uiBtnUpIndex;		// 위로 올리기(렌더를 나중에)
-	uiButton* _uiBtnDownIndex;		// 아래로 (렌더를 먼저)
+	uiButton* _uiBtnUpIndex;		// 위로 올리기(렌더를 먼저)
+	uiButton* _uiBtnDownIndex;		// 아래로 (렌더를 나중에)
 	
-	uiButton* _uiBtnChangeLayer;	// 레이어 변경
-
+	uiButtonDrop* _uiBtnDropChangeLayer;	// 레이어 변경
 
 
 	// hierarcy
@@ -203,12 +203,13 @@ private:
 	uiPanel* _uiPanelInspector;
 	uiButton* _uiBtnInspectors[eAttr_Count];
 
-	// 하위 상태창
+	// 상태창 상세
 	uiText* _uiTextInspectorSub;
 	uiPanel* _uiPanelInspectorInfo;
 	uiText* _uiTextInspectorSubInfo;
 
-	
+	// 레이어 변경
+	uiPanel* _uiPanelPopUpLayerChange;
 
 
 
@@ -293,7 +294,7 @@ private:
 	void clickBtnDelTerrain();
 	void clickBtnUpIndex();
 	void clickBtnDownIndex();
-	void clickBtnChangeLayer();
+	void clickBtnChangeLayer(UINT layer);
 
 	void refreshDetailText();
 };

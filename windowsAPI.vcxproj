@@ -171,6 +171,7 @@
     <ClInclude Include="mapData.h" />
     <ClInclude Include="mapTool.h" />
     <ClInclude Include="mapToolScene.h" />
+    <ClInclude Include="uiButtonDrop.h" />
     <ClInclude Include="uiImage.h" />
     <ClInclude Include="uiList.h" />
     <ClInclude Include="uiPanel.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="mapData.cpp" />
     <ClCompile Include="mapTool.cpp" />
     <ClCompile Include="mapToolScene.cpp" />
+    <ClCompile Include="uiButtonDrop.cpp" />
     <ClCompile Include="uiImage.cpp" />
     <ClCompile Include="uiList.cpp" />
     <ClCompile Include="uiPanel.cpp" />

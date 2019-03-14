@@ -106,15 +106,21 @@ void mapData::terrainDown(UINT layer, UINT uid)
 	}
 }
 
-void mapData::changeLayer(UINT destLayer, UINT sourLayer, int idx)
+void mapData::changeLayer(UINT sourLayer, UINT destLayer, UID uid)
 {
-	if(_terrainsByLayer[destLayer].size() <= idx || idx < 0)
+	if( NULL == uid)
 		return;
 
-	terrain* ter = _terrainsByLayer[destLayer][idx];
-	_terrainsByLayer[destLayer].erase(_terrainsByLayer[destLayer].begin() + idx);
+	int idx = getTerrainIndex(sourLayer, uid);
+	if (idx < 0)
+		return;
 
-	_terrainsByLayer[sourLayer].push_back(ter);
+	terrain* ter = _terrainsByLayer[sourLayer][idx];
+	if (ter)
+	{
+		_terrainsByLayer[sourLayer].erase(_terrainsByLayer[sourLayer].begin() + idx);
+		_terrainsByLayer[destLayer].push_back(ter);
+	}
 }
 
 void mapData::changeTerrain(UINT layer, int idx, terrain* ter)

@@ -13,7 +13,7 @@ enum eButtonState
 
 class uiButton : public uiObject
 {
-private:
+protected:
 	
 	eButtonState _state;
 	image* _imgs[eButton_Count];
@@ -33,22 +33,22 @@ public:
 	~uiButton();
 
 	// 일반 버튼
-	HRESULT init( const char* upImgName
-				 , const char* pressImgName
-				 , float destX, float destY
-				 , float width, float height);
+	virtual HRESULT init( const char* upImgName
+						, const char* pressImgName
+						, float destX, float destY
+						, float width, float height);
 
 	// 토글 속성 버튼
-	HRESULT init( const char* upImgName
-				 ,const char* pressImgName
-				 ,const char* downImgName
-				 ,float destX, float destY
-				 ,float width, float height);
+	virtual HRESULT init( const char* upImgName
+						 ,const char* pressImgName
+						 ,const char* downImgName
+						 ,float destX, float destY
+						 ,float width, float height);
 
 
-	void release();
-	void update();
-	void render();
+	virtual void release();
+	virtual void update();
+	virtual void render();
 	
 	// 텍스트, 버튼 상태, 크기(default)
 	void setText(wstring text);
@@ -78,7 +78,7 @@ public:
 	float getWidth() { return _width; }
 	float getHeight(){ return _height;}
 
-private:
+protected:
 	void releaseInputKey() override;
 
 	void onceKeyDownMouseL() override;

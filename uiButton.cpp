@@ -82,6 +82,8 @@ void uiButton::render()
 						 ,_rc.left
 						 ,_rc.top + (_height - _fontSize) / 2.5f
 						 ,_fontSize, RGB(255, 255, 255));
+
+	uiObject::render();
 }
 
 void uiButton::setText(wstring text)

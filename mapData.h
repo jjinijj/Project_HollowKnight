@@ -34,8 +34,8 @@ public:
 	void terrainUp(UINT layer, UINT uid);
 	// 레이어 순서 아래로
 	void terrainDown(UINT layer, UINT uid);
-	// 레이어 변경
-	void changeLayer(UINT destLayer, UINT sourLayer, int idx);
+	// 레이어 변경 toLayer, 
+	void changeLayer(UINT sourLayer, UINT destLayer, UID uid);
 	// 지형 변경
 	void changeTerrain(UINT layer, int idx, terrain* ter);
 
