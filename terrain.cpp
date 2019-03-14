@@ -5,12 +5,16 @@
 //   지형
 //=============================================
 terrain::terrain()
-: _uid(0)
+: _uid(NULL)
+,_type(eTarrain_None)
 , _x(0.f)
 , _y(0.f)
+,_isReverse(false)
+,_isExistCollision(false)
 , _attr(NULL)
 {
 	_rc = {};
+	_collision = {};
 }
 
 terrain::~terrain()
@@ -55,6 +59,7 @@ TARRAINPACK* terrain::makePack()
 	TARRAINPACK* pack = new TARRAINPACK;
 	pack->clear();
 
+	pack->isReverse = _isReverse;
 	pack->uid	= _uid;
 	pack->type = _type;
 	// 0,0 기준으로 저장하기 위해 카메라의 scope 범위를 빼줌
@@ -77,6 +82,7 @@ void terrain::loadPack(TARRAINPACK* pack)
 {
 	if (pack)
 	{
+		_isReverse = pack->isReverse;
 		_uid	= pack->uid;
 		_type	= pack->type;
 		// 0,0 기준으로 저장이 되어있기 때문에 카메라의 scope 범위를 더해줌
@@ -208,21 +214,33 @@ void terrainDrag::render()
 {
 	terrain::render();
 
-	if(CAMERA->isRangeInCamera(_rc.left, _rc.top, _rc.right, _rc.bottom))
-		_img->render( _x
-					 ,_y
-					 ,_sourX, _sourY
-					 ,_width, _height
-					 ,1.0f, false);
+	//if (CAMERA->isRangeInCamera(_rc.left, _rc.top, _rc.right, _rc.bottom))
+	{
+		if (_isReverse)
+			_img->renderReverseX(_x, _y, _sourX, _sourY, _width, _height, 1.f, false);
+		else
+			_img->render(_x, _y, _sourX, _sourY, _width, _height, 1.f, false);
+	}
 }
 
 void terrainDrag::render(float destX, float destY, float percent)
 {
-	_img->render( destX + _x * percent, destY + _y * percent
-				 ,_width * percent, _height * percent
-				 ,_sourX, _sourY
-				 ,_width, _height
-				 ,1.0f);
+	if (_isReverse)
+	{
+		_img->renderReverseX(destX + _x * percent, destY + _y * percent
+							,_width * percent, _height * percent
+							,_sourX, _sourY
+							,_width, _height
+							,1.0f, true);
+	}
+	else
+	{
+		_img->render( destX + _x * percent, destY + _y * percent
+					 ,_width * percent, _height * percent
+					 ,_sourX, _sourY
+					 ,_width, _height
+					 ,1.0f, true);
+	}
 }
 
 TARRAINPACK* terrainDrag::makePack()
@@ -305,18 +323,31 @@ void terrainFrame::update()
 void terrainFrame::render()
 {
 	terrain::render();
-	_img->render( _x 
-				 ,_y
-				 ,1.f
-				 ,false);
+
+	if (_isReverse)
+		_img->renderReverseX(_x, _y, 1.f, false);
+	else 
+		_img->render( _x ,_y, 1.f, false);
 }
 
 void terrainFrame::render(float destX, float destY, float percent)
 {
-	_img->render( _x * percent + destX
-				 ,_y * percent + destY
-				 ,_img->GetWidth() * percent
-				 ,_img->GetHeight() * percent, 1.0f);
+	if (_isReverse)
+	{
+		_img->renderReverseX(_x * percent + destX
+							,_y * percent + destY
+							,_img->GetWidth() * percent
+							,_img->GetHeight() * percent
+							, 1.0f, true);
+	}
+	else
+	{
+		_img->render( _x * percent + destX
+					 ,_y * percent + destY
+					 ,_img->GetWidth() * percent
+					 ,_img->GetHeight() * percent
+					 ,1.0f, true);
+	}
 }
 
 TARRAINPACK* terrainFrame::makePack()

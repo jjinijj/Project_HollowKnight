@@ -44,6 +44,6 @@ void uiImage::render()
 	if(!_isViewing)
 		return;
 
-	_img->render(_worldPosition.x, _worldPosition.y, 1.f);
+	_img->render(_worldPosition.x, _worldPosition.y, 1.f, true);
 	uiObject::render();
 }

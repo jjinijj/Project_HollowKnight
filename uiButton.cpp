@@ -74,7 +74,7 @@ void uiButton::update()
 
 void uiButton::render()
 {
-	_imgs[_state]->render(_rc, 1.0f);
+	_imgs[_state]->render(_rc, 1.0f, true);
 
 	//WCHAR str[128] ;
 	//swprintf_s(str, L"%d %d", _state, _isToggleOn);

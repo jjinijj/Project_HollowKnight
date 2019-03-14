@@ -135,31 +135,31 @@ BOOL imageManager::deleteAll(void)
 void imageManager::render(string strKey, float alpha)
 {
 	image* img = findImage(strKey);
-	if (img) img->render(alpha);
+	if (img) img->render(alpha, true);
 }
 
 void imageManager::render(string strKey, float destX, float destY, float alpha)
 {
 	image* img = findImage(strKey);
-	if (img) img->render(destX, destY, alpha);
+	if (img) img->render(destX, destY, alpha, true);
 }
 
 void imageManager::render(string strKey, float destX, float destY, int showWidth, int showHeight, float alpha)
 {
 	image* img = findImage(strKey);
-	if (img) img->render(destX, destY, showWidth, showHeight, alpha);
+	if (img) img->render(destX, destY, showWidth, showHeight, alpha, true);
 }
 
 void imageManager::render(string strKey, float destX, float destY, float sourX, float sourY, int sourWidth, int sourHeight, float alpha)
 {
 	image* img = findImage(strKey);
-	if (img) img->render(destX, destY, sourX, sourY, sourWidth, sourHeight, alpha);
+	if (img) img->render(destX, destY, sourX, sourY, sourWidth, sourHeight, alpha, true);
 }
 
 void imageManager::render(string strKey, float destX, float destY, int showWidth, int showHeight, float sourX, float sourY, int sourWidth, int sourHeight, float alpha)
 {
 	image* img = findImage(strKey);
-	if (img) img->render(destX, destY, showWidth, showHeight, sourX, sourY, sourWidth, sourHeight, alpha);
+	if (img) img->render(destX, destY, showWidth, showHeight, sourX, sourY, sourWidth, sourHeight, alpha, true);
 }
 
 void imageManager::loopRender(string strKey, D2D1_RECT_F drawArea, int offSetX, int offSetY, float opacity)

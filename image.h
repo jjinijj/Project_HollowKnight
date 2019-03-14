@@ -73,24 +73,45 @@ public:
 	
 
 	//기본 출력
-	void render(float alpha, bool isAbsolute = true);
-
+	void render(float alpha, bool isAbsolute);
 	//원래 크기 출력 - 그려줄 x좌표, y좌표, 투명도, 절대값 좌표로 출력 여부
-	void render(float destX, float destY, float alpha, bool isAbsolute = true);
-
+	void render(float destX, float destY, float alpha, bool isAbsolute);
 	//변형 크기 출력 - 그려줄 x좌표, y좌표, 출력할 너비, 출력할 높이, 투명도, 절대값 좌표로 출력 여부
-	void render(float destX, float destY, int showWidth, int showHeight, float alpha, bool isAbsolute = true);
-
-	void render(RECTD2D rc, float alpha, bool isAbsolute = true);
-
+	void render(float destX, float destY, int showWidth, int showHeight, float alpha, bool isAbsolute);
+	// rect에 맞춰서 출력
+	void render(RECTD2D rc, float alpha, bool isAbsolute);
 	//원래 크기로 잘라서 가져오기 - 그려줄 x좌표, y좌표 -> 가져올 곳의 left, top, 가로 크기, 세로 크기, 투명도, 절대값 좌표로 출력 여부
-	void render(float destX, float destY, float sourX, float sourY,
-		int sourWidth, int sourHeight, float alpha, bool isAbsolute = true);
-
+	void render( float destX, float destY
+				,float sourX, float sourY
+				,int sourWidth, int sourHeight
+				,float alpha, bool isAbsolute);
 	//변형 크기로 잘라서 가져오기 - 그려줄 x좌표, y좌표, 출력할 너비, 출력할 높이 -> 가져올 곳의 left, top, 가로 크기, 세로 크기, 투명도, 절대값 좌표로 출력 여부
-	void render(float destX, float destY, int showWidth, int showHeight, float sourX, float sourY,
-		int sourWidth, int sourHeight, float alpha, bool isAbsolute = true);
+	void render( float destX, float destY
+				,int showWidth, int showHeight
+				,float sourX, float sourY
+				,int sourWidth, int sourHeight
+				,float alpha, bool isAbsolute);
 
+
+	//기본 출력
+	void renderReverseX(float alpha, bool isAbsolute);
+	//원래 크기 출력 - 그려줄 x좌표, y좌표, 투명도, 절대값 좌표로 출력 여부
+	void renderReverseX(float destX, float destY, float alpha, bool isAbsolute);
+	//변형 크기 출력 - 그려줄 x좌표, y좌표, 출력할 너비, 출력할 높이, 투명도, 절대값 좌표로 출력 여부
+	void renderReverseX(float destX, float destY, int showWidth, int showHeight, float alpha, bool isAbsolute);
+	// rect에 맞춰서 출력
+	void renderReverseX(RECTD2D rc, float alpha, bool isAbsolute);
+	//원래 크기로 잘라서 가져오기 - 그려줄 x좌표, y좌표 -> 가져올 곳의 left, top, 가로 크기, 세로 크기, 투명도, 절대값 좌표로 출력 여부
+	void renderReverseX( float destX, float destY
+						,float sourX, float sourY
+						,int sourWidth, int sourHeight
+						,float alpha, bool isAbsolute);
+	//변형 크기로 잘라서 가져오기 - 그려줄 x좌표, y좌표, 출력할 너비, 출력할 높이 -> 가져올 곳의 left, top, 가로 크기, 세로 크기, 투명도, 절대값 좌표로 출력 여부
+	void renderReverseX( float destX, float destY
+						,int showWidth, int showHeight
+						,float sourX, float sourY
+						,int sourWidth, int sourHeight
+						,float alpha, bool isAbsolute);
 
 	//원래 크기 프레임렌더 - 그려줄 x, y 좌표, 가로 방향 프레임 인덱스, 세로 방향 프레임 인덱스, 투명도, 절대값 좌표로 출력 여부
 	void frameRender(float destX, float destY, int currentFrameX, int currentFrameY, float alpha = 1.0f);

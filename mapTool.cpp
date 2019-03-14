@@ -61,6 +61,69 @@ HRESULT mapTool::init()
 
 void mapTool::release()
 {
+	_terrain.clear();
+	_pick.clear();
+
+	_curBtnTerrain = nullptr;
+	_sampleImg = nullptr;
+	_samplePanel = nullptr;
+	_samplecanvas = nullptr;
+	_sampleImage = nullptr;
+	_canvas = nullptr;
+	_qickOpen = nullptr;
+	_uiBtnDrawCollision = nullptr;
+	_uiBtnDrawTerrain = nullptr;
+	_uiBtnDrawObject = nullptr;
+	_uiBtnDrawNpc = nullptr;
+	_uiBtnDelTerrain = nullptr;
+	_uiBtnUpIndex = nullptr;
+	_uiBtnDownIndex = nullptr;
+	_uiBtnDropChangeLayer = nullptr;
+
+	for (int ii = 0; ii < eLayer_Count; ++ii)
+	{
+		_uiBtnHierarcy[ii] = nullptr;
+		_uiListHierarcy[ii] = nullptr;
+	}
+
+	_uiTextInspector = nullptr;
+	_uiPanelInspector = nullptr;
+
+	for(int ii = 0 ; ii < eAttr_Count; ++ii)
+		_uiBtnInspectors[ii] = nullptr;
+
+	_uiTextInspectorSub = nullptr;
+	_uiPanelInspectorInfo = nullptr;
+	_uiTextInspectorSubInfo = nullptr;
+	_uiPanelPopUpLayerChange = nullptr;
+
+
+	SAFE_RELEASE(_mapData);
+	SAFE_DELETE(_mapData);
+
+	while (_imgLnksTerrain.size() != 0)
+	{
+		IMGLNK* lnk = _imgLnksTerrain.back();
+		_imgLnksTerrain.pop_back();
+	
+		SAFE_DELETE(lnk);
+	}
+
+	while (_imgLnksObject.size() != 0)
+	{
+		IMGLNK* lnk = _imgLnksObject.back();
+		_imgLnksObject.pop_back();
+
+		SAFE_DELETE(lnk);
+	}
+
+	while (_imgLnksNpc.size() != 0)
+	{
+		IMGLNK* lnk = _imgLnksNpc.back();
+		_imgLnksNpc.pop_back();
+
+		SAFE_DELETE(lnk);
+	}
 }
 
 void mapTool::update()
@@ -1017,7 +1080,7 @@ void mapTool::renderDrawTerrain()
 	_sampleImg->render(destX, destY, _pick.x, _pick.y
 						   , static_cast<int>(_pick.width)
 						   , static_cast<int>(_pick.height)
-						   , 0.5f);
+						   , 0.5f, true);
 }
 
 void mapTool::renderDrawCollider()
@@ -1032,7 +1095,7 @@ void mapTool::renderDrawObject()
 	float destX = _ptMouse.x - _pick.width / 2.f;
 	float destY = _ptMouse.y - _pick.height / 2.f;
 	
-	IMGDATABASE->getImage(_pick.uid)->render(destX, destY, 0.5f);
+	IMGDATABASE->getImage(_pick.uid)->render(destX, destY, 0.5f, true);
 }
 
 void mapTool::renderDrawNpc()
@@ -1043,7 +1106,7 @@ void mapTool::renderDrawNpc()
 	float destX = _ptMouse.x - _pick.width / 2.f;
 	float destY = _ptMouse.y - _pick.height / 2.f;
 	
-	IMGDATABASE->getImage(_pick.uid)->render(destX, destY, 0.5f);
+	IMGDATABASE->getImage(_pick.uid)->render(destX, destY, 0.5f, true);
 }
 
 void mapTool::openSampleCanvas()

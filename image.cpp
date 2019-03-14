@@ -150,6 +150,55 @@ void image::render(float destX, float destY, int showWidth, int showHeight, floa
 	}
 }
 
+void image::renderReverseX(float alpha, bool isAbsolute)
+{
+	renderReverseX(0, 0, _imageInfo->width, _imageInfo->height, 0.f, 0.f, _imageInfo->width, _imageInfo->height, alpha, isAbsolute);
+}
+
+void image::renderReverseX(float destX, float destY, float alpha, bool isAbsolute)
+{
+	renderReverseX(destX, destY, _imageInfo->width, _imageInfo->height, 0.f, 0.f, _imageInfo->width, _imageInfo->height, alpha, isAbsolute);
+}
+
+void image::renderReverseX(float destX, float destY, int showWidth, int showHeight, float alpha, bool isAbsolute)
+{
+	renderReverseX(destX, destY, showWidth, showHeight, 0.f, 0.f, _imageInfo->width, _imageInfo->height, alpha, isAbsolute);
+}
+
+void image::renderReverseX(RECTD2D rc, float alpha, bool isAbsolute)
+{
+	renderReverseX(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, alpha, isAbsolute);
+}
+
+void image::renderReverseX(float destX, float destY, float sourX, float sourY, int sourWidth, int sourHeight, float alpha, bool isAbsolute)
+{
+	renderReverseX(destX, destY, sourWidth, sourHeight, sourX, sourY, sourWidth, sourHeight, alpha, isAbsolute);
+}
+
+void image::renderReverseX(float destX, float destY, int showWidth, int showHeight, float sourX, float sourY, int sourWidth, int sourHeight, float alpha, bool isAbsolute)
+{
+	D2D1_SIZE_F size = {-1.f, 1.f};
+	POINTF center = {};
+
+	if (isAbsolute)
+	{
+		center.x = destX + showWidth / 2.f;
+		center.y = destY + showHeight / 2.f;
+		
+		center.x += CAMERA->getPosX();
+		center.y += CAMERA->getPosY();
+	}
+	else
+	{
+		center.x = destX + CAMERA->getPosX() + showWidth / 2.f;
+		center.y = destY + CAMERA->getPosY() + showHeight / 2.f;
+	}
+
+	D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Scale(size, Point2F(center.x, center.y)));
+	render(destX, destY, showWidth, showHeight, sourX, sourY, sourWidth, sourHeight, alpha, isAbsolute);
+	D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+}
+
 
 //===================================================================
 //						프레임 이미지 렌더 함수
@@ -308,7 +357,7 @@ void image::loopRender(D2D1_RECT_F drawArea, int offSetX, int offSetY, float opa
 					,rcSour.left, rcSour.top
 					,rcSour.right - rcSour.left
 					,rcSour.bottom - rcSour.top
-					,isAbsolute);
+					,isAbsolute, true);
 		}
 	}
 
@@ -317,7 +366,7 @@ void image::loopRender(D2D1_RECT_F drawArea, int offSetX, int offSetY, float opa
 
 void image::aniRender(int destX, int destY, animation* ani, bool isAbsolute)
 {
-	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight(), isAbsolute);
+	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight(), isAbsolute, true);
 }
 
 void image::aniRenderReverseX(int destX, int destY, animation * ani, bool isAbsolute)
@@ -327,7 +376,7 @@ void image::aniRenderReverseX(int destX, int destY, animation * ani, bool isAbso
 	size.height = 1;
 	//D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Scale(size, Point2F(destX + _imageInfo->frameWidth / 2, destY + _imageInfo->frameHeight / 2)));
 	D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Scale(size, Point2F(destX - CAMERA->getPosX() + _imageInfo->frameWidth / 2, destY - CAMERA->getPosY() + _imageInfo->frameHeight / 2)));
-	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight(), isAbsolute);
+	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight(), 1.0f, isAbsolute);
 	D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 }
 

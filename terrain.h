@@ -2,43 +2,44 @@
 
 typedef struct tagTerrainPack
 {
+	bool isReverse;
+	
+	WORD attr;
 	
 	UID uid;
 	UINT imgUid;
 	UINT layer;
+	
 	eTerrainType type;
-
-	float x;
-	float y;
-
-	float destX;
-	float destY;
-
-	float width;
-	float height;
 
 	int frameX;
 	int framxY;
 
+	float x;
+	float y;
+
+	float width;
+	float height;
+
 	RECTD2D rc;
 	RECTD2D collider;
-	WORD attr;
 	
 	void clear()
 	{
+		isReverse = false;
+		attr = NULL;
 		uid = NULL;
 		imgUid = NULL;
 		layer = 0;
 		type = eTarrain_None;
+		frameX = 0;
+		framxY = 0;
 		x = 0.f;
 		y = 0.f;
 		width = 0.f;
 		height = 0.f;
-		frameX = 0;
-		framxY = 0;
 		rc = {};
 		collider = {};
-		attr = NULL;
 	}
 
 }TARRAINPACK;
@@ -57,6 +58,8 @@ protected:
 	float	_y;			// 위치
 	RECTD2D	_rc;		
 	RECTD2D _collision;	// 충돌체
+
+	bool _isReverse;		// 반전
 
 	WORD _attr;	// 속성
 
@@ -148,7 +151,7 @@ public:
 
 //=============================================
 // 프레임 지형
-// 프레임 이미지 사용하는 지형
+// 프레임 이미지 사용하는 지형 : 오브젝트, npc
 //=============================================
 class terrainFrame: public terrain
 {

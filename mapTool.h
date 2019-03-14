@@ -48,6 +48,19 @@ enum eToolMode
 	eToolMode_Count = eToolMode_None,
 };
 
+enum eViewMode
+{
+	eViewMode_Layer,
+	eViewMode_Collision,
+	eViewMode_Rect,
+	eViewMode_Terrain,
+	eViewMode_Object,
+	eViewMode_Npc,
+
+	eViewMode_None,
+	eViewMode_Count,
+};
+
 typedef struct tagSampleTerrain
 {
 	float x;
@@ -153,10 +166,8 @@ private:
 
 	int _sampleIdx;
 
-	image* _uiBG[5];
-
-	mapData* _mapData;					// 맵 데이터
-	vector<IMGLNK*> _imgLnksTerrain;			// 맵툴에서 사용할 이미지 번호들
+	mapData* _mapData;						// 맵 데이터
+	vector<IMGLNK*> _imgLnksTerrain;		// 맵툴에서 사용할 이미지 번호들
 	vector<IMGLNK*> _imgLnksObject;			// 맵툴에서 사용할 이미지 번호들
 	vector<IMGLNK*> _imgLnksNpc;			// 맵툴에서 사용할 이미지 번호들
 	
@@ -192,7 +203,6 @@ private:
 	uiButton* _uiBtnDownIndex;		// 아래로 (렌더를 나중에)
 	
 	uiButtonDrop* _uiBtnDropChangeLayer;	// 레이어 변경
-
 
 	// hierarcy
 	uiButton* _uiBtnHierarcy[eLayer_Count];

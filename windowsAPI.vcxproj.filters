@@ -244,7 +244,7 @@
       <Filter>2DFramework\ui\uiText</Filter>
     </ClInclude>
     <ClInclude Include="uiButtonDrop.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>2DFramework\ui\uiButton</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -375,7 +375,7 @@
       <Filter>2DFramework\ui\uiText</Filter>
     </ClCompile>
     <ClCompile Include="uiButtonDrop.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>2DFramework\ui\uiButton</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
