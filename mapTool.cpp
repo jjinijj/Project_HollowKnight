@@ -127,9 +127,6 @@ void mapTool::render()
 
 void mapTool::pickSampleStart()
 {
-	if(eToolMode_DrawCollider == _mode)
-		setToolMode(_beforeMode);
-	
 	if(!_sampleImg)
 		return;
 
@@ -293,6 +290,7 @@ void mapTool::pickingEnd()
 	float width = _pickArea.right - _pickArea.left;
 	float height = _pickArea.bottom - _pickArea.top;
 
+	// 너무 작을경우 return
 	if (-5.f < width &&  width <= 5.f
 		|| -5.f < height && height <= 5.f)
 	{
@@ -437,16 +435,11 @@ void mapTool::beforeSample()
 
 void mapTool::setToolMode(eToolMode mode)
 {
-	if (eToolMode_DrawCollider == _mode)
-	{
-		_beforeMode = _mode;
-		_uiBtnDrawCollision->setState(eButton_Up);
-	}
-	
 	switch (mode)
 	{
 		case eToolMode_DrawTerrain:
 		{
+			_uiBtnDrawCollision->setState(eButton_Up);
 			_uiBtnDrawObject->setState(eButton_Up);
 			_uiBtnDrawNpc->setState(eButton_Up);
 
@@ -454,16 +447,21 @@ void mapTool::setToolMode(eToolMode mode)
 		}
 		case eToolMode_DrawCollider:
 		{
+			_uiBtnDrawTerrain->setState(eButton_Up);
+			_uiBtnDrawObject->setState(eButton_Up);
+			_uiBtnDrawNpc->setState(eButton_Up);
 			break;
 		}
 		case eToolMode_DrawObject:
 		{
+			_uiBtnDrawCollision->setState(eButton_Up);
 			_uiBtnDrawTerrain->setState(eButton_Up);
 			_uiBtnDrawNpc->setState(eButton_Up);
 			break;
 		}
 		case eToolMode_DrawNpc:
 		{
+			_uiBtnDrawCollision->setState(eButton_Up);
 			_uiBtnDrawTerrain->setState(eButton_Up);
 			_uiBtnDrawObject->setState(eButton_Up);
 			break;
@@ -494,6 +492,7 @@ void mapTool::setSampleImage()
 
 		case eToolMode_DrawCollider:
 		{
+			_sampleImg = nullptr;
 			break;
 		}
 
@@ -589,11 +588,23 @@ void mapTool::initUI()
 
 		_samplePanel->insertChild(nextSample);
 
+		// 충돌체
+		_uiBtnDrawCollision = new uiButton;
+		_uiBtnDrawCollision->init("uiBG3", "uiBG", "uiBG2"
+								  , nextSample->getRect().right + UI_SPACE
+								  , nextSample->getLocalPosition().y
+								  , 200.f, 50.f);
+		_uiBtnDrawCollision->setText(L"Collider", 50);
+		_uiBtnDrawCollision->setOnClickFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawCollider));
+		_uiBtnDrawCollision->setOnClickUPFunction(bind(&mapTool::setToolMode, this, _beforeMode));
+
+		_samplePanel->insertChild(_uiBtnDrawCollision);
+
 
 		// 지형
 		_uiBtnDrawTerrain = new uiButton;
 		_uiBtnDrawTerrain->init( "uiBG3", "uiBG", "uiBG2"
-							, nextSample->getRect().right + UI_SPACE
+							, _uiBtnDrawCollision->getRect().right + UI_SPACE
 							, nextSample->getLocalPosition().y
 							,180.f, 50.f);
 		_uiBtnDrawTerrain->setText(L"Terrain", 50);
@@ -791,21 +802,7 @@ void mapTool::initUI()
 		insertUIObject(_uiPanelInspectorInfo);
 	}
 
-	// 충돌체 생성 버튼
-	{
-		_uiBtnDrawCollision = new uiButton;
-		RECTD2D rc = _canvas->getRect();
 
-		_uiBtnDrawCollision->init("uiBG3", "uiBG", "uiBG2"
-						 , rc.right + UI_SPACE
-						 , rc.bottom - 50.f
-						 , 80.f, 50.f);
-		_uiBtnDrawCollision->setText(L"Collider", 20);
-		_uiBtnDrawCollision->setOnClickFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawCollider));
-		_uiBtnDrawCollision->setOnClickUPFunction(bind(&mapTool::setToolMode, this, _beforeMode));
-
-		insertUIObject(_uiBtnDrawCollision);
-	}
 
 	// canvas와 미니맵 사이
 	{
@@ -1098,7 +1095,6 @@ void mapTool::clickBtnTerrain(int idx, uiButton* btn)
 
 		_pick.clear();
 
-
 		// 상태창
 		UINT attr = 0;
 		for (int ii = 0; ii < eAttr_Count; ++ii)
@@ -1149,29 +1145,7 @@ void mapTool::clickBtnInspector(eAttribute attr, uiButton* btn)
 {
 	if (_terrain.ter)
 	{
-		// 속성값이 아무것도 없었다면 충돌체 생성
-		if (_terrain.ter->getAtrribute() == NULL)
-		{
-			_terrain.ter->createCollision();
-		}
-		
-		_terrain.ter->addAttribute(attr);
-		_mapData->changeTerrain(_terrain.layer, _terrain.idx, _terrain.ter);
-
-		switch (attr)
-		{
-			case eAttr_Collide: 	{ break; }
-			case eAttr_Trigger:		
-			{
-				_mapData->useTrigger(_terrain.ter->getUID());
-				break; 
-			}
-			case eAttr_Breakable:	{ break; }
-			case eAttr_Usable:		{ break; }
-			case eAttr_Trap:		{ break; }
-			case eAttr_Portal:		{ break; }
-			case eAttr_Dialog:		{ break; }
-		}
+		_mapData->addTerrainAttribute(_terrain.layer, _terrain.idx, attr);
 	}
 	else
 	{
@@ -1185,35 +1159,10 @@ void mapTool::clickUpBtnInspector(eAttribute attr)
 {
 	if (_terrain.ter)
 	{
-		_terrain.ter->removeAttribute(attr);
-		_mapData->changeTerrain(_terrain.layer, _terrain.idx, _terrain.ter);
-
-		switch (attr)
-		{
-			case eAttr_Collide: { break; }
-			case eAttr_Trigger:
-			{
-				_mapData->deleteTrigger(_terrain.ter->getUID());
-				break;
-			}
-			case eAttr_Breakable: { break; }
-			case eAttr_Usable: { break; }
-			case eAttr_Trap: { break; }
-			case eAttr_Portal: { break; }
-			case eAttr_Dialog: { break; }
-		}
-
-
-		// 속성값이 아무것도 없다면 충돌체 제거
-		if (_terrain.ter->getAtrribute() == NULL)
-		{
-			_terrain.ter->removeCollision();
-		}
-
+		_mapData->removeTerrainAttribute(_terrain.layer, _terrain.idx, attr);
 		refreshDetailText();
 	}
 }
-
 
 
 void mapTool::clickBtnUpNone(uiButton * btn)

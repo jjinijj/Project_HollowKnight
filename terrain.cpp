@@ -384,11 +384,19 @@ void terrainClear::update()
 
 void terrainClear::render()
 {
-	D2DMANAGER->drawRectangle(_rc, false);
+	if(CAMERA->isRangeInCamera(_rc.left, _rc.top, _width, _height))
+		D2DMANAGER->drawRectangle(_rc, false);
 }
 
 void terrainClear::render(float destX, float destY, float percent)
 {
+	RECTD2D rc = { destX + (_rc.left * percent)
+				 , destY + (_rc.top * percent)
+				 , destX + (_rc.right * percent)
+				 , destY + (_rc.bottom * percent) };
+
+	D2DMANAGER->drawRectangle(rc, true);
+
 }
 
 TARRAINPACK* terrainClear::makePack()

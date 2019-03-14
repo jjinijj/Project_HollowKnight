@@ -185,11 +185,18 @@ private:
 
 	uiButton* _qickOpen;
 
-	uiButton* _uiBtnDrawTerrain;
-	uiButton* _uiBtnDrawObject;
-	uiButton* _uiBtnDrawNpc;
+	uiButton* _uiBtnDrawCollision;	// 이미지 없는 충돌체 생성
+	uiButton* _uiBtnDrawTerrain;	// 지형
+	uiButton* _uiBtnDrawObject;		// 오브젝트(프레임 이미지)
+	uiButton* _uiBtnDrawNpc;		// npc
 
-	uiButton* _uiBtnDrawCollision;
+	uiButton* _uiBtnDelTerrain;		// 지형 삭제
+	uiButton* _uiBtnUpIndex;		// 위로 올리기(렌더를 나중에)
+	uiButton* _uiBtnDownIndex;		// 아래로 (렌더를 먼저)
+	
+	uiButton* _uiBtnChangeLayer;	// 레이어 변경
+
+
 
 	// hierarcy
 	uiButton* _uiBtnHierarcy[eLayer_Count];

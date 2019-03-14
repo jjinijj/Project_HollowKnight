@@ -47,6 +47,11 @@ public:
 	terrain* addTerrainFrame(UINT layer, float destX, float destY, UINT frameX, UINT frameY, eImageUID imgUid);
 	terrain* addTerrainClear(UINT layer, float destX, float destY, float width, float height);
 	
+	// 지형에 속성 추가
+	void addTerrainAttribute(UINT layer, int idx, eAttribute attr);
+	// 지형에 속성 제거
+	void removeTerrainAttribute(UINT layer, int idx, eAttribute attr);
+
 	// 레이어, 레이어 상의 인덱스
 	terrain* getTerrain(UINT layer, int idx);
 	// 레이어에 있는 지형들
