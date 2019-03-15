@@ -27,6 +27,11 @@
 
 #define UI_SPACE 10.f
 
+#define MAP_NAME_DIRTMOUTH		"map_dirtmouth"
+#define MAP_NAME_CROSSLOAD_1	"map_crossload_01"
+#define MAP_NAME_CROSSLOAD_2	"map_crossload_02"
+#define MAP_NAME_CROSSLOAD_3	"map_crossload_03"
+
 //=============================================
 //   지형 속성
 //=============================================
@@ -55,8 +60,22 @@ enum eTerrainType
 	eTerrain_Count = eTarrain_None,
 };
 
+// 씬 종류
+enum eSceneName
+{
+	eSceneName_Loading,
+	eSceneName_MapTool,
+	eSceneName_Title,
+	eSceneName_Load,
+	sSceneName_DirtMouth,
+	eSceneName_CrossLoad_01,
+
+	eSceneName_None,
+	eSceneName_Count = eSceneName_None
+};
+
 //=============================================
-//   define enum
+//   debug mode
 //=============================================
 #define DEBUG_SHOW_RECT		0x000001UL // RECT 보여주기
 #define DEBUG_SHOW_TEXT		0x000002UL // TEXT 보여주기

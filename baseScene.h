@@ -1,18 +1,5 @@
 #pragma once
 
-enum eSceneName
-{
-	eSceneName_Loading,
-	eSceneName_MapTool,
-	eSceneName_Title,
-	eSceneName_Load,
-	sSceneName_DirtMouth,
-	eSceneName_CrossLoad,
-
-	eSceneName_None,
-	eSceneName_Count = eSceneName_None
-};
-
 class baseScene
 {
 protected:

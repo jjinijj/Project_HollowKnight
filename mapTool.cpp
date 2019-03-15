@@ -187,6 +187,13 @@ void mapTool::render()
 		{
 			(*iter)->render(_miniMap->getWorldPosition().x, _miniMap->getWorldPosition().y, MINIMAP_PERCENT);
 		}
+
+		RECTD2D rc = _miniMap->getRect();
+		_miniScope.left = (CAMERA->getPosX() / MAPSIZEX) * (rc.right - rc.left) + rc.left;
+		_miniScope.top = (CAMERA->getPosY() / MAPSIZEY) * (rc.bottom - rc.top) + rc.top;
+		_miniScope.right = _miniScope.left + _miniScopeWidth;
+		_miniScope.bottom = _miniScope.top + _miniScopeHeight;
+
 		D2DMANAGER->drawRectangle(_miniScope);
 		terrains = nullptr;
 	}

@@ -220,13 +220,16 @@ private:
 
 	uiButton* _uiBtnMoveReset;			// 위치 다시 
 
-
-	uiButton* _uiBtnMoveSnapPlus;	// 이동 간격 늘리기
-	uiButton* _uiBtnMoveSnapMinus;	//			 줄이기
+	uiButton* _uiBtnMoveSnapPlus;		// 이동 간격 늘리기
+	uiButton* _uiBtnMoveSnapMinus;		//			줄이기
 
 	uiText*	_uiTextMoveSnap;			// 이동 간격 표시
 
 	uiText* _uiButtonReverse;			// 지형 반전
+
+	uiList* _uiListFiles;				// 파일 이름들
+	uiButton* _uiBtnSave;				// 저장
+	uiButton* _uiBtnLoad;				// 로드;
 
 	// hierarcy
 	uiButton* _uiBtnHierarcy[eLayer_Count];
