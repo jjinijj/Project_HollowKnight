@@ -44,14 +44,18 @@ HRESULT terrain::init(const UID uid, const float destX, const float destY)
 
 void terrain::render()
 {
-	if ((_debugMode & DEBUG_SHOW_RECT) == DEBUG_SHOW_RECT)
+	if (DEVTOOL->checkDebugMode(DEBUG_SHOW_RECT))
 		D2DMANAGER->drawRectangle(_rc, false);
+	if (DEVTOOL->checkDebugMode(DEBUG_SHOW_COLLISON))
+		D2DMANAGER->drawRectangle(RGB(0, 255, 0), _collision, false);
+	if (DEVTOOL->checkDebugMode(DEBUG_SHOW_UID))
+		D2DMANAGER->drawText(format(L"[%d]", _uid).c_str(), _rc.left, _rc.top, 20, RGB(255,255,255), false);
+	if (DEVTOOL->checkDebugMode(DEBUG_SHOW_POSITION))
+		D2DMANAGER->drawText(format(L"(%.2f, %.2f)", _x, _y).c_str(), _rc.left, _rc.top + 20.f, 20, RGB(255,255,255), false);
 }
 
 void terrain::render(float destX, float destY, float percent)
 {
-	if ((_debugMode & DEBUG_SHOW_RECT) == DEBUG_SHOW_RECT)
-		D2DMANAGER->drawRectangle(_rc, false);
 }
 
 TARRAINPACK* terrain::makePack()
@@ -160,6 +164,22 @@ bool terrain::checkAttribute(const eAttribute attr)
 		return false;
 }
 
+void terrain::setPosition(float x, float y)
+{
+	float disX = x - _x;
+	float disY = y - _y;
+
+	_x = x;
+	_y = y;
+
+	_rc = RectMake(_x, _y, _rc.right - _rc.left, _rc.bottom - _rc.top);
+	
+	_collision.left += disX;
+	_collision.right += disX;
+	_collision.bottom += disY;
+	_collision.top += disY;
+}
+
 
 
 
@@ -212,15 +232,14 @@ void terrainDrag::update()
 
 void terrainDrag::render()
 {
-	terrain::render();
-
-	//if (CAMERA->isRangeInCamera(_rc.left, _rc.top, _rc.right, _rc.bottom))
+	if (!DEVTOOL->checkDebugMode(DEBUG_HIDE_IMAGE))
 	{
 		if (_isReverse)
 			_img->renderReverseX(_x, _y, _sourX, _sourY, _width, _height, 1.f, false);
 		else
 			_img->render(_x, _y, _sourX, _sourY, _width, _height, 1.f, false);
 	}
+	terrain::render();
 }
 
 void terrainDrag::render(float destX, float destY, float percent)
@@ -322,12 +341,15 @@ void terrainFrame::update()
 
 void terrainFrame::render()
 {
-	terrain::render();
+	if (!DEVTOOL->checkDebugMode(DEBUG_HIDE_IMAGE))
+	{
+		if (_isReverse)
+			_img->renderReverseX(_x, _y, 1.f, false);
+		else 
+			_img->render( _x ,_y, 1.f, false);
+	}
 
-	if (_isReverse)
-		_img->renderReverseX(_x, _y, 1.f, false);
-	else 
-		_img->render( _x ,_y, 1.f, false);
+	terrain::render();
 }
 
 void terrainFrame::render(float destX, float destY, float percent)
@@ -415,8 +437,8 @@ void terrainClear::update()
 
 void terrainClear::render()
 {
-	if(CAMERA->isRangeInCamera(_rc.left, _rc.top, _width, _height))
-		D2DMANAGER->drawRectangle(_rc, false);
+	//if(CAMERA->isRangeInCamera(_rc.left, _rc.top, _width, _height))
+	//	D2DMANAGER->drawRectangle(_rc, false);
 }
 
 void terrainClear::render(float destX, float destY, float percent)

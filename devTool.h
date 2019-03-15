@@ -17,6 +17,12 @@ public:
 	void pushBackDebugText(string str);
 	void pushBackDebugText(wstring str);
 
+	void clearDebugMode();
+	void setDebugMode(WORD mode);
+	void delDebugMode(WORD mode);
+	bool checkDebugMode(WORD mode);
+
+
 private:
 	void debugTextClear();
 };

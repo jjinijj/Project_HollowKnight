@@ -74,6 +74,15 @@ void mapData::render()
 	}
 }
 
+void mapData::render(UINT layer)
+{
+	iterVTerrain iter = _terrainsByLayer[layer].begin();
+	iterVTerrain end = _terrainsByLayer[layer].end();
+
+	for (; iter != end; ++iter)
+		(*iter)->render();
+}
+
 void mapData::terrainUp(UINT layer, UINT uid)
 {
 	int size = _terrainsByLayer[layer].size();

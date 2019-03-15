@@ -4,9 +4,6 @@ class uiText: public uiObject
 {
 private:
 	
-	float _x;
-	float _y;
-	
 	wstring					_text;
 	UINT					_fontSize;
 	COLORREF					_fontColor;

@@ -25,10 +25,11 @@ HRESULT mapToolScene::init()
 	_tool->uiOpen();
 	_tool->setActive(true);
 
-	
-	//_fileZone = {_miniMap.right + UI_SPACE, _miniMap.top, _canvas.right - 100.f, _miniMap.bottom};
-	//_hierarchy = {_canvas.right + UI_SPACE, _canvas.top, _canvas.right + 400.f, _canvas.bottom - 300.f};
-	//_inspector = {_hierarchy.right + UI_SPACE, _hierarchy.top, _sampleBoardCloseX - UI_SPACE - 20.f, _hierarchy.bottom};
+	DEVTOOL->clearDebugMode();
+	DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
+	DEVTOOL->setDebugMode(DEBUG_SHOW_TEXT);
+	DEVTOOL->setDebugMode(DEBUG_SHOW_UID);
+	DEVTOOL->setDebugMode(DEBUG_SHOW_POSITION);
 
 	return S_OK;
 }

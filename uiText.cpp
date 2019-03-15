@@ -2,9 +2,7 @@
 #include "uiText.h"
 
 uiText::uiText()
-: _x(0.f)
-, _y(0.f)
-, _fontSize(DEFAULT_FONT_SIZE)
+: _fontSize(DEFAULT_FONT_SIZE)
 , _fontColor(DEFAULT_FONT_COLOR)
 , _fontType(d2dManager::eFontType_None)
 {

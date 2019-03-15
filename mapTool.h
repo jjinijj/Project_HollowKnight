@@ -53,12 +53,11 @@ enum eViewMode
 	eViewMode_Layer,
 	eViewMode_Collision,
 	eViewMode_Rect,
-	eViewMode_Terrain,
-	eViewMode_Object,
-	eViewMode_Npc,
+	eViewMode_InfoText,
+	eViewMode_HideImage,
 
 	eViewMode_None,
-	eViewMode_Count,
+	eViewMode_Count = eViewMode_None,
 };
 
 typedef struct tagSampleTerrain
@@ -165,6 +164,7 @@ private:
 	uiButton* _curBtnTerrain;
 
 	int _sampleIdx;
+	int _moveSnap;		// 이동 간격
 
 	mapData* _mapData;						// 맵 데이터
 	vector<IMGLNK*> _imgLnksTerrain;		// 맵툴에서 사용할 이미지 번호들
@@ -180,8 +180,11 @@ private:
 	bool _isPicking;
 	bool _isOpenSampleBoard;
 	bool _isCloseSampleBoard;
+	bool _isShowAllLayer;			// 모든 레이어 렌더
+	bool _isTerrainReposition;		// 지형 위치 다시
 
 	POINTF _pickMousePos;
+	POINTF _originPos;				// 움직이기 전 위치
 	
 	uiPanel* _samplePanel;			// 샘플 이미지가 ui
 	uiPanel* _samplecanvas;			// 샘플 이미지가 그려지는 부분
@@ -203,6 +206,27 @@ private:
 	uiButton* _uiBtnDownIndex;		// 아래로 (렌더를 나중에)
 	
 	uiButtonDrop* _uiBtnDropChangeLayer;	// 레이어 변경
+
+	uiButton* _uiBtnViewMode[eViewMode_Count];	// View Mode
+	
+	uiButton* _uiBtnMoveUp;				// 위로 이동
+	uiButton* _uiBtnMoveDown;			// 아래로 이동
+	uiButton* _uiBtnMoveLeft;			// 좌
+	uiButton* _uiBtnMoveRight;			// 우
+	uiButton* _uiBtnMoveLeftUp;			// 좌상
+	uiButton* _uiBtnMoveRightUp;		// 우상
+	uiButton* _uiBtnMoveLeftDown;		// 좌하
+	uiButton* _uiBtnMoveRightDown;		// 우하
+
+	uiButton* _uiBtnMoveReset;			// 위치 다시 
+
+
+	uiButton* _uiBtnMoveSnapPlus;	// 이동 간격 늘리기
+	uiButton* _uiBtnMoveSnapMinus;	//			 줄이기
+
+	uiText*	_uiTextMoveSnap;			// 이동 간격 표시
+
+	uiText* _uiButtonReverse;			// 지형 반전
 
 	// hierarcy
 	uiButton* _uiBtnHierarcy[eLayer_Count];
@@ -306,5 +330,25 @@ private:
 	void clickBtnDownIndex();
 	void clickBtnChangeLayer(UINT layer);
 
+	void clickBtnViewMode(eViewMode mode);
+	void clickBtnUpViewMode(eViewMode mode);
+
+	void clickBtnMoveReset();
+	void clickBtnMoveUp();
+	void clickBtnMoveDown();
+	void clickBtnMoveLeft();
+	void clickBtnMoveRight();
+
+	void clickBtnMoveLeftUp();
+	void clickBtnMoveLeftDown();
+	void clickBtnMoveRightUp();
+	void clickBtnMoveRightDown();
+
+	void clickBtnMoveSnapPlus();
+	void clickBtnMoveSnapMinus();
+
 	void refreshDetailText();
+
+	bool checkSelectingTerrain();
+	void startMoveTerrain();
 };

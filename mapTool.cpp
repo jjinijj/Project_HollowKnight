@@ -13,9 +13,11 @@
 
 mapTool::mapTool()
 : _sampleIdx(0)
+, _moveSnap(1)
 , _mapData(nullptr)
 , _sampleImg(nullptr)
 , _isPicking(false)
+, _isShowAllLayer(true)
 , _canvas(nullptr)
 , _sampleBoardOpenX(WINSIZEX - SAMPLABOARD_WIDTH)
 , _sampleBoardCloseX(WINSIZEX - 5.f)
@@ -79,6 +81,9 @@ void mapTool::release()
 	_uiBtnUpIndex = nullptr;
 	_uiBtnDownIndex = nullptr;
 	_uiBtnDropChangeLayer = nullptr;
+
+	for(int ii = 0; ii < eViewMode_Count; ++ii)
+		_uiBtnViewMode[ii] = nullptr;
 
 	for (int ii = 0; ii < eLayer_Count; ++ii)
 	{
@@ -153,11 +158,17 @@ void mapTool::render()
 {
 	// 맵
 	if (_mapData)
-		_mapData->render();
+	{
+		if(_isShowAllLayer)
+			_mapData->render();
+		else
+			_mapData->render(_curLayer);
+	}
+
 	if (_terrain.isSet)
 	{
 		D2DMANAGER->drawRectangle(RGB(0, 0, 255), _terrain.ter->getRect(), false);
-		D2DMANAGER->drawRectangle(RGB(0, 255, 0), _terrain.ter->getCollision(), false);
+		D2DMANAGER->drawRectangle(RGB(0, 255, 255), _terrain.ter->getCollision(), false);
 	}
 	
 	uiBase::render();
@@ -756,8 +767,6 @@ void mapTool::initUI()
 		}
 	}
 
-
-
 	// 레이어 별 지형목록
 	{
 		float btnWitdh = 60.f;
@@ -810,7 +819,7 @@ void mapTool::initUI()
 		_uiBtnDelTerrain->init("uiBG3", "uiBG"
 							   ,hieracy.left, hieracy.bottom + UI_SPACE
 							   ,65.f, 50.f);
-		_uiBtnDelTerrain->setText(L"Del", 20.f);
+		_uiBtnDelTerrain->setText(L"Del", 20);
 		_uiBtnDelTerrain->setOnClickFunction(std::bind(&mapTool::clickBtnDelTerrain, this));
 		insertUIObject(_uiBtnDelTerrain);
 
@@ -820,7 +829,7 @@ void mapTool::initUI()
 							,_uiBtnDelTerrain->getRect().right + UI_SPACE
 							,_uiBtnDelTerrain->getRect().top
 							,65.f, 50.f);
-		_uiBtnUpIndex->setText(L"Up", 20.f);
+		_uiBtnUpIndex->setText(L"Up", 20);
 		_uiBtnUpIndex->setOnClickFunction(std::bind(&mapTool::clickBtnUpIndex, this));
 		insertUIObject(_uiBtnUpIndex);
 
@@ -830,7 +839,7 @@ void mapTool::initUI()
 							  ,_uiBtnUpIndex->getRect().right + UI_SPACE
 							  ,_uiBtnUpIndex->getRect().top
 							  , 65.f, 50.f);
-		_uiBtnDownIndex->setText(L"Down", 20.f);
+		_uiBtnDownIndex->setText(L"Down", 20);
 		_uiBtnDownIndex->setOnClickFunction(std::bind(&mapTool::clickBtnDownIndex, this));
 		insertUIObject(_uiBtnDownIndex);
 
@@ -840,7 +849,7 @@ void mapTool::initUI()
 								,_uiBtnDownIndex->getRect().right + UI_SPACE
 								,_uiBtnDownIndex->getRect().top
 								, 65.f, 50.f);
-		_uiBtnDropChangeLayer->setText(L"Change\nLayer", 20.f);
+		_uiBtnDropChangeLayer->setText(L"Change\nLayer", 20);
 
 		for (int ii = 0; ii < eLayer_Count; ++ii)
 		{
@@ -849,7 +858,7 @@ void mapTool::initUI()
 					  , _uiBtnUpIndex->getRect().right + UI_SPACE
 					  , _uiBtnUpIndex->getRect().top
 					  , 30.f, 30.f);
-			btn->setText(format(L"%d", (ii + 1)), 20.f);
+			btn->setText(format(L"%d", (ii + 1)), 20);
 
 			btn->setActive(false);
 			btn->setViewing(false);
@@ -862,6 +871,153 @@ void mapTool::initUI()
 
 		insertUIObject(_uiBtnDropChangeLayer);
 	}
+
+	// 뷰 모드
+	{
+		RECTD2D rc = _uiBtnDelTerrain->getRect();
+		for (int ii = 0; ii < eViewMode_Count; ++ii)
+		{
+			_uiBtnViewMode[ii] = new uiButton;
+			_uiBtnViewMode[ii]->init("uiBG3", "uiBG", "uiBG5"
+									 ,rc.left + ((50.f + UI_SPACE) * ii)
+									 ,rc.bottom + UI_SPACE
+									 ,50.f, 50.f);
+
+			_uiBtnViewMode[ii]->setOnClickFunction(std::bind(&mapTool::clickBtnViewMode, this, (eViewMode)ii));
+			_uiBtnViewMode[ii]->setOnClickUPFunction(std::bind(&mapTool::clickBtnUpViewMode, this, (eViewMode)ii));
+
+			insertUIObject(_uiBtnViewMode[ii]);
+
+		}
+
+		_uiBtnViewMode[eViewMode_Layer]->setText(L" View\n Layer", 20);
+		_uiBtnViewMode[eViewMode_Collision]->setText(L" View\n Col", 20);
+		_uiBtnViewMode[eViewMode_Rect]->setText(L" View\n Rect", 20);
+		_uiBtnViewMode[eViewMode_Rect]->setState(eButton_Down);
+		_uiBtnViewMode[eViewMode_InfoText]->setText(L" View \n Text", 20);
+		_uiBtnViewMode[eViewMode_InfoText]->setState(eButton_Down);
+		_uiBtnViewMode[eViewMode_HideImage]->setText(L" Hide \n Img", 20);
+	}
+
+	// 지형 위치 조절
+	{
+		// reset
+		_uiBtnMoveReset = new uiButton;
+		_uiBtnMoveReset->init("uiBG3", "uiBG"
+						 ,hieracy.right + UI_SPACE + 50.f + UI_SPACE
+						 ,hieracy.bottom + UI_SPACE + 50.f + UI_SPACE
+						 ,50.f, 50.f);
+		_uiBtnMoveReset->setText(L"Reset", 20);
+		_uiBtnMoveReset->setOnClickFunction(std::bind(&mapTool::clickBtnMoveReset, this));
+		insertUIObject(_uiBtnMoveReset);
+
+		// 상
+		_uiBtnMoveUp = new uiButton;
+		_uiBtnMoveUp->init("uiBG3", "uiBG"
+						  , _uiBtnMoveReset->getRect().left
+						  , _uiBtnMoveReset->getRect().top - UI_SPACE - 50.f
+						  , 50.f, 50.f);
+		_uiBtnMoveUp->setText(L" ↑", 30);
+		_uiBtnMoveUp->setOnClickFunction(std::bind(&mapTool::clickBtnMoveUp, this));
+		insertUIObject(_uiBtnMoveUp);
+
+		// 좌상
+		_uiBtnMoveLeftUp = new uiButton;
+		_uiBtnMoveLeftUp->init("uiBG3", "uiBG"
+						   , _uiBtnMoveUp->getRect().left - UI_SPACE - 50.f
+						   , _uiBtnMoveUp->getRect().top
+						   , 50.f, 50.f);
+		_uiBtnMoveLeftUp->setText(L" ↖", 30);
+		_uiBtnMoveLeftUp->setOnClickFunction(std::bind(&mapTool::clickBtnMoveLeftUp, this));
+		insertUIObject(_uiBtnMoveLeftUp);
+
+		// 우상
+		_uiBtnMoveRightUp = new uiButton;
+		_uiBtnMoveRightUp->init("uiBG3", "uiBG"
+						   , _uiBtnMoveUp->getRect().right + UI_SPACE
+						   , _uiBtnMoveUp->getRect().top
+						   , 50.f, 50.f);
+		_uiBtnMoveRightUp->setText(L" ↗", 30);
+		_uiBtnMoveRightUp->setOnClickFunction(std::bind(&mapTool::clickBtnMoveRightUp, this));
+		insertUIObject(_uiBtnMoveRightUp);
+
+		// 하
+		_uiBtnMoveDown = new uiButton;
+		_uiBtnMoveDown->init("uiBG3", "uiBG"
+						   , _uiBtnMoveReset->getRect().left
+						   , _uiBtnMoveReset->getRect().bottom + UI_SPACE
+						   , 50.f, 50.f);
+		_uiBtnMoveDown->setText(L" ↓", 30);
+		_uiBtnMoveDown->setOnClickFunction(std::bind(&mapTool::clickBtnMoveDown, this));
+		insertUIObject(_uiBtnMoveDown);
+
+		// 좌하
+		_uiBtnMoveLeftUp = new uiButton;
+		_uiBtnMoveLeftUp->init("uiBG3", "uiBG"
+							   , _uiBtnMoveDown->getRect().left - UI_SPACE - 50.f
+							   , _uiBtnMoveDown->getRect().top
+							   , 50.f, 50.f);
+		_uiBtnMoveLeftUp->setText(L" ↙", 30);
+		_uiBtnMoveLeftUp->setOnClickFunction(std::bind(&mapTool::clickBtnMoveLeftDown, this));
+		insertUIObject(_uiBtnMoveLeftUp);
+
+		// 우하
+		_uiBtnMoveRightDown = new uiButton;
+		_uiBtnMoveRightDown->init("uiBG3", "uiBG"
+								, _uiBtnMoveDown->getRect().right + UI_SPACE
+								, _uiBtnMoveDown->getRect().top
+								, 50.f, 50.f);
+		_uiBtnMoveRightDown->setText(L" ↘", 30);
+		_uiBtnMoveRightDown->setOnClickFunction(std::bind(&mapTool::clickBtnMoveRightDown, this));
+		insertUIObject(_uiBtnMoveRightDown);
+
+		// 좌
+		_uiBtnMoveLeft = new uiButton;
+		_uiBtnMoveLeft->init("uiBG3", "uiBG"
+							 , _uiBtnMoveReset->getRect().left - UI_SPACE - 50.f
+							 , _uiBtnMoveReset->getRect().top
+							 , 50.f, 50.f);
+		_uiBtnMoveLeft->setText(L" ←", 30);
+		_uiBtnMoveLeft->setOnClickFunction(std::bind(&mapTool::clickBtnMoveLeft, this));
+		insertUIObject(_uiBtnMoveLeft);
+
+		// 우
+		_uiBtnMoveRight = new uiButton;
+		_uiBtnMoveRight->init("uiBG3", "uiBG"
+							 , _uiBtnMoveReset->getRect().right + UI_SPACE
+							 , _uiBtnMoveReset->getRect().top
+							 , 50.f, 50.f);
+		_uiBtnMoveRight->setText(L" →", 30);
+		_uiBtnMoveRight->setOnClickFunction(std::bind(&mapTool::clickBtnMoveRight, this));
+		insertUIObject(_uiBtnMoveRight);
+
+		_uiTextMoveSnap = new uiText;
+		_uiTextMoveSnap->init(_uiBtnMoveRight->getRect().right + UI_SPACE
+							  ,_uiBtnMoveRight->getRect().top);
+		_uiTextMoveSnap->setFontSize(20);
+		_uiTextMoveSnap->setFontColor(RGB(255,255,255));
+		_uiTextMoveSnap->setText(format(L"\n  %d", _moveSnap));
+		insertUIObject(_uiTextMoveSnap);
+
+		_uiBtnMoveSnapPlus = new uiButton;
+		_uiBtnMoveSnapPlus->init("uiBG3", "uiBG"
+								 ,_uiTextMoveSnap->getWorldPosition().x
+								 ,_uiTextMoveSnap->getWorldPosition().y - UI_SPACE - 50.f
+								 ,50.f, 50.f);
+		_uiBtnMoveSnapPlus->setText(L" +", 20);
+		_uiBtnMoveSnapPlus->setOnClickFunction(std::bind(&mapTool::clickBtnMoveSnapPlus, this));
+		insertUIObject(_uiBtnMoveSnapPlus);
+
+		_uiBtnMoveSnapMinus = new uiButton;
+		_uiBtnMoveSnapMinus->init("uiBG3", "uiBG"
+								 , _uiTextMoveSnap->getWorldPosition().x
+								 , _uiTextMoveSnap->getWorldPosition().y + UI_SPACE + 50.f
+								 , 50.f, 50.f);
+		_uiBtnMoveSnapMinus->setText(L" -", 20);
+		_uiBtnMoveSnapMinus->setOnClickFunction(std::bind(&mapTool::clickBtnMoveSnapMinus, this));
+		insertUIObject(_uiBtnMoveSnapMinus);
+	}
+
 
 	// 속성창 & 버튼
 	{
@@ -942,19 +1098,19 @@ void mapTool::initUI()
 	{
 		{
 			uiPanel* uiImg = new uiPanel;
-			uiImg->init(0.f, 0.f, WINSIZEX, UI_SPACE, uiBG);
+			uiImg->init(0.f, 0.f, static_cast<float>(WINSIZEX), UI_SPACE, uiBG);
 			insertUIObject(uiImg);
 			uiImg = nullptr;
 		}
 		{
 			uiPanel* uiImg = new uiPanel;
-			uiImg->init(0.f, 0.f, UI_SPACE, WINSIZEY, uiBG);
+			uiImg->init(0.f, 0.f, UI_SPACE, static_cast<float>(WINSIZEY), uiBG);
 			insertUIObject(uiImg);
 			uiImg = nullptr;
 		}
 		{
 			uiPanel* uiImg = new uiPanel;
-			uiImg->init(canvas.right, 0.f,  WINSIZEX - canvas.right, WINSIZEY, uiBG);
+			uiImg->init(canvas.right, 0.f,  WINSIZEX - canvas.right, static_cast<float>(WINSIZEY), uiBG);
 			insertUIObject(uiImg);
 			uiImg = nullptr;
 		}
@@ -1249,6 +1405,7 @@ void mapTool::clickBtnTerrain(UID uid, uiButton* btn)
 		}
 	}
 
+	_isTerrainReposition = false;
 	refreshDetailText();
 }
 
@@ -1465,6 +1622,166 @@ void mapTool::clickBtnChangeLayer(UINT layer)
 	_uiBtnHierarcy[layer]->setState(eButton_Down);
 }
 
+void mapTool::clickBtnViewMode(eViewMode mode)
+{
+	switch (mode)
+	{
+		case eViewMode_Layer:		{ _isShowAllLayer = false; break; 					 }
+		case eViewMode_Collision:	{ DEVTOOL->setDebugMode(DEBUG_SHOW_COLLISON); break; }
+		case eViewMode_Rect:		{ DEVTOOL->setDebugMode(DEBUG_SHOW_RECT); break;	 }
+		case eViewMode_InfoText:	
+		{
+			DEVTOOL->setDebugMode(DEBUG_SHOW_POSITION); 
+			DEVTOOL->setDebugMode(DEBUG_SHOW_UID); 
+			break; 
+		}
+		case eViewMode_HideImage:	{ DEVTOOL->setDebugMode(DEBUG_HIDE_IMAGE); break;	 }
+	}
+}
+
+void mapTool::clickBtnUpViewMode(eViewMode mode)
+{
+	switch (mode)
+	{
+		case eViewMode_Layer:		{ _isShowAllLayer = true; break;					 }
+		case eViewMode_Collision:	{ DEVTOOL->delDebugMode(DEBUG_SHOW_COLLISON); break; }
+		case eViewMode_Rect:		{ DEVTOOL->delDebugMode(DEBUG_SHOW_RECT); break;	 }
+		case eViewMode_InfoText:
+		{
+			DEVTOOL->delDebugMode(DEBUG_SHOW_POSITION);
+			DEVTOOL->delDebugMode(DEBUG_SHOW_UID);
+			break;
+		}
+		case eViewMode_HideImage:	{ DEVTOOL->delDebugMode(DEBUG_HIDE_IMAGE); break;	 }
+	}
+}
+
+void mapTool::clickBtnMoveReset()
+{
+	if (checkSelectingTerrain())
+	{
+		startMoveTerrain();
+
+		_terrain.ter->setPosition(_originPos.x, _originPos.y);
+		_isTerrainReposition = false;
+	}
+}
+
+void mapTool::clickBtnMoveUp()
+{
+	if (checkSelectingTerrain())
+	{
+		startMoveTerrain();
+
+		POINTF pf = { _terrain.ter->getPosX(), _terrain.ter->getPosY() };
+		pf.y -= _moveSnap;
+		_terrain.ter->setPosition(pf.x, pf.y);
+	}
+}
+
+void mapTool::clickBtnMoveDown()
+{
+	if (checkSelectingTerrain())
+	{
+		startMoveTerrain();
+
+		POINTF pf = { _terrain.ter->getPosX(), _terrain.ter->getPosY() };
+		pf.y += _moveSnap;
+		_terrain.ter->setPosition(pf.x, pf.y);
+	}
+}
+
+void mapTool::clickBtnMoveLeft()
+{
+	if (checkSelectingTerrain())
+	{
+		startMoveTerrain();
+
+		POINTF pf = { _terrain.ter->getPosX(), _terrain.ter->getPosY() };
+		pf.x -= _moveSnap;
+		_terrain.ter->setPosition(pf.x, pf.y);
+	}
+}
+
+void mapTool::clickBtnMoveRight()
+{
+	if (checkSelectingTerrain())
+	{
+		startMoveTerrain();
+
+		POINTF pf = { _terrain.ter->getPosX(), _terrain.ter->getPosY() };
+		pf.x += _moveSnap;
+		_terrain.ter->setPosition(pf.x, pf.y);
+	}
+}
+
+void mapTool::clickBtnMoveLeftUp()
+{
+	if (checkSelectingTerrain())
+	{
+		startMoveTerrain();
+
+		POINTF pf = { _terrain.ter->getPosX(), _terrain.ter->getPosY() };
+		pf.x -= _moveSnap;
+		pf.y -= _moveSnap;
+		_terrain.ter->setPosition(pf.x, pf.y);
+	}
+}
+
+void mapTool::clickBtnMoveLeftDown()
+{
+	if (checkSelectingTerrain())
+	{
+		startMoveTerrain();
+
+		POINTF pf = { _terrain.ter->getPosX(), _terrain.ter->getPosY() };
+		pf.x -= _moveSnap;
+		pf.y += _moveSnap;
+		_terrain.ter->setPosition(pf.x, pf.y);
+	}
+}
+
+void mapTool::clickBtnMoveRightUp()
+{
+	if (checkSelectingTerrain())
+	{
+		startMoveTerrain();
+
+		POINTF pf = { _terrain.ter->getPosX(), _terrain.ter->getPosY() };
+		pf.x += _moveSnap;
+		pf.y -= _moveSnap;
+		_terrain.ter->setPosition(pf.x, pf.y);
+	}
+}
+
+void mapTool::clickBtnMoveRightDown()
+{
+	if (checkSelectingTerrain())
+	{
+		startMoveTerrain();
+
+		POINTF pf = { _terrain.ter->getPosX(), _terrain.ter->getPosY() };
+		pf.x += _moveSnap;
+		pf.y += _moveSnap;
+		_terrain.ter->setPosition(pf.x, pf.y);
+	}
+}
+
+void mapTool::clickBtnMoveSnapPlus()
+{
+	++_moveSnap;
+	_uiTextMoveSnap->setText(format(L"\n  %d", _moveSnap));
+}
+
+void mapTool::clickBtnMoveSnapMinus()
+{
+	--_moveSnap;
+	if(_moveSnap <= 0)
+		_moveSnap = 1;
+
+	_uiTextMoveSnap->setText(format(L"\n  %d", _moveSnap));
+}
+
 void mapTool::refreshDetailText()
 {
 	wstring txt;
@@ -1511,4 +1828,24 @@ void mapTool::refreshDetailText()
 	}
 
 	_uiTextInspectorSubInfo->setText(txt);
+}
+
+bool mapTool::checkSelectingTerrain()
+{
+	if (!_terrain.isSet || !_terrain.ter)
+	{
+		_terrain.clear();
+		return false;
+	}
+
+	return true;
+}
+
+void mapTool::startMoveTerrain()
+{
+	if (!_isTerrainReposition)
+	{
+		_originPos = { _terrain.ter->getPosX(), _terrain.ter->getPosY() };
+		_isTerrainReposition = true;
+	}
 }

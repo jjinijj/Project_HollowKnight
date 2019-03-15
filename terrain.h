@@ -104,12 +104,18 @@ public:
 	// 속성 확인
 	bool checkAttribute(const eAttribute attr);
 
+	// 위치 이동
+	void setPosition(float x, float y);
+
 	UID getUID() {return _uid;}
 
 	WORD getAtrribute()			{ return _attr; }
 	RECTD2D getRect()			{ return _rc;	}
 	RECTD2D getCollision()		{ return _collision;	}
 	eTerrainType getType()		{ return _type; }
+	
+	float getPosX() { return _x; }
+	float getPosY() { return _y; }
 }; 
 
 

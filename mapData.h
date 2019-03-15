@@ -30,6 +30,9 @@ public:
 	void update();
 	void render();
 
+	// 해당 레이어만 렌더
+	void render(UINT layer);
+
 	// 레이어 순서 위로
 	void terrainUp(UINT layer, UINT uid);
 	// 레이어 순서 아래로

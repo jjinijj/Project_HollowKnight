@@ -60,6 +60,10 @@ enum eTerrainType
 //=============================================
 #define DEBUG_SHOW_RECT		0x000001UL // RECT 보여주기
 #define DEBUG_SHOW_TEXT		0x000002UL // TEXT 보여주기
+#define DEBUG_SHOW_UID		0x000004UL // UID
+#define DEBUG_SHOW_COLLISON 0x000008UL // Collision
+#define DEBUG_SHOW_POSITION 0x000010UL // position
+#define DEBUG_HIDE_IMAGE	0x000020UL // 
 //#define ATTR_DEBUG_SHOW_CLEARTERRAIN	0x000004UL // 
 //#define ATTR_DEBUG_SHOW_CLEARTERRAIN	0x000008UL // 
 //#define ATTR_DEBUG_SHOW_CLEARTERRAIN	0x000010UL // 
