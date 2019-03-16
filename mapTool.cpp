@@ -927,37 +927,37 @@ void mapTool::initUI()
 		_uiBtnMoveUp->setText(L" ↑", 30);
 		_uiBtnMoveUp->setOnClickFunction(std::bind(&mapTool::clickBtnMoveUp, this));
 		insertUIObject(_uiBtnMoveUp);
-
+		
 		// 좌상
 		_uiBtnMoveLeftUp = new uiButton;
 		_uiBtnMoveLeftUp->init("uiBG3", "uiBG"
-						   , _uiBtnMoveUp->getRect().left - UI_SPACE - 50.f
-						   , _uiBtnMoveUp->getRect().top
-						   , 50.f, 50.f);
+							   , _uiBtnMoveUp->getRect().left - UI_SPACE - 50.f
+							   , _uiBtnMoveUp->getRect().top
+							   , 50.f, 50.f);
 		_uiBtnMoveLeftUp->setText(L" ↖", 30);
 		_uiBtnMoveLeftUp->setOnClickFunction(std::bind(&mapTool::clickBtnMoveLeftUp, this));
 		insertUIObject(_uiBtnMoveLeftUp);
-
+		
 		// 우상
 		_uiBtnMoveRightUp = new uiButton;
 		_uiBtnMoveRightUp->init("uiBG3", "uiBG"
-						   , _uiBtnMoveUp->getRect().right + UI_SPACE
-						   , _uiBtnMoveUp->getRect().top
-						   , 50.f, 50.f);
+								, _uiBtnMoveUp->getRect().right + UI_SPACE
+								, _uiBtnMoveUp->getRect().top
+								, 50.f, 50.f);
 		_uiBtnMoveRightUp->setText(L" ↗", 30);
 		_uiBtnMoveRightUp->setOnClickFunction(std::bind(&mapTool::clickBtnMoveRightUp, this));
 		insertUIObject(_uiBtnMoveRightUp);
-
+		
 		// 하
 		_uiBtnMoveDown = new uiButton;
 		_uiBtnMoveDown->init("uiBG3", "uiBG"
-						   , _uiBtnMoveReset->getRect().left
-						   , _uiBtnMoveReset->getRect().bottom + UI_SPACE
-						   , 50.f, 50.f);
+							 , _uiBtnMoveReset->getRect().left
+							 , _uiBtnMoveReset->getRect().bottom + UI_SPACE
+							 , 50.f, 50.f);
 		_uiBtnMoveDown->setText(L" ↓", 30);
 		_uiBtnMoveDown->setOnClickFunction(std::bind(&mapTool::clickBtnMoveDown, this));
 		insertUIObject(_uiBtnMoveDown);
-
+		
 		// 좌하
 		_uiBtnMoveLeftUp = new uiButton;
 		_uiBtnMoveLeftUp->init("uiBG3", "uiBG"
@@ -967,17 +967,17 @@ void mapTool::initUI()
 		_uiBtnMoveLeftUp->setText(L" ↙", 30);
 		_uiBtnMoveLeftUp->setOnClickFunction(std::bind(&mapTool::clickBtnMoveLeftDown, this));
 		insertUIObject(_uiBtnMoveLeftUp);
-
+		
 		// 우하
 		_uiBtnMoveRightDown = new uiButton;
 		_uiBtnMoveRightDown->init("uiBG3", "uiBG"
-								, _uiBtnMoveDown->getRect().right + UI_SPACE
-								, _uiBtnMoveDown->getRect().top
-								, 50.f, 50.f);
+								  , _uiBtnMoveDown->getRect().right + UI_SPACE
+								  , _uiBtnMoveDown->getRect().top
+								  , 50.f, 50.f);
 		_uiBtnMoveRightDown->setText(L" ↘", 30);
 		_uiBtnMoveRightDown->setOnClickFunction(std::bind(&mapTool::clickBtnMoveRightDown, this));
 		insertUIObject(_uiBtnMoveRightDown);
-
+		
 		// 좌
 		_uiBtnMoveLeft = new uiButton;
 		_uiBtnMoveLeft->init("uiBG3", "uiBG"
@@ -987,42 +987,107 @@ void mapTool::initUI()
 		_uiBtnMoveLeft->setText(L" ←", 30);
 		_uiBtnMoveLeft->setOnClickFunction(std::bind(&mapTool::clickBtnMoveLeft, this));
 		insertUIObject(_uiBtnMoveLeft);
-
+		
 		// 우
 		_uiBtnMoveRight = new uiButton;
 		_uiBtnMoveRight->init("uiBG3", "uiBG"
-							 , _uiBtnMoveReset->getRect().right + UI_SPACE
-							 , _uiBtnMoveReset->getRect().top
-							 , 50.f, 50.f);
+							  , _uiBtnMoveReset->getRect().right + UI_SPACE
+							  , _uiBtnMoveReset->getRect().top
+							  , 50.f, 50.f);
 		_uiBtnMoveRight->setText(L" →", 30);
 		_uiBtnMoveRight->setOnClickFunction(std::bind(&mapTool::clickBtnMoveRight, this));
 		insertUIObject(_uiBtnMoveRight);
-
+		
 		_uiTextMoveSnap = new uiText;
 		_uiTextMoveSnap->init(_uiBtnMoveRight->getRect().right + UI_SPACE
-							  ,_uiBtnMoveRight->getRect().top);
+							  , _uiBtnMoveRight->getRect().top);
 		_uiTextMoveSnap->setFontSize(20);
-		_uiTextMoveSnap->setFontColor(RGB(255,255,255));
+		_uiTextMoveSnap->setFontColor(RGB(255, 255, 255));
 		_uiTextMoveSnap->setText(format(L"\n  %d", _moveSnap));
 		insertUIObject(_uiTextMoveSnap);
-
+		
 		_uiBtnMoveSnapPlus = new uiButton;
 		_uiBtnMoveSnapPlus->init("uiBG3", "uiBG"
-								 ,_uiTextMoveSnap->getWorldPosition().x
-								 ,_uiTextMoveSnap->getWorldPosition().y - UI_SPACE - 50.f
-								 ,50.f, 50.f);
+								 , _uiTextMoveSnap->getWorldPosition().x
+								 , _uiTextMoveSnap->getWorldPosition().y - UI_SPACE - 50.f
+								 , 50.f, 50.f);
 		_uiBtnMoveSnapPlus->setText(L" +", 20);
 		_uiBtnMoveSnapPlus->setOnClickFunction(std::bind(&mapTool::clickBtnMoveSnapPlus, this));
 		insertUIObject(_uiBtnMoveSnapPlus);
-
+		
 		_uiBtnMoveSnapMinus = new uiButton;
 		_uiBtnMoveSnapMinus->init("uiBG3", "uiBG"
-								 , _uiTextMoveSnap->getWorldPosition().x
-								 , _uiTextMoveSnap->getWorldPosition().y + UI_SPACE + 50.f
-								 , 50.f, 50.f);
+								  , _uiTextMoveSnap->getWorldPosition().x
+								  , _uiTextMoveSnap->getWorldPosition().y + UI_SPACE + 50.f
+								  , 50.f, 50.f);
 		_uiBtnMoveSnapMinus->setText(L" -", 20);
 		_uiBtnMoveSnapMinus->setOnClickFunction(std::bind(&mapTool::clickBtnMoveSnapMinus, this));
 		insertUIObject(_uiBtnMoveSnapMinus);
+	}
+
+	// 저장&로드
+	{
+		// 현재 열린 파일명 
+		_uiTextCurFileName = new uiText;
+		_uiTextCurFileName->init(miniMap.right + UI_SPACE, miniMap.top);
+		_uiTextCurFileName->setFontColor(RGB(255, 255, 255));
+		_uiTextCurFileName->setFontSize(25);
+		_uiTextCurFileName->setText(L"[File Name : None]");
+		insertUIObject(_uiTextCurFileName);
+
+		// 파일 리스트
+		_uiListFiles = new uiList;
+		_uiListFiles->init(	miniMap.right + UI_SPACE
+						   ,miniMap.top + UI_SPACE + 30.f
+						   ,canvas.right - 50.f - UI_SPACE - miniMap.right
+						   ,miniMap.bottom - miniMap.top
+						   ,IMAGEMANAGER->findImage("uiBG5"));
+		_uiListFiles->setCellHeight(30.f);
+		_uiListFiles->setCountPerLine(3);
+		_uiListFiles->setGap(5.f, 5.f);
+
+		insertUIObject(_uiListFiles);
+
+		// 파일 버튼들
+		// "uiBG3", "uiBG", "uiBG5"
+		string fileName;
+		float x = 0.f;
+		float y = 0.f;
+		for ( int ii = 0; ii < eSceneName_Count; ++ii )
+		{
+			fileName.clear();
+			fileName.append(SCENEMANAGER->getSceneFileName((eSceneName)ii));
+
+			if ( 0 < fileName.size() )
+			{
+				uiButton* btn = new uiButton;
+				btn->init("uiBG3", "uiBG", "uiBG5"
+						  ,0.f, 0.f, 0.f, 0.f);
+				btn->setText(string2wstring(fileName), 30.f);
+				btn->setOnClickFunction(std::bind(&mapTool::clickBtnSelectFile, this, (eSceneName)ii, btn));
+				_uiListFiles->insertChild(btn);
+			}
+		}
+
+		// 저장 버튼
+		_uiBtnSave = new uiButton;
+		_uiBtnSave->init("uiBG3", "uiBG"
+						 ,_uiListFiles->getRect().right + UI_SPACE
+						 ,_uiListFiles->getRect().top
+						 , 50.f, 50.f);
+		_uiBtnSave->setText(L"Save", 20);
+		_uiBtnSave->setOnClickFunction(std::bind(&mapTool::clickBtnSaveMap, this));
+		insertUIObject(_uiBtnSave);
+
+		// 로드 버튼
+		_uiBtnLoad = new uiButton;
+		_uiBtnLoad->init("uiBG3", "uiBG"
+						 ,_uiBtnSave->getRect().left
+						 ,_uiBtnSave->getRect().bottom + UI_SPACE
+						 , 50.f, 50.f);
+		_uiBtnLoad->setText(L"Load", 20);
+		_uiBtnLoad->setOnClickFunction(std::bind(&mapTool::clickBtnLoadMap, this));
+		insertUIObject(_uiBtnLoad);
 	}
 
 
@@ -1855,4 +1920,42 @@ void mapTool::startMoveTerrain()
 		_originPos = { _terrain.ter->getPosX(), _terrain.ter->getPosY() };
 		_isTerrainReposition = true;
 	}
+}
+
+void mapTool::clickBtnSelectFile(eSceneName sceneName, uiButton* btn)
+{
+	_selFileName = sceneName;
+	_selBtnFileName = btn;
+}
+
+void mapTool::clickBtnSaveMap()
+{
+	if ( eSceneName_None == _curFileName )
+	{
+		if( eSceneName_None == _selFileName )
+			return;
+
+
+	}
+	else
+	{
+
+	}
+}
+
+void mapTool::clickBtnLoadMap()
+{
+	if(eSceneName_None == _selFileName)
+		return;
+
+	_curFileName = _selFileName;
+	int a = 0;
+	wstring fileName;
+	fileName.clear();
+	fileName.append(string2wstring(SCENEMANAGER->getSceneFileName(_curFileName)));
+	_uiTextCurFileName->setText(format(L"[File Name : %s]", fileName.c_str()));
+
+	_selFileName = eSceneName_None;
+	if(_selBtnFileName)
+		_selBtnFileName->setState(eButton_Up);
 }

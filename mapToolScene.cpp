@@ -16,6 +16,7 @@ mapToolScene::~mapToolScene()
 
 HRESULT mapToolScene::init()
 {
+	baseScene::init();
 	_sceneName = eSceneName_MapTool;
 
 	

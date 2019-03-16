@@ -2,20 +2,24 @@
 #include "sceneManager.h"
 #include "gameNode.h"
 
+baseScene* sceneManager::_currentScene = nullptr;
+
 sceneManager::sceneManager()
 {
+	_mSceneList.clear();
+	_fileNameMap.clear();
 }
-
 
 sceneManager::~sceneManager()
 {
 }
 
-baseScene* sceneManager::_currentScene = nullptr;
 
 HRESULT sceneManager::init()
 {
 	_currentScene = nullptr;
+
+	_fileNameMap.insert(make_pair(eSceneName_DirtMouth, "dirthMouth"));
 
 	return S_OK;
 }
@@ -94,4 +98,15 @@ HRESULT sceneManager::changeScene(eSceneName sceneName)
 		return S_OK;
 	}
 	return E_FAIL;
+}
+
+string sceneManager::getSceneFileName(eSceneName name)
+{
+	string fileName;
+	fileName.clear();
+
+	if( _fileNameMap.find(name) != _fileNameMap.end() )
+		fileName = _fileNameMap[name];
+
+	return fileName;
 }

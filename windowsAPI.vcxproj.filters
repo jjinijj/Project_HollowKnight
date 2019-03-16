@@ -100,6 +100,12 @@
     <Filter Include="2DFramework\ui\uiText">
       <UniqueIdentifier>{99e7c855-541f-4801-87a6-2ef406b9e6d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\scene\ingame">
+      <UniqueIdentifier>{19882662-3bec-4e0d-b0fb-7dc6484969f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\scene\ingame\dirtMouthScene">
+      <UniqueIdentifier>{b7b7d687-07c6-4641-afaf-c4fe1cc0fcf1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -246,6 +252,9 @@
     <ClInclude Include="uiButtonDrop.h">
       <Filter>2DFramework\ui\uiButton</Filter>
     </ClInclude>
+    <ClInclude Include="dirtMouthScene.h">
+      <Filter>PlayGround\scene\ingame\dirtMouthScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -376,6 +385,9 @@
     </ClCompile>
     <ClCompile Include="uiButtonDrop.cpp">
       <Filter>2DFramework\ui\uiButton</Filter>
+    </ClCompile>
+    <ClCompile Include="dirtMouthScene.cpp">
+      <Filter>PlayGround\scene\ingame\dirtMouthScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

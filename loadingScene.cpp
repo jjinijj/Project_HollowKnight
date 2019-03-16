@@ -14,6 +14,7 @@ loadingScene::~loadingScene()
 
 HRESULT loadingScene::init()
 {
+	baseScene::init();
 	_sceneName = eSceneName_Loading;
 
 	_iaDataAllLoad = false;

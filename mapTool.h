@@ -162,6 +162,7 @@ private:
 	//toolState* _state;
 	TERRAIN _terrain;
 	uiButton* _curBtnTerrain;
+	uiButton* _selBtnFileName;
 
 	int _sampleIdx;
 	int _moveSnap;		// 이동 간격
@@ -175,7 +176,8 @@ private:
 
 	image* _sampleImg;					// 샘플 지형들
 	SAMPLE _pick;						// 선택한 지형
-
+	eSceneName _curFileName;			// 현재 파일
+	eSceneName _selFileName;			// 선택한 파일
 	
 	bool _isPicking;
 	bool _isOpenSampleBoard;
@@ -227,6 +229,7 @@ private:
 
 	uiText* _uiButtonReverse;			// 지형 반전
 
+	uiText* _uiTextCurFileName;			// 현재 파일 이름			
 	uiList* _uiListFiles;				// 파일 이름들
 	uiButton* _uiBtnSave;				// 저장
 	uiButton* _uiBtnLoad;				// 로드;
@@ -354,4 +357,9 @@ private:
 
 	bool checkSelectingTerrain();
 	void startMoveTerrain();
+
+	void clickBtnSelectFile(eSceneName sceneName, uiButton* btn);
+
+	void clickBtnSaveMap();
+	void clickBtnLoadMap();
 };

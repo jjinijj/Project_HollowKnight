@@ -3,6 +3,8 @@
 
 
 baseScene::baseScene()
+: _sceneName(eSceneName_None)
+, _isInGameScene(false)
 {
 }
 
@@ -13,7 +15,7 @@ baseScene::~baseScene()
 
 HRESULT baseScene::init()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 void baseScene::release()

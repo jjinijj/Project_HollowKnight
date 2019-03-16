@@ -16,6 +16,8 @@ private:
 	static baseScene*	_currentScene;	//ÇöÀç ¾À
 	mapSceneList		_mSceneList;
 
+	map<eSceneName, string> _fileNameMap;		// 
+
 public:
 	sceneManager();
 	~sceneManager();
@@ -34,5 +36,7 @@ public:
 	// ÇöÀç ¾À
 	baseScene* getCurrentScene() { return _currentScene; }
 
+	// ÆÄÀÏ¸í
+	string getSceneFileName(eSceneName name);
 };
 

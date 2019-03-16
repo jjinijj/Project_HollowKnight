@@ -3,6 +3,8 @@
 class baseScene
 {
 protected:
+	bool _isInGameScene;
+	
 	eSceneName _sceneName;
 
 public:
@@ -14,6 +16,7 @@ public:
 	virtual void update()	= 0;
 	virtual void render()	= 0;
 
-	eSceneName getSceneName() { return _sceneName; }
+	eSceneName getSceneName()	{ return _sceneName;		}
+	bool isInGameScene()		{ return _isInGameScene;	}
 };
 

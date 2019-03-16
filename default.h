@@ -67,7 +67,7 @@ enum eSceneName
 	eSceneName_MapTool,
 	eSceneName_Title,
 	eSceneName_Load,
-	sSceneName_DirtMouth,
+	eSceneName_DirtMouth,
 	eSceneName_CrossLoad_01,
 
 	eSceneName_None,
