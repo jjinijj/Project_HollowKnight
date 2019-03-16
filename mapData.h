@@ -27,6 +27,8 @@ public:
 
 	HRESULT init();
 	void release();
+	void clear();
+
 	void update();
 	void render();
 
@@ -82,12 +84,14 @@ public:
 private:
 	void addTerrain(UINT layer, terrain* ter);
 	
-	void loadMapDate(string fileName);
-	void loadMapInfo(string fileName);
+	void loadMapDate(string fileName, int* terrainCnt);
+	void loadMapInfo(string fileName, int* terrainCnt);
 
 	void saveMapDate(string fileName);
 	void saveMapInfo(string fileName);
 
 	WORD getUsableTriggerIndex();
+
+
 };
 

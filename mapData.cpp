@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "mapData.h"
+#include <string.h>
+#include <queue>
 
 
 mapData::mapData()
@@ -23,6 +25,18 @@ HRESULT mapData::init()
 
 void mapData::release()
 {
+	clear();
+}
+
+void mapData::clear()
+{
+	_uidCount = 1;
+	_terrains.clear();
+	_colTerrains.clear();
+
+	for(int ii = 0 ; ii < MAP_LAYER_COUNT; ++ii)
+		_terrainsByLayer[ii].clear();
+
 	iterVTerrain iter;
 	int size = 0;
 
@@ -368,12 +382,21 @@ int mapData::getTerrainIndex(UINT uid)
 
 HRESULT mapData::save(string fileName)
 {
-	return E_NOTIMPL;
+	saveMapDate(fileName);
+	saveMapInfo(fileName);
+
+	return S_OK;
 }
 
 HRESULT mapData::load(string fileName)
 {
-	return E_NOTIMPL;
+	clear();
+
+	int terrainCnt[MAP_LAYER_COUNT];
+	loadMapInfo(fileName, terrainCnt);
+	loadMapDate(fileName, terrainCnt);
+
+	return S_OK;
 }
 
 void mapData::addTerrain(UINT layer, terrain* ter)
@@ -387,20 +410,158 @@ void mapData::addTerrain(UINT layer, terrain* ter)
 	++_uidCount;
 }
 
-void mapData::loadMapDate(string fileName)
+void mapData::loadMapDate(string fileName, int* terrainCnt)
 {
+	string address;
+	address.clear();
+
+	address.append(format("data/%s_data.txt",fileName.c_str()));
+	
+	int count = 0;
+	for(int ii = 0 ; ii < MAP_LAYER_COUNT; ++ii )
+		count += terrainCnt[ii];
+	TARRAINPACK* packs = new TARRAINPACK[count];
+
+	HANDLE file;
+	DWORD read;
+	file = CreateFile(address.c_str(), GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	ReadFile(file, packs, sizeof(TARRAINPACK) * count, &read, NULL);
+	CloseHandle(file);
+
+	int size = 0;
+	for ( int layer = 0; layer < MAP_LAYER_COUNT; ++layer )
+	{
+		for ( int ii = 0; ii < terrainCnt[layer]; ++ii )
+		{
+			terrain* ter = nullptr;
+			switch ( packs[size + ii].type )
+			{
+				case eTerrain_Frame: { ter = new terrainFrame; break;	}
+				case eTerrain_Drag:	 { ter = new terrainDrag; break;	}
+				case eTerrain_Clear: { ter = new terrainClear; break;	}
+				default: continue;
+			}
+
+			ter->loadPack(&packs[size + ii]);
+			addTerrain(layer, ter);
+		}
+		size += terrainCnt[layer];
+	}
+
+	SAFE_DELETE_ARRAY(packs);
+
 }
 
-void mapData::loadMapInfo(string fileName)
+void mapData::loadMapInfo(string fileName, int* terrainCnt)
 {
+	string address;
+	char info[512] = "";
+	queue<int> infos;
+	address.clear();
+
+	address.append(format("data/%s_info.txt",fileName.c_str()));
+
+	HANDLE file;
+	DWORD read;
+	file = CreateFile(address.c_str(), GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	ReadFile(file, info, 512, &read, NULL);
+	CloseHandle(file);
+
+	char* temp;
+	char* token;
+	int iTemp = 0;
+	token = strtok_s(info, ",", &temp);
+	
+	while (nullptr != token)
+	{
+		iTemp = atoi(token);
+		infos.push(iTemp);
+
+		token = strtok_s(NULL, ",", &temp);
+	}
+
+	// uidCount
+	if (!infos.empty())
+	{
+		_uidCount = infos.front();
+		infos.pop();
+	}
+
+
+	// 레이어당 지형의 수
+	for(int ii = 0; ii < MAP_LAYER_COUNT && !infos.empty(); ++ii)
+	{
+		terrainCnt[ii] = infos.front();
+		infos.pop();
+	}
+
+	for(int ii = 0; ii < TRRIGER_MAX_COUNT; ++ii)
+	{
+		if (!infos.empty())
+		{
+			_triggerPool[ii] = infos.front();
+			infos.pop();
+		}
+		else
+			_triggerPool[ii] = NULL;
+	}
 }
 
 void mapData::saveMapDate(string fileName)
 {
+	string address;
+	address.clear();
+
+	address.append(format("data/%s_data.txt",fileName.c_str()));
+
+	TARRAINPACK* packs = new TARRAINPACK[_terrains.size()];
+	int size = 0;
+	int count = 0;
+	for ( int ii = 0; ii < MAP_LAYER_COUNT; ++ii )
+	{
+		size = _terrainsByLayer[ii].size();
+		for ( int idx = 0; idx < size; ++idx )
+		{
+			packs[count].clear();
+			packs[count] = *_terrainsByLayer[ii][idx]->makePack();
+			++count;
+		}
+	}
+
+	HANDLE file;
+	DWORD write;
+
+	file = CreateFile(address.c_str(), GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	WriteFile(file, packs, sizeof(TARRAINPACK) * count, &write, NULL);
+	CloseHandle(file);
+
+	SAFE_DELETE_ARRAY(packs);
 }
 
 void mapData::saveMapInfo(string fileName)
 {
+	string address;
+	string info;
+	address.clear();
+	info.clear();
+
+	address.append(format("data/%s_info.txt",fileName.c_str()));
+
+	info.append(format("%d,", _uidCount));
+	for( int ii = 0; ii < MAP_LAYER_COUNT; ++ii )
+		info.append(format("%d,", _terrainsByLayer[ii].size()));
+	for ( int ii = 0; ii < TRRIGER_MAX_COUNT; ++ii )
+		info.append(format("%d,", _triggerPool[ii]));
+
+	HANDLE file;
+	DWORD write;
+	file = CreateFile(address.c_str(), GENERIC_WRITE, NULL, NULL,
+					  CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	WriteFile(file, info.c_str(), info.size(), &write, NULL);
+	CloseHandle(file);
 }
 
 WORD mapData::getUsableTriggerIndex()
@@ -413,3 +574,5 @@ WORD mapData::getUsableTriggerIndex()
 
 	return TRRIGER_MAX_COUNT;
 }
+
+

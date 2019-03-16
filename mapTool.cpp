@@ -1930,17 +1930,20 @@ void mapTool::clickBtnSelectFile(eSceneName sceneName, uiButton* btn)
 
 void mapTool::clickBtnSaveMap()
 {
-	if ( eSceneName_None == _curFileName )
-	{
-		if( eSceneName_None == _selFileName )
-			return;
+	if( eSceneName_None == _selFileName )
+		return;
 
+	string fileNamestr = SCENEMANAGER->getSceneFileName(_selFileName);
+	wstring fileName;
+	fileName.clear();
+	fileName.append(string2wstring(fileNamestr));
+	_uiTextCurFileName->setText(format(L"[File Name : %s]", fileName.c_str()));
 
-	}
-	else
-	{
+	_mapData->save(fileNamestr);
 
-	}
+	_selFileName = eSceneName_None;
+	if(_selBtnFileName)
+		_selBtnFileName->setState(eButton_Up);
 }
 
 void mapTool::clickBtnLoadMap()
@@ -1948,12 +1951,40 @@ void mapTool::clickBtnLoadMap()
 	if(eSceneName_None == _selFileName)
 		return;
 
+	_terrain.clear();
+
 	_curFileName = _selFileName;
-	int a = 0;
+	
+	string fileNamestr = SCENEMANAGER->getSceneFileName(_curFileName);
 	wstring fileName;
 	fileName.clear();
-	fileName.append(string2wstring(SCENEMANAGER->getSceneFileName(_curFileName)));
+	fileName.append(string2wstring(fileNamestr));
 	_uiTextCurFileName->setText(format(L"[File Name : %s]", fileName.c_str()));
+
+	_mapData->load(fileNamestr);
+
+
+	for(int layer = 0 ; layer < MAP_LAYER_COUNT; ++layer )
+	{
+		_uiListHierarcy[layer]->removeChildAll();
+		vector<terrain*>* vTerrains = _mapData->getLayerTerrains(layer);
+
+		vector<terrain*>::iterator iter = vTerrains->begin();
+		vector<terrain*>::iterator end = vTerrains->end();
+
+		for (; iter != end; ++iter)
+		{
+			terrain* ter = (*iter);
+			uiButton* btn = new uiButton;
+
+			btn->init("uiBG2", "uiBG3", "uiBG", 0.f, 0.f, 10.f, 10.f);
+			btn->setText(format(L"%d", ter->getUID()));
+			btn->setOnClickFunction(std::bind(&mapTool::clickBtnTerrain, this, ter->getUID(), btn));
+			btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnTerrain, this, ter->getUID()));
+
+			_uiListHierarcy[layer]->insertChild(btn);
+		}
+	}
 
 	_selFileName = eSceneName_None;
 	if(_selBtnFileName)
