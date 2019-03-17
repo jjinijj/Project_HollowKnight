@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "mapData.h"
+#include "terrain.h"
 #include <string.h>
 #include <queue>
 

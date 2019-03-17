@@ -437,6 +437,7 @@ void terrainClear::update()
 
 void terrainClear::render()
 {
+	terrain::render();
 	//if(CAMERA->isRangeInCamera(_rc.left, _rc.top, _width, _height))
 	//	D2DMANAGER->drawRectangle(_rc, false);
 }

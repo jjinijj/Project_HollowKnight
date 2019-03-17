@@ -1,10 +1,16 @@
 #pragma once
-#include "terrain.h"
 
+class terrain;
+class npc;
+class enemy;
 class mapData
 {
 	typedef vector<terrain*>			vTerrain;
 	typedef vector<terrain*>::iterator	iterVTerrain;
+	typedef vector<npc*>				vNpc;
+	typedef vector<npc*>::iterator		iterVNpc;
+	typedef vector<enemy*>				vEnemy;
+	typedef vector<enemy*>::iterator	iterEnemy;
 
 	enum
 	{
@@ -13,6 +19,8 @@ class mapData
 
 private:
 	vTerrain _terrains;		// 모든 지형들
+	vNpc	 _npcs;			// npc
+	vEnemy	 _enemys;		// enemy
 
 	vTerrain _colTerrains;	// 충돌체가 있는 지형들
 	vTerrain _terrainsByLayer[MAP_LAYER_COUNT];	// 레이어단위로 분류

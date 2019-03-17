@@ -106,6 +106,15 @@
     <Filter Include="PlayGround\scene\ingame\dirtMouthScene">
       <UniqueIdentifier>{b7b7d687-07c6-4641-afaf-c4fe1cc0fcf1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\actor">
+      <UniqueIdentifier>{c5b183b0-65ba-4d72-8ae1-4794e52431a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\actor\npc">
+      <UniqueIdentifier>{6f642e8c-1521-41c4-a804-a3b7f1da8fd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\actor\enemay">
+      <UniqueIdentifier>{743da22f-4e4f-4ef0-9caa-7000e92a805d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -255,6 +264,18 @@
     <ClInclude Include="dirtMouthScene.h">
       <Filter>PlayGround\scene\ingame\dirtMouthScene</Filter>
     </ClInclude>
+    <ClInclude Include="actorBase.h">
+      <Filter>PlayGround\actor</Filter>
+    </ClInclude>
+    <ClInclude Include="npc.h">
+      <Filter>PlayGround\actor\npc</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>PlayGround\actor\enemay</Filter>
+    </ClInclude>
+    <ClInclude Include="actorManager.h">
+      <Filter>PlayGround\actor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -389,6 +410,18 @@
     <ClCompile Include="dirtMouthScene.cpp">
       <Filter>PlayGround\scene\ingame\dirtMouthScene</Filter>
     </ClCompile>
+    <ClCompile Include="actorBase.cpp">
+      <Filter>PlayGround\actor</Filter>
+    </ClCompile>
+    <ClCompile Include="npc.cpp">
+      <Filter>PlayGround\actor\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy.cpp">
+      <Filter>PlayGround\actor\enemay</Filter>
+    </ClCompile>
+    <ClCompile Include="actorManager.cpp">
+      <Filter>PlayGround\actor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="windowsAPI.rc">
@@ -407,5 +440,6 @@
     <None Include="Cursor.cur">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>
