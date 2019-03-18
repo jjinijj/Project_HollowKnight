@@ -115,6 +115,12 @@
     <Filter Include="PlayGround\actor\enemay">
       <UniqueIdentifier>{743da22f-4e4f-4ef0-9caa-7000e92a805d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\player">
+      <UniqueIdentifier>{1201c272-e2bd-441d-bb6d-b368a3e8cfd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\player\state">
+      <UniqueIdentifier>{6f06c1eb-e518-4c79-968e-c49cb8a57a99}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -276,6 +282,15 @@
     <ClInclude Include="actorManager.h">
       <Filter>PlayGround\actor</Filter>
     </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>PlayGround\player</Filter>
+    </ClInclude>
+    <ClInclude Include="playerState.h">
+      <Filter>PlayGround\player\state</Filter>
+    </ClInclude>
+    <ClInclude Include="jumpState.h">
+      <Filter>PlayGround\player\state</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -421,6 +436,15 @@
     </ClCompile>
     <ClCompile Include="actorManager.cpp">
       <Filter>PlayGround\actor</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>PlayGround\player</Filter>
+    </ClCompile>
+    <ClCompile Include="playerState.cpp">
+      <Filter>PlayGround\player\state</Filter>
+    </ClCompile>
+    <ClCompile Include="jumpState.cpp">
+      <Filter>PlayGround\player\state</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

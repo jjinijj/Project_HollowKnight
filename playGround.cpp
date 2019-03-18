@@ -16,6 +16,7 @@ HRESULT playGround::init()
 
 	SCENEMANAGER->addScene(eSceneName_Loading, new loadingScene);
 	SCENEMANAGER->addScene(eSceneName_MapTool, new mapToolScene);
+	SCENEMANAGER->addScene(eSceneName_DirtMouth, new dirtMouthScene);
 
 
 

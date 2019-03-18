@@ -18,6 +18,9 @@ typedef struct tagTerrainPack
 	float x;
 	float y;
 
+	float sourX;
+	float sourY;
+
 	float width;
 	float height;
 
@@ -36,6 +39,8 @@ typedef struct tagTerrainPack
 		framxY = 0;
 		x = 0.f;
 		y = 0.f;
+		sourX = 0.f;
+		sourY = 0.f;
 		width = 0.f;
 		height = 0.f;
 		rc = {};

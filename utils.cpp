@@ -44,18 +44,7 @@ namespace JJIN_UTIL
 		return str;
 	}
 
-	POINT PointMake(int x, int y)
-	{
-		POINT pt = { x, y };
 
-		return pt;
-	}
-	POINTF PointFMake(float x, float y)
-	{
-		POINTF pt = { x, y };
-
-		return pt;
-	}
 	void LineMake(HDC hdc, int startX, int startY, int endX, int endY, bool isAbsolute)
 	{
 		float posX = startX - (int)CAMERA->getPosX();

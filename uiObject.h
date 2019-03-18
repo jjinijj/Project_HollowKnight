@@ -53,7 +53,7 @@ public:
 	POINTF getWorldPosition();
 	POINTF getLocalPosition();
 
-	POINTF getSize()  { return PointFMake(_x, _y); }
+	POINTF getSize()  { return MakePointF(_x, _y); }
 	float getWidth()  { return _width;}
 	float getHeight() { return _height;}
 

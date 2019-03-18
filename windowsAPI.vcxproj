@@ -156,6 +156,9 @@
     <ClInclude Include="enemy.h" />
     <ClInclude Include="iTween.h" />
     <ClInclude Include="npc.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="playerState.h" />
+    <ClInclude Include="jumpState.h" />
     <ClInclude Include="uiButton.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="d2dManager.h" />
@@ -211,6 +214,9 @@
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="iTween.cpp" />
     <ClCompile Include="npc.cpp" />
+    <ClCompile Include="player.cpp" />
+    <ClCompile Include="playerState.cpp" />
+    <ClCompile Include="jumpState.cpp" />
     <ClCompile Include="uiButton.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="d2dManager.cpp" />

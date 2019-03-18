@@ -271,6 +271,8 @@ TARRAINPACK* terrainDrag::makePack()
 		pack->imgUid = _imgUid;
 		pack->width	 = _width;
 		pack->height = _height;
+		pack->sourX = _sourX;
+		pack->sourY = _sourY;
 	}
 
 	return pack;
@@ -285,6 +287,8 @@ void terrainDrag::loadPack(TARRAINPACK* pack)
 		_imgUid = (eImageUID)pack->imgUid;
 		_width	= pack->width;
 		_height = pack->height;
+		_sourX = pack->sourX;
+		_sourY = pack->sourY;
 
 		_img = IMGDATABASE->getImage(_imgUid);
 		assert(_img != nullptr);

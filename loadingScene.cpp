@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "loadingScene.h"
+#include "dirtMouthScene.h"
 
 
 loadingScene::loadingScene()
@@ -32,7 +33,8 @@ void loadingScene::update()
 	if (_iaDataAllLoad)
 	{
 		//SCENEMANAGER->changeScene(eSceneName_Title);
-		SCENEMANAGER->changeScene(eSceneName_MapTool);
+		//SCENEMANAGER->changeScene(eSceneName_MapTool);
+		SCENEMANAGER->changeScene(eSceneName_DirtMouth);
 		_iaDataAllLoad = false;
 	}
 }

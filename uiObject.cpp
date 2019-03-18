@@ -183,7 +183,7 @@ POINTF uiObject::getWorldPosition()
 
 POINTF uiObject::getLocalPosition()
 {
-	return PointFMake(_x, _y);
+	return MakePointF(_x, _y);
 }
 
 void uiObject::inputKey()

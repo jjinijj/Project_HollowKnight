@@ -18,9 +18,6 @@ namespace JJIN_UTIL
 
 	const wstring AppendInt(const WCHAR* imageName, int value);
 
-	POINT PointMake(int x, int y);
-	POINTF PointFMake(float x, float y);
-
 	void LineMake(HDC hdc, int startX, int startY, int endX, int endY, bool isAbsolute = true);
 	void LineMake(HDC hdc, POINTF start, POINTF end, bool isAbsolute = true);
 
@@ -118,4 +115,101 @@ namespace JJIN_UTIL
 	wstring format_arg_list(const WCHAR *fmt, va_list args);
 
 	WORD attribute(eAttribute attr);
+
+	inline bool CheckIntersectRect(const RECTD2D& rc1, const RECTD2D& rc2)
+	{
+		int hightL	= rc1.left < rc2.left ? rc2.left : rc1.left;
+		int lowR	= rc1.right < rc2.right ? rc1.right : rc2.right;
+		int highT	= rc1.top < rc2.top ? rc2.top : rc1.top;
+		int lowB	= rc1.bottom < rc2.bottom ? rc1.bottom : rc2.bottom;
+
+		for (int xx = hightL; xx <= lowR; ++xx)
+		{
+			for (int yy = highT; yy <= lowB; ++yy)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	inline float GetIntersectOffsetX(const RECTD2D& moveRc, const RECTD2D& sourcRc)
+	{
+		float hightL = moveRc.left < sourcRc.left ? sourcRc.left : moveRc.left;
+		float lowR = moveRc.right < sourcRc.right ? moveRc.right : sourcRc.right;
+
+		if (moveRc.left < hightL)
+			return hightL - moveRc.right;
+		else if (lowR < moveRc.right)
+			return lowR - moveRc.left;
+
+		return 0.f;
+	}
+
+	inline float GetIntersectOffsetY(const RECTD2D& moveRc, const RECTD2D& sourcRc)
+	{
+		float highT = moveRc.top < sourcRc.top ? sourcRc.top : moveRc.top;
+		float lowB = moveRc.bottom < sourcRc.bottom ? moveRc.bottom : sourcRc.bottom;
+
+		if (moveRc.top < highT)
+			return highT - moveRc.bottom;
+		else if (lowB < moveRc.bottom)
+			return lowB - moveRc.top + 1;
+
+		return 0.f;
+	}
+
+	inline float GetIntersectOffsetX_doNotBoard(const RECTD2D& moveRc, const RECTD2D& sourcRc)
+	{
+		float hightL = moveRc.left < sourcRc.left ? sourcRc.left : moveRc.left;
+		float lowR = moveRc.right < sourcRc.right ? moveRc.right : sourcRc.right;
+
+		if (moveRc.left < hightL)
+			return hightL - moveRc.right - 1.f;
+		else if (lowR < moveRc.right)
+			return lowR - moveRc.left + 1.f;
+
+		return 0.f;
+	}
+
+	inline float GetIntersectOffsetY_doNotBoard(const RECTD2D& moveRc, const RECTD2D& sourcRc)
+	{
+		float highT = moveRc.top < sourcRc.top ? sourcRc.top : moveRc.top;
+		float lowB = moveRc.bottom < sourcRc.bottom ? moveRc.bottom : sourcRc.bottom;
+
+		if (moveRc.top < highT)
+			return highT - moveRc.bottom - 1;
+		else if (lowB < moveRc.bottom)
+			return lowB - moveRc.top + 1;
+
+		return 0.f;
+	}
+
+	inline float CheckInRange(POINTF target, POINTF sour, float range)
+	{
+		float distance = pow((target.x - sour.x), 2) + pow((target.y - sour.y), 2);
+		float dis_ran = pow(range, 2);
+
+		return (distance <= dis_ran);
+	}
+
+	inline POINTF MakePointF(float x, float y)
+	{
+		POINTF pf = { x, y };
+		return pf;
+	}
+
+	inline POINTF MakePointF(int x, int y)
+	{
+		POINTF pf = { static_cast<float>(x), static_cast<float>(y) };
+		return pf;
+	}
+
+	inline POINTF MakePointF(LONG x, LONG y)
+	{
+		POINTF pf = { static_cast<float>(x), static_cast<float>(y) };
+		return pf;
+	}
+
 }

@@ -3,6 +3,7 @@
 
 #include "loadingScene.h"
 #include "mapToolScene.h"
+#include "dirtMouthScene.h"
 
 class playGround : public gameNode
 {
