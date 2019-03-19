@@ -10,6 +10,9 @@ private:
 	float _gravity;
 
 public:
+	flyingState();
+	~flyingState();
+
 	HRESULT init(player* p);
 	void release();
 	void update();
@@ -26,6 +29,9 @@ private:
 	float _gravity;
 
 public:
+	fallingState();
+	~fallingState();
+
 	HRESULT init(player* p);
 	void release();
 	void update();
@@ -38,11 +44,13 @@ public:
 class jumpFallingState: public playerState
 {
 private:
-	float _fallingTime;
 	float _jumpPower;
 	float _gravity;
 
 public:
+	jumpFallingState();
+	~jumpFallingState();
+
 	HRESULT init(player* p);
 	void release();
 	void update();
@@ -54,9 +62,10 @@ public:
 
 class landState: public playerState
 {
-private:
-
 public:
+	landState();
+	~landState();
+
 	HRESULT init(player* p);
 	void release();
 	void update();

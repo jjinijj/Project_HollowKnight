@@ -10,7 +10,6 @@ playerState::playerState()
 {
 }
 
-
 playerState::~playerState()
 {
 }
@@ -50,6 +49,12 @@ UINT playerState::nextState()
 {
 	return _nextState;
 }
+
+
+
+//=============================================
+// idle
+//=============================================
 
 idleState::idleState()
 {
@@ -137,6 +142,9 @@ walkState::~walkState()
 {
 }
 
+//=============================================
+// walk
+//=============================================
 HRESULT walkState::init(player* p)
 {
 	HRESULT hr = playerState::init(p);
