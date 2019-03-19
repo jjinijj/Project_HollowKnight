@@ -22,10 +22,10 @@ HRESULT player::init(float x, float y)
 	_collision = { x, y, x + 10.f, y + 10.f };
 
 	RECTD2D rc = { 0.f, 0.f, WINSIZEX, WINSIZEY };
-	POINTFLOAT pf = {WINSIZEX, WINSIZEY};
+	POINTFLOAT pf = {MAPSIZEX, MAPSIZEY};
 	//CAMERA->init(pf, rc, (float)PLAYER_MOVE_SPEED, &_x, &_y);
 
-	CAMERA->init(pf, rc, 0.f);
+	CAMERA->init(pf, rc, PLAYER_MOVE_SPEED, &_x, &_y);
 
 	initState();
 
@@ -51,7 +51,7 @@ void player::update()
 void player::render()
 {
 	D2DMANAGER->drawRectangle(_collision, false);
-
+	D2DMANAGER->drawText(format(L"%d", _state->getState()).c_str(), _collision.left, _collision.top, false);
 	if(_actState)
 		_actState->render();
 	else
@@ -60,22 +60,32 @@ void player::render()
 
 void player::moveRight()
 {
-	_x += PLAYER_MOVE_SPEED;
+	_x += (PLAYER_MOVE_SPEED * TIMEMANAGER->getElapsedTime());
 }
 
 void player::moveLeft()
 {
-	_x -= PLAYER_MOVE_SPEED;
+	_x -= (PLAYER_MOVE_SPEED * TIMEMANAGER->getElapsedTime());
+}
+
+void player::moveJump(float jumpPower)
+{
+	_y -= (jumpPower);// * TIMEMANAGER->getElapsedTime());
+}
+
+void player::moveFall(float gravity)
+{
+	_y += (gravity );//* TIMEMANAGER->getElapsedTime());
 }
 
 void player::moveUp()
 {
-	_y -= PLAYER_MOVE_SPEED;
+	_y -= (PLAYER_MOVE_SPEED * TIMEMANAGER->getElapsedTime());
 }
 
 void player::moveDown()
 {
-	_y += PLAYER_MOVE_SPEED;
+	_y += (PLAYER_MOVE_SPEED * TIMEMANAGER->getElapsedTime());
 }
 
 void player::initState()
@@ -103,6 +113,11 @@ void player::initState()
 		playerState* st = new fallingState;
 		st->init(this);
 		_stateMap.insert(make_pair(ePlayer_State_Falling, st));
+	}
+	{
+		playerState* st = new jumpFallingState;
+		st->init(this);
+		_stateMap.insert(make_pair(ePlayer_State_JumpFalling, st));
 	}
 	// landing
 	{
@@ -168,6 +183,7 @@ void player::fixPosition()
 	float offsetY = 0.f;
 	terrain* ter = nullptr;
 	RECTD2D rc = {};
+	_isFloating = true;
 	for (iter; end != iter; ++iter)
 	{
 		ter = (*iter);
@@ -211,5 +227,7 @@ void player::fixPosition()
 			if (offsetY <= 0.f)
 				_isFloating = false;
 		}
+
+		updateCollision();
 	}
 }

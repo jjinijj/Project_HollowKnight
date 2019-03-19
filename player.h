@@ -6,7 +6,7 @@ enum
 	// 속도
 	PLAYER_IDLE_SPEED = 10,
 	PLAYER_ATTACK_SPEED = 3,
-	PLAYER_MOVE_SPEED = 3,
+	PLAYER_MOVE_SPEED = 250,
 
 	// 플레이어 한 프레임 이미지 크기
 	PLAYER_SIZE_WIDE = 142,
@@ -24,8 +24,9 @@ enum
 	PLAYER_PUSHED_TIME = 10,
 
 	// 플레이어 점프 파워
-	PLAYER_JUMP_POWER = 8,
-	PLAYER_GRAVITY = 2,
+	PLAYER_JUMP_POWER = 10,
+	PLAYER_FALLING_POWER = 5,
+	PLAYER_GRAVITY = 13,
 
 	// 밀리는 힘의 크기
 	PLAYER_PUSHED_POW = 2,
@@ -57,6 +58,7 @@ enum ePlayer_State
 	
 	ePlayer_State_Flying,
 	ePlayer_State_Falling,
+	ePlayer_State_JumpFalling,
 	ePlayer_State_Land,
 	
 	//ePlayer_State_Hit,
@@ -81,13 +83,14 @@ class player
 {
 private:
 
-	float _x;
-	float _y;
-
+	UINT _coin;
 	bool _isFloating;
 	bool _isJumping;
 
-	UINT _coin;
+	float _x;
+	float _y;
+	float _gravity;
+	float _jumpPower;
 
 	mapData* _mapData;
 	image* _img;
@@ -144,6 +147,13 @@ public:
 		_isJumping = flag;
 		_isFloating = true;
 	}
+
+	void startJump()
+	{
+		_isJumping = true;
+
+	}
+	
 	bool isJumping() {return _isJumping;}
 	
 	bool isStateFloating() { return  _isFloating; }
@@ -178,6 +188,8 @@ public:
 
 	void moveRight();
 	void moveLeft();
+	void moveJump(float jumpPower);
+	void moveFall(float gravity);
 	void moveUp();
 	void moveDown();
 
