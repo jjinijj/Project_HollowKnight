@@ -5,11 +5,12 @@ class playerState
 {
 protected:
 	player* _player;
+	animation* _ani;
 	UINT _nextState;
 
 	UINT _state;
 	UINT _moveDir;
-
+	
 	playerState();
 public:
 	~playerState();
@@ -25,7 +26,6 @@ public:
 	virtual UINT nextState();
 
 	UINT getState() {return _state;}
-
 };
 
 class idleState: public playerState

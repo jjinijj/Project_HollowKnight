@@ -38,6 +38,8 @@ void playerState::render()
 
 void playerState::start()
 {
+	//_ani->init()
+	_player->setAnimation(_ani);
 	_nextState = ePlayer_State_None;
 }
 

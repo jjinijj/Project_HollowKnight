@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "player.h"
 #include "playerState.h"
+#include "playerAction.h"
 #include "jumpState.h"
 #include "mapData.h"
 #include "terrain.h"
@@ -39,7 +40,17 @@ void player::release()
 void player::update()
 {
 	_state->update();
+	if (_act)
+	{
+		_act->update();
+		if (!_act->isPlay())
+		{
+			_nextState = _act->getNextState();
+			_act = nullptr;
+		}
+	}
 	_nextState = _state->nextState();
+
 	changeState(_nextState);
 
 	fixPosition();
@@ -52,10 +63,17 @@ void player::render()
 {
 	D2DMANAGER->drawRectangle(_collision, false);
 	D2DMANAGER->drawText(format(L"%d", _state->getState()).c_str(), _collision.left, _collision.top, false);
-	if(_actState)
-		_actState->render();
+	if(_act)
+		_act->render();
 	else
 		_state->render();
+}
+
+bool player::checkDirection(eDirection dir)
+{
+	bool result = (_dir & dir) == dir;
+
+	return false;
 }
 
 void player::moveRight()

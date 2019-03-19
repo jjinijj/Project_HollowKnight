@@ -121,6 +121,9 @@
     <Filter Include="PlayGround\player\state">
       <UniqueIdentifier>{6f06c1eb-e518-4c79-968e-c49cb8a57a99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\player\action">
+      <UniqueIdentifier>{dfc1e0e4-7f90-459c-8676-e4f75e5f060b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -291,6 +294,12 @@
     <ClInclude Include="jumpState.h">
       <Filter>PlayGround\player\state</Filter>
     </ClInclude>
+    <ClInclude Include="attackState.h">
+      <Filter>PlayGround\player\state</Filter>
+    </ClInclude>
+    <ClInclude Include="playerAction.h">
+      <Filter>PlayGround\player\action</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -445,6 +454,12 @@
     </ClCompile>
     <ClCompile Include="jumpState.cpp">
       <Filter>PlayGround\player\state</Filter>
+    </ClCompile>
+    <ClCompile Include="attackState.cpp">
+      <Filter>PlayGround\player\state</Filter>
+    </ClCompile>
+    <ClCompile Include="playerAction.cpp">
+      <Filter>PlayGround\player\action</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

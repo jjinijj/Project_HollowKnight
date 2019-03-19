@@ -35,36 +35,46 @@ enum
 
 enum ePlayer_State
 {
+	ePlayer_State_Move_Idle,
 	ePlayer_State_Idle,
 	ePlayer_State_Walk,
+	ePlayer_State_Sit,
+	ePlayer_State_Dead,
 	
-	ePlayer_State_Look,
+	//ePlayer_State_Look,
 	//ePlayer_State_Look_Up,
 	//ePlayer_State_Look_Down,
 	
 	//ePlayer_State_Jump,
-	ePlayer_State_Attack,
-
-	//ePlayer_State_Attack_1,		// 5
-	//ePlayer_State_Attack_2,		// 6
-	//ePlayer_State_Attack_3,		// 7
-	ePlayer_State_Attack_Up,	// 8
-	ePlayer_State_Attack_Down,	// 9
-	
-	ePlayer_State_Sit,
-	//ePlayer_State_Drowse,
-	//ePlayer_State_WakeUp,
-	ePlayer_State_Dead,
-	
 	ePlayer_State_Flying,
 	ePlayer_State_Falling,
 	ePlayer_State_JumpFalling,
 	ePlayer_State_Land,
 	
+	ePlayer_State_Action_Idle,
+	ePlayer_State_Attack,
+	ePlayer_State_Action_Look,
+
+	//ePlayer_State_Attack_1,		// 5
+	//ePlayer_State_Attack_2,		// 6
+	//ePlayer_State_Attack_3,		// 7
+	//ePlayer_State_Attack_Up,	// 8
+	//ePlayer_State_Attack_Down,	// 9
+	
+	//ePlayer_State_Drowse,
+	//ePlayer_State_WakeUp,
+	
 	//ePlayer_State_Hit,
 
 	ePlayer_State_None,
 	ePlayer_State_Count = ePlayer_State_None,
+};
+
+enum ePlayer_Action
+{
+	ePlayer_Action_Idle,
+	ePlayer_Action_Attack,
+	ePlayer_Action_StandOff,
 };
 
 enum eDirection
@@ -77,6 +87,7 @@ enum eDirection
 };
 
 class playerState;
+class playerAction;
 class gameObject;
 class mapData;
 class player
@@ -97,9 +108,8 @@ private:
 	animation* _ani;
 
 	playerState* _state;
+	playerAction* _act;
 	UINT _nextState;
-
-	playerState* _actState;
 
 	RECTD2D _collision;
 	RECTD2D _attkCol;
@@ -107,6 +117,7 @@ private:
 	WORD _dir;
 
 	map<UINT, playerState*> _stateMap;
+	map<UINT, playerAction*> _actMap;
 
 public:
 	player();
@@ -142,19 +153,8 @@ public:
 	//bool isStateCheck_Attack();	
 	//bool isMoveable();
 	//
-	void setJumping(bool flag)
-	{
-		_isJumping = flag;
-		_isFloating = true;
-	}
 
-	void startJump()
-	{
-		_isJumping = true;
-
-	}
-	
-	bool isJumping() {return _isJumping;}
+	void setAction(ePlayer_Action act) {}
 	
 	bool isStateFloating() { return  _isFloating; }
 	//
@@ -185,7 +185,9 @@ public:
 	}
 	WORD getDirection() {return _dir;}
 
+	bool checkDirection(eDirection dir);
 
+	void setAnimation(animation* ani) {_ani = ani;}
 	void moveRight();
 	void moveLeft();
 	void moveJump(float jumpPower);
