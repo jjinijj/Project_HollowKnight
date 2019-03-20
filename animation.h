@@ -32,6 +32,8 @@ private:
 	DWORD _eventFrameIndex;		//이벤트가 발생하는 프레임 번호
 	bool _isDoEvent;			// 이벤트 실행했는가
 
+	image* _img;
+
 	void*						_obj;
 	CALLBACK_FUNCTION			_callbackFunction;
 	CALLBACK_FUNCTION_PARAMETER _callbackFunctionParameter;
@@ -42,6 +44,7 @@ public:
 
 	//       이미지전체가로크기 전체세로크기  한프레임가로크기 한프레임세로크기
 	HRESULT init(int totalW, int totalH, int frameW, int frameH);
+	void render();
 	void release();
 
 	//디폴트 애니메이션
@@ -67,6 +70,9 @@ public:
 	//렌더링
 	void frameUpdate(float elapsedTime);
 
+	void setImage(image* img) {_img = img;}
+	image* getImage() {return _img;}
+
 	void start();		//재생
 	void stop();		//정지
 	void pause();		//일시정지
@@ -80,10 +86,6 @@ public:
 	// 이벤트 프레임 번호 set/get
 	inline void setEventFrame(int frameIndex) { _eventFrameIndex = frameIndex; }
 	inline int getEventFrame() { return _eventFrameIndex; }
-
-	// 이벤트 실행 했는지 
-	void setEventDo(bool flag) { _isDoEvent = flag; }
-	bool getEventDo() {return _isDoEvent;}
 
 	// 이벤트 프레임인가
 	bool isEventFrame() { return _nowPlayIndex  == _eventFrameIndex; }

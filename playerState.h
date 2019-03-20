@@ -5,11 +5,17 @@ class playerState
 {
 protected:
 	player* _player;
+	image* _img;
 	animation* _ani;
+
 	UINT _nextState;
 
 	UINT _state;
-	UINT _moveDir;
+	UINT _aniKey;
+
+	bool _isRight;
+	bool _isEnd;
+	bool _isDoEvent;
 	
 	playerState();
 public:
@@ -25,7 +31,13 @@ public:
 
 	virtual UINT nextState();
 
-	UINT getState() {return _state;}
+	UINT getState() { return _state; }
+	bool isEnd()	{ return _isEnd; }
+
+protected:
+	void setAnimation(UINT aniKey);
+	void moveLeft();
+	void moveRight();
 };
 
 class idleState: public playerState
@@ -50,7 +62,6 @@ public:
 class walkState: public playerState
 {
 private:
-	bool _isRight;
 
 public:
 	walkState();

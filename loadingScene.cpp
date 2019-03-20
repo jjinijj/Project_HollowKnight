@@ -46,6 +46,106 @@ void loadingScene::render()
 
 void loadingScene::loadImageData()
 {
+	// 플레이어
+	IMAGEMANAGER->addFrameImage("knight_idle", L"image/knight_idle.png", 568, 266, 4, 2);
+	IMAGEMANAGER->addFrameImage("knight_attack_down", L"image/knight_attack_down.png", 852, 266, 6, 2);
+	IMAGEMANAGER->addFrameImage("knight_attack_up", L"image/knight_attack_up.png", 852, 266, 6, 2);
+	IMAGEMANAGER->addFrameImage("knight_attack1", L"image/knight_attack1.png", 710, 266, 5, 2);
+	IMAGEMANAGER->addFrameImage("knight_attack2", L"image/knight_attack2.png", 710, 266, 5, 2);
+	IMAGEMANAGER->addFrameImage("knight_attack3", L"image/knight_attack3.png", 1278, 266, 9, 2);
+	IMAGEMANAGER->addFrameImage("knight_dead", L"image/knight_dead.png", 1136, 266, 8, 2);
+	IMAGEMANAGER->addFrameImage("knight_jump", L"image/knight_jump.png", 1562, 266, 11, 2);
+	IMAGEMANAGER->addFrameImage("knight_lookup", L"image/knight_lookup.png", 994, 266, 7, 2);
+	IMAGEMANAGER->addFrameImage("knight_lookdown", L"image/knight_lookdown.png", 426, 266, 3, 2);
+	IMAGEMANAGER->addFrameImage("knight_sitAnddrowse", L"image/knight_sitAnddrowse.png", 568, 266, 4, 2);
+	IMAGEMANAGER->addFrameImage("knight_walk", L"image/knight_walk.png", 852, 266, 6, 2);
+
+	// enemy tiktik
+	IMAGEMANAGER->addFrameImage("tiktik_move", L"image/tiktik_move.png", 416, 190, 4, 2);
+	IMAGEMANAGER->addFrameImage("tiktik_move_under", L"image/tiktik_move_under.png", 416, 190, 4, 2);
+	IMAGEMANAGER->addFrameImage("tiktik_move_sideup", L"image/tiktik_move_sideup.png", 416, 190, 4, 2);
+	IMAGEMANAGER->addFrameImage("tiktik_move_sidedown", L"image/tiktik_move_sidedown.png", 416, 190, 4, 2);
+	IMAGEMANAGER->addFrameImage("tiktik_climbup_uts", L"image/tiktik_climbup_uts.png", 416, 190, 4, 2);
+	IMAGEMANAGER->addFrameImage("tiktik_climbup_stu", L"image/tiktik_climbup_stu.png", 416, 190, 4, 2);
+	IMAGEMANAGER->addFrameImage("tiktik_climbdown_stu", L"image/tiktik_climbdown_stu.png", 416, 190, 4, 2);
+	IMAGEMANAGER->addFrameImage("tiktik_climbdown_ots", L"image/tiktik_climbdown_ots.png", 416, 190, 4, 2);
+	IMAGEMANAGER->addFrameImage("tiktik_dead", L"image/tiktik_dead.png", 208, 190, 2, 2);
+
+	// enemy gruzze
+	IMAGEMANAGER->addFrameImage("gruzzer_move", L"image/gruzzer_move.png", 524, 218, 4, 2);
+	IMAGEMANAGER->addFrameImage("gruzzer_dead", L"image/gruzzer_dead.png", 655, 218, 5, 2);
+
+	// enemy pribalAspid
+	IMAGEMANAGER->addFrameImage("primalAspid_move", L"image/primalAspid_move.png", 684, 272, 4, 2);
+	IMAGEMANAGER->addFrameImage("primalAspid_attack", L"image/primalAspid_attack.png", 684, 272, 4, 2);
+	IMAGEMANAGER->addFrameImage("primalAspid_dead", L"image/primalAspid_dead.png", 171, 272, 1, 2);
+
+	// enemy bullet
+	IMAGEMANAGER->addFrameImage("bullet_fire", L"image/bullet_fire.png", 270, 30, 7, 1);
+	IMAGEMANAGER->addFrameImage("bullet_pang", L"image/bullet_pang.png", 203, 30, 3, 1);
+
+	// enemy boos mawlek
+	IMAGEMANAGER->addFrameImage("mawlek_body", L"image/mawlek_body.png", 3476, 1884, 11, 6);
+	IMAGEMANAGER->addFrameImage("mawlek_head", L"image/mawlek_head.png", 417, 428, 3, 4);
+	IMAGEMANAGER->addFrameImage("mawlek_arms", L"image/mawlek_arms.png", 872, 1683, 4, 6);
+
+	// floor
+	//IMAGEMANAGER->addImage("floor", L"image/floor.png", 326, 34);
+	IMAGEMANAGER->addImage("floor_stone", L"image/floor_stone.png", 296, 21);
+
+	// wall
+	IMAGEMANAGER->addImage("wall_L", L"image/wall_L.png", 105, 169);
+	IMAGEMANAGER->addImage("wall_R", L"image/wall_R.png", 105, 169);
+
+	// block
+	IMAGEMANAGER->addImage("block", L"image/block.png", 390, 73);
+
+	// block big
+	IMAGEMANAGER->addImage("block_big", L"image/block_big.png", 677, 209);
+
+	// chair
+	//IMAGEMANAGER->addImage("chair", L"image/chair.png", 185, 92);
+
+	// gold Rock
+	IMAGEMANAGER->addFrameImage("goldRock", L"image/goldRock.png", 749, 109, 7, 1);
+
+	// coin
+	IMAGEMANAGER->addFrameImage("coin", L"image/coin.png", 104, 28, 4, 1);
+
+	// ui hp
+	IMAGEMANAGER->addFrameImage("hp", L"image/hp.png", 560, 292, 7, 2);
+
+	// ui coin
+	IMAGEMANAGER->addImage("coin_ui", L"image/coin_ui.png", 59, 54);
+
+	// ui skill gauage
+	IMAGEMANAGER->addFrameImage("skillGauge_in", L"image/skillGauge_in.png", 480, 156, 2, 1);
+	IMAGEMANAGER->addImage("skillGauge_out", L"image/skillGauge_out.png", 480, 156);
+
+	// ui charmSlot
+	IMAGEMANAGER->addImage("charmSlot", L"image/charmSlot.png", 30, 30);
+
+	// player bullet
+	IMAGEMANAGER->addFrameImage("player_bullet_fire_L", L"image/player_bullet_fire_L.png", 540, 202, 2, 1);
+	IMAGEMANAGER->addFrameImage("player_bullet_pang_L", L"image/player_bullet_pang_L.png", 1080, 202, 4, 1);
+	IMAGEMANAGER->addFrameImage("player_bullet_fire_R", L"image/player_bullet_fire_R.png", 540, 202, 2, 1);
+	IMAGEMANAGER->addFrameImage("player_bullet_pang_R", L"image/player_bullet_pang_R.png", 1080, 202, 4, 1);
+
+	// ui number
+	IMAGEMANAGER->addFrameImage("number", L"image/number.png", 320, 49, 10, 1);
+
+	//
+	IMAGEMANAGER->addImage("cliff_L", L"image/cliff_L.png", 513, 372);
+	IMAGEMANAGER->addImage("cliff_R", L"image/cliff_R.png", 513, 372);
+
+	// npc
+	IMAGEMANAGER->addFrameImage("npc", L"image/npc.png", 2219, 376, 7, 2);
+
+	// item
+	IMAGEMANAGER->addImage("charm1", L"image/charm1_.png", 50, 50);
+	IMAGEMANAGER->addImage("charm2", L"image/charm2_.png", 50, 50);
+
+
 	IMAGEMANAGER->addFrameImage("chair", L"image/chair.png", 366, 90, 2, 1);
 	IMAGEMANAGER->addFrameImage("fence", L"image/fence.png", 960, 800, 1, 1);
 	IMAGEMANAGER->addFrameImage("floor", L"image/floor.png", 800, 800, 1, 1);
@@ -70,6 +170,8 @@ void loadingScene::loadImageData()
 	IMAGEMANAGER->addImage("uiBG3", L"image/uibg3.png", 100, 100);
 	IMAGEMANAGER->addImage("uiBG4", L"image/uibg4.png", 100, 100);
 	IMAGEMANAGER->addImage("uiBG5", L"image/uibg5.png", 100, 100);
+
+
 
 	IMGDATABASE->insertImage(eImage_Town_Floor, IMAGEMANAGER->findImage("floor"));
 	IMGDATABASE->insertImage(eImage_Town_BG, IMAGEMANAGER->findImage("town_bg"));

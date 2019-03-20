@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "image.h"
+#include "animation.h"
 
 //컴파일러 지시기 (나 라이브러리 쓸꺼야 msImg32 라이브러리)
 #pragma comment(lib, "msimg32.lib")
@@ -366,7 +367,7 @@ void image::loopRender(D2D1_RECT_F drawArea, int offSetX, int offSetY, float opa
 
 void image::aniRender(int destX, int destY, animation* ani, bool isAbsolute)
 {
-	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight(), isAbsolute, true);
+	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight(), 1.f, isAbsolute);
 }
 
 void image::aniRenderReverseX(int destX, int destY, animation * ani, bool isAbsolute)

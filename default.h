@@ -32,6 +32,8 @@
 #define MAP_NAME_CROSSLOAD_2	"map_crossload_02"
 #define MAP_NAME_CROSSLOAD_3	"map_crossload_03"
 
+#define PLAYER_UID				9999
+
 //=============================================
 //   지형 속성
 //=============================================

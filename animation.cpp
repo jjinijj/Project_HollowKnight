@@ -44,8 +44,13 @@ HRESULT animation::init(int totalW, int totalH, int frameW, int frameH)
 	return S_OK;
 }
 
+void animation::render()
+{
+}
+
 void animation::release()
 {
+	_img = nullptr;
 }
 
 void animation::setDefPlayFrame(BOOL reverse, BOOL loop)

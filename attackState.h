@@ -5,7 +5,6 @@ class player;
 class attackState: public playerState
 {
 private:
-	bool _isRight;
 
 public:
 	attackState();
@@ -18,6 +17,8 @@ public:
 
 	void start();
 	void end();
+
+	
 };
 
 class standOffState: public playerState

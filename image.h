@@ -1,6 +1,6 @@
 #pragma once
-#include "animation.h"
 
+class animation;
 class image
 {
 public:

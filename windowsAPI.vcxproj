@@ -151,6 +151,7 @@
     <ClInclude Include="actorBase.h" />
     <ClInclude Include="actorManager.h" />
     <ClInclude Include="animation.h" />
+    <ClInclude Include="animationManager.h" />
     <ClInclude Include="attackState.h" />
     <ClInclude Include="baseScene.h" />
     <ClInclude Include="dirtMouthScene.h" />
@@ -158,7 +159,6 @@
     <ClInclude Include="iTween.h" />
     <ClInclude Include="npc.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="playerAction.h" />
     <ClInclude Include="playerState.h" />
     <ClInclude Include="jumpState.h" />
     <ClInclude Include="uiButton.h" />
@@ -211,6 +211,7 @@
     <ClCompile Include="actorBase.cpp" />
     <ClCompile Include="actorManager.cpp" />
     <ClCompile Include="animation.cpp" />
+    <ClCompile Include="animationManager.cpp" />
     <ClCompile Include="attackState.cpp" />
     <ClCompile Include="baseScene.cpp" />
     <ClCompile Include="dirtMouthScene.cpp" />
@@ -218,7 +219,6 @@
     <ClCompile Include="iTween.cpp" />
     <ClCompile Include="npc.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="playerAction.cpp" />
     <ClCompile Include="playerState.cpp" />
     <ClCompile Include="jumpState.cpp" />
     <ClCompile Include="uiButton.cpp" />

@@ -11,7 +11,6 @@ private:
 	typedef map<string, animation*>				arrAnimation;
 	typedef map<string, animation*>::iterator	iterAnimation;
 
-
 	typedef map<string, arrAnimation>			arrAnimationType;
 	typedef map<string, arrAnimation>::iterator iterAnimationType;
 

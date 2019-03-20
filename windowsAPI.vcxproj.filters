@@ -297,8 +297,8 @@
     <ClInclude Include="attackState.h">
       <Filter>PlayGround\player\state</Filter>
     </ClInclude>
-    <ClInclude Include="playerAction.h">
-      <Filter>PlayGround\player\action</Filter>
+    <ClInclude Include="animationManager.h">
+      <Filter>2DFramework\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -458,8 +458,8 @@
     <ClCompile Include="attackState.cpp">
       <Filter>PlayGround\player\state</Filter>
     </ClCompile>
-    <ClCompile Include="playerAction.cpp">
-      <Filter>PlayGround\player\action</Filter>
+    <ClCompile Include="animationManager.cpp">
+      <Filter>2DFramework\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

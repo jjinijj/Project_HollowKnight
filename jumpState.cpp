@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "player.h"
 #include "jumpState.h"
+#include "animation.h"
 
 //=============================================
 // jump start
@@ -22,6 +23,7 @@ HRESULT flyingState::init(player* p)
 	assert(S_OK == hr);
 
 	_state = ePlayer_State_Flying;
+	setAnimation(ePlayer_Ani_Flying);
 
 	return S_OK;
 }
@@ -33,15 +35,17 @@ void flyingState::release()
 
 void flyingState::update()
 {
+	playerState::update();
+
 	//if( 1.0f <= _flyingTime)
 	//	end();
 	//else
 	{
 		if (KEYMANAGER->isStayKeyDown(VK_LEFT))
-			_player->moveLeft();
+			moveLeft();
 
 		if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
-			_player->moveRight();
+			moveRight();
 
 		if (KEYMANAGER->isStayKeyDown('Z'))
 		{
@@ -59,6 +63,7 @@ void flyingState::update()
 
 void flyingState::render()
 {
+	playerState::render();
 }
 
 void flyingState::start()
@@ -67,6 +72,8 @@ void flyingState::start()
 	_flyingTime = 0.f;
 	_jumpPower	= static_cast<float>(PLAYER_JUMP_POWER);
 	_gravity	= static_cast<float>(PLAYER_GRAVITY);
+
+	_ani->start();
 }
 
 void flyingState::end()
@@ -88,13 +95,13 @@ fallingState::~fallingState()
 {
 }
 
-
 HRESULT fallingState::init(player * p)
 {
 	HRESULT hr = playerState::init(p);
 	assert(S_OK == hr);
 
 	_state = ePlayer_State_Falling;
+	setAnimation(ePlayer_Ani_Falling);
 
 	return S_OK;
 }
@@ -106,13 +113,18 @@ void fallingState::release()
 
 void fallingState::update()
 {
+	playerState::update();
+
 	if (_player->isStateFloating())
 	{
 		if (KEYMANAGER->isStayKeyDown(VK_LEFT))
-			_player->moveLeft();
+			moveLeft();
 
 		if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
-			_player->moveRight();
+			moveRight();
+
+		if (KEYMANAGER->isOnceKeyDown('X'))
+			_player->attack();
 
 		_fallingPower += (_gravity * TIMEMANAGER->getElapsedTime());
 		if(PLAYER_JUMP_POWER < _fallingPower)
@@ -127,6 +139,7 @@ void fallingState::update()
 
 void fallingState::render()
 {
+	playerState::render();
 }
 
 void fallingState::start()
@@ -134,6 +147,8 @@ void fallingState::start()
 	playerState::start();
 	_fallingPower	= static_cast<float>(PLAYER_FALLING_POWER);
 	_gravity		= static_cast<float>(PLAYER_GRAVITY);
+
+	_ani->start();
 }
 
 void fallingState::end()
@@ -162,6 +177,8 @@ HRESULT jumpFallingState::init(player * p)
 	assert(S_OK == hr);
 
 	_state = ePlayer_State_JumpFalling;
+	setAnimation(ePlayer_Ani_Falling);
+
 	return S_OK;
 }
 
@@ -172,13 +189,18 @@ void jumpFallingState::release()
 
 void jumpFallingState::update()
 {
+	playerState::update();
+
 	if (_player->isStateFloating())
 	{
 		if (KEYMANAGER->isStayKeyDown(VK_LEFT))
-			_player->moveLeft();
+			moveLeft();
 
 		if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
-			_player->moveRight();
+			moveRight();
+
+		if (KEYMANAGER->isOnceKeyDown('X'))
+			_player->attack();
 
 		_jumpPower += (_gravity * TIMEMANAGER->getElapsedTime());
 		if (PLAYER_JUMP_POWER <= _jumpPower)
@@ -194,6 +216,7 @@ void jumpFallingState::update()
 
 void jumpFallingState::render()
 {
+	playerState::render();
 }
 
 void jumpFallingState::start()
@@ -201,6 +224,8 @@ void jumpFallingState::start()
 	playerState::start();
 	_jumpPower	= 0.f;
 	_gravity	= static_cast<float>(PLAYER_GRAVITY);
+
+	_ani->start();
 }
 
 void jumpFallingState::end()
@@ -228,6 +253,7 @@ HRESULT landState::init(player * p)
 	assert(S_OK == hr);
 
 	_state = ePlayer_State_Land;
+	setAnimation(ePlayer_Ani_Land);
 
 	return S_OK;
 }
@@ -239,16 +265,33 @@ void landState::release()
 
 void landState::update()
 {
-	end();
+	playerState::update();
+
+	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
+	{
+		_nextState = ePlayer_State_Walk;
+		_player->setDirectionLeft();
+	}
+
+	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
+	{
+		_nextState = ePlayer_State_Walk;
+		_player->setDirectionRight();
+	}
+	
+	if(_isEnd)
+		end();
 }
 
 void landState::render()
 {
+	playerState::render();
 }
 
 void landState::start()
 {
 	playerState::start();
+	_ani->start();
 }
 
 void landState::end()

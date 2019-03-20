@@ -4,7 +4,7 @@
 enum
 {
 	// ¼Óµµ
-	PLAYER_IDLE_SPEED = 10,
+	PLAYER_ANI_SPEED = 10,
 	PLAYER_ATTACK_SPEED = 3,
 	PLAYER_MOVE_SPEED = 250,
 
@@ -35,59 +35,67 @@ enum
 
 enum ePlayer_State
 {
-	ePlayer_State_Move_Idle,
 	ePlayer_State_Idle,
 	ePlayer_State_Walk,
+	
 	ePlayer_State_Sit,
+	ePlayer_State_Drowse,
+	ePlayer_State_WakeUp,
+	
 	ePlayer_State_Dead,
 	
-	//ePlayer_State_Look,
-	//ePlayer_State_Look_Up,
-	//ePlayer_State_Look_Down,
-	
-	//ePlayer_State_Jump,
 	ePlayer_State_Flying,
+	ePlayer_State_FlyingStay,
 	ePlayer_State_Falling,
 	ePlayer_State_JumpFalling,
 	ePlayer_State_Land,
 	
-	ePlayer_State_Action_Idle,
 	ePlayer_State_Attack,
-	ePlayer_State_Action_Look,
-
-	//ePlayer_State_Attack_1,		// 5
-	//ePlayer_State_Attack_2,		// 6
-	//ePlayer_State_Attack_3,		// 7
-	//ePlayer_State_Attack_Up,	// 8
-	//ePlayer_State_Attack_Down,	// 9
+	ePlayer_State_StandOff,
 	
-	//ePlayer_State_Drowse,
-	//ePlayer_State_WakeUp,
-	
-	//ePlayer_State_Hit,
+	ePlayer_State_Look,
 
 	ePlayer_State_None,
 	ePlayer_State_Count = ePlayer_State_None,
 };
 
-enum ePlayer_Action
+enum ePlayer_Animation
 {
-	ePlayer_Action_Idle,
-	ePlayer_Action_Attack,
-	ePlayer_Action_StandOff,
+	ePlayer_Ani_Idle,
+	ePlayer_Ani_Walk,
+	
+	ePlayer_Ani_Sit,
+	ePlayer_Ani_Drowse,
+
+	ePlayer_Ani_Dead,
+
+	ePlayer_Ani_Flying,
+	ePlayer_Ani_FlyingStay,
+	ePlayer_Ani_Falling,
+	ePlayer_Ani_Land,
+
+	ePlayer_Ani_Attack_1,
+	ePlayer_Ani_Attack_2,
+	ePlayer_Ani_Attack_Up,
+	ePlayer_Ani_Attack_Down,
+	ePlayer_Ani_StandOff,
+	
+	ePlayer_Ani_Look_Up,
+	ePlayer_Ani_Look_Down,
+
+	ePlayer_Ani_None,
+	ePlayer_Ani_Count = ePlayer_Ani_None,
 };
 
 enum eDirection
 {
-	eDirection_None,
-	
+	eDirection_Left		= 0,
 	eDirection_Right	= 1,
 	eDirection_Up		= 2,
 	eDirection_Down		= 4,
 };
 
 class playerState;
-class playerAction;
 class gameObject;
 class mapData;
 class player
@@ -108,16 +116,16 @@ private:
 	animation* _ani;
 
 	playerState* _state;
-	playerAction* _act;
-	UINT _nextState;
+	playerState* _act;
+	ePlayer_State _nextState;
 
 	RECTD2D _collision;
 	RECTD2D _attkCol;
 
 	WORD _dir;
+	WORD _dir_ud;
 
 	map<UINT, playerState*> _stateMap;
-	map<UINT, playerAction*> _actMap;
 
 public:
 	player();
@@ -154,8 +162,6 @@ public:
 	//bool isMoveable();
 	//
 
-	void setAction(ePlayer_Action act) {}
-	
 	bool isStateFloating() { return  _isFloating; }
 	//
 	void setPositionX(float x) { _x = x; }
@@ -166,22 +172,32 @@ public:
 	//RECTD2D getCollisionRECT() { return _collision; }
 	//UINT getCoin() { return _coin; }
 	void setDirectionRight() { _dir |= eDirection_Right; }
-	void setDirectionLeft()	 { _dir ^= eDirection_Right; }
+	void setDirectionLeft()	
+	{
+		if(checkDirection(eDirection_Right))
+			_dir ^= eDirection_Right; 
+	}
 	void setDirectionUp() 
 	{
+		if (checkDirection(eDirection_Down))
+			_dir ^= eDirection_Down; 
+		
 		_dir |= eDirection_Up; 
-		_dir ^= eDirection_Down; 
 	}
 	void setDirectionDown()
 	{
-		_dir ^= eDirection_Up; 
+		if (checkDirection(eDirection_Up))
+			_dir ^= eDirection_Up;
+
 		_dir |= eDirection_Down;
 	}
 
 	void setDirectionIdle()
 	{
-		_dir ^= eDirection_Up;
-		_dir ^= eDirection_Down;
+		if (checkDirection(eDirection_Right))
+			_dir = eDirection_Right;
+		else
+			_dir = eDirection_Left;
 	}
 	WORD getDirection() {return _dir;}
 
@@ -195,11 +211,20 @@ public:
 	void moveUp();
 	void moveDown();
 
+	void attack();
+	void attackDamage();
+	void standOff();
+	void standOffDamage();
+
+
 private:
 	void initState();
-	void changeState(UINT state);
+	void initAnimaion();
+	void changeState(ePlayer_State state);
 	void updateCollision();
 
 	void fixPosition();
+
+	playerState* findState(ePlayer_State state);
 };
 

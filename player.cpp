@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "player.h"
 #include "playerState.h"
-#include "playerAction.h"
 #include "jumpState.h"
+#include "attackState.h"
 #include "mapData.h"
 #include "terrain.h"
+#include "animation.h"
 
 player::player()
 {
@@ -28,6 +29,7 @@ HRESULT player::init(float x, float y)
 
 	CAMERA->init(pf, rc, PLAYER_MOVE_SPEED, &_x, &_y);
 
+	initAnimaion();
 	initState();
 
 	return S_OK;
@@ -39,17 +41,24 @@ void player::release()
 
 void player::update()
 {
+	if(KEYMANAGER->isStayKeyDown(VK_UP))
+		setDirectionUp();
+	else if(KEYMANAGER->isStayKeyDown(VK_DOWN))
+		setDirectionDown();
+	else
+		setDirectionIdle();
+
 	_state->update();
 	if (_act)
 	{
 		_act->update();
-		if (!_act->isPlay())
+		if (_act->isEnd())
 		{
-			_nextState = _act->getNextState();
+			_nextState = (ePlayer_State)_act->nextState();
 			_act = nullptr;
 		}
 	}
-	_nextState = _state->nextState();
+	_nextState = (ePlayer_State)_state->nextState();
 
 	changeState(_nextState);
 
@@ -69,11 +78,12 @@ void player::render()
 		_state->render();
 }
 
+
 bool player::checkDirection(eDirection dir)
 {
 	bool result = (_dir & dir) == dir;
 
-	return false;
+	return result;
 }
 
 void player::moveRight()
@@ -104,6 +114,30 @@ void player::moveUp()
 void player::moveDown()
 {
 	_y += (PLAYER_MOVE_SPEED * TIMEMANAGER->getElapsedTime());
+}
+
+void player::attack()
+{
+	if(_act)
+		return;
+
+	_act = findState(ePlayer_State_Attack);
+	if(_act)
+		_act->start();
+}
+
+void player::attackDamage()
+{
+}
+
+void player::standOff()
+{
+	_act = _stateMap[ePlayer_State_StandOff];
+	_act->start();
+}
+
+void player::standOffDamage()
+{
 }
 
 void player::initState()
@@ -144,20 +178,123 @@ void player::initState()
 		_stateMap.insert(make_pair(ePlayer_State_Land, st));
 	}
 
+	// attack
+	{
+		playerState* st = new attackState;
+		st->init(this);
+		_stateMap.insert(make_pair(ePlayer_State_Attack, st));
+	}
+
 	//
 	_state = _stateMap[ePlayer_State_Idle];
 }
 
-void player::changeState(UINT state)
+void player::initAnimaion()
 {
-	if(_stateMap.find(state) == _stateMap.end())
-		return;
+	// animation idle
+	{
+		image* img = IMAGEMANAGER->findImage("knight_idle");
+		ANIMANAGER->addArrayFrameAnimation(	PLAYER_UID, ePlayer_State_Idle, "knight_idle"
+										   ,0, img->GetMaxFrameX(), PLAYER_ANI_SPEED, true);
+	}
 
+	// animation walking
+	{
+		animation* anim = new animation;
+		image* img = IMAGEMANAGER->findImage("knight_walk");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Walk, "knight_walk"
+										   , 0, img->GetMaxFrameX(), PLAYER_ANI_SPEED, true);
+	}
+
+	// animation sit, drowse
+	{
+		image* img = IMAGEMANAGER->findImage("knight_sitAnddrowse");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Sit, "knight_sitAnddrowse"
+										   , 0, 2, 60, true);
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Drowse, "knight_sitAnddrowse"
+										   , 2, img->GetMaxFrameX(), PLAYER_ANI_SPEED, false);
+	}
+
+	// animation dead
+	{
+		image* img = IMAGEMANAGER->findImage("knight_dead");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Dead, "knight_dead"
+										   , 0, img->GetMaxFrameX(), PLAYER_ANI_SPEED, false);
+	}
+
+	// animation jump, flying, falling, land
+	{
+		image* img = IMAGEMANAGER->findImage("knight_jump");
+
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Flying, "knight_jump"
+										   , 0, 4, PLAYER_ANI_SPEED, false);
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Falling, "knight_jump"
+										   , 5, 7, PLAYER_ANI_SPEED, true);
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Land, "knight_jump"
+										   , 8, img->GetMaxFrameX(), PLAYER_ANI_SPEED, false);
+	}
+
+	// animation attack 1 : 근접
+	{
+		image* img = IMAGEMANAGER->findImage("knight_attack1");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Attack_1, "knight_attack1"
+										   , 0, img->GetMaxFrameX(), 2, PLAYER_ANI_SPEED, false);
+	}
+
+	// animation attack 2 : 근접
+	{
+		image* img = IMAGEMANAGER->findImage("knight_attack2");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Attack_2, "knight_attack2"
+										   , 0, img->GetMaxFrameX(), 1, PLAYER_ANI_SPEED, false);
+	}
+
+	// animation attack up
+	{
+		image* img = IMAGEMANAGER->findImage("knight_attack_up");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Attack_Up, "knight_attack_up"
+										   , 0, img->GetMaxFrameX(), 1, PLAYER_ANI_SPEED, false);
+	}
+
+	// animation attack down
+	{
+		image* img = IMAGEMANAGER->findImage("knight_attack_down");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Attack_Down, "knight_attack_down"
+										   , 0, img->GetMaxFrameX(), 1, PLAYER_ANI_SPEED, false);
+	}
+
+	// animation attack 3 : 원거리
+	{
+		image* img = IMAGEMANAGER->findImage("knight_attack3");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_StandOff, "knight_attack3"
+										   , 0, img->GetMaxFrameX(), 4, PLAYER_ANI_SPEED, false);
+	}
+
+	// animation look up
+	{
+		image* img = IMAGEMANAGER->findImage("knight_lookup");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Look_Up, "knight_lookup"
+										   , 0, img->GetMaxFrameX(), PLAYER_ANI_SPEED, true);
+	}
+
+	// animation look down
+	{
+		image* img = IMAGEMANAGER->findImage("knight_lookdown");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Look_Down, "knight_lookdown"
+										   , 0, img->GetMaxFrameX(), PLAYER_ANI_SPEED, true);
+	}
+}
+
+void player::changeState(ePlayer_State state)
+{
 	if(_state->getState() == state)
 		return;
 
-	_state = _stateMap[state];
-	_state->start();
+	playerState* pState = findState(state);
+	if (pState)
+	{
+		_state = _stateMap[state];
+		_state->start();
+	}
 }
 
 void player::updateCollision()
@@ -248,4 +385,14 @@ void player::fixPosition()
 
 		updateCollision();
 	}
+}
+
+playerState* player::findState(ePlayer_State state)
+{
+	playerState* pState = nullptr;
+
+	if (_stateMap.find(state) != _stateMap.end())
+		pState = _stateMap[state];
+
+	return pState;
 }
