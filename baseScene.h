@@ -1,11 +1,16 @@
 #pragma once
 
+class actorManager;
+class mapData;
 class baseScene
 {
 protected:
 	bool _isInGameScene;
 	
 	eSceneName _sceneName;
+
+	actorManager* _actorM;
+	mapData* _mapData;
 
 public:
 	baseScene();

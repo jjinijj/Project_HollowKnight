@@ -1,13 +1,15 @@
 #pragma once
-#include "baseScene.h"
+#include "baseInGameScene.h"
+#include "player.h"
+#include "gruzzer.h"
+#include "actorManager.h"
 
-class player;
 class mapData;
-class dirtMouthScene :	public baseScene
+class actorManager;
+class dirtMouthScene :	public baseInGameScene
 {
 private:
 	player* _player;
-	mapData* _mapData;
 
 public:
 	dirtMouthScene();

@@ -79,8 +79,8 @@ void player::update()
 
 void player::render()
 {
-	//D2DMANAGER->drawRectangle(_collision, false);
-	//D2DMANAGER->drawRectangle(_collisionAtk, false);
+	D2DMANAGER->drawRectangle(_collision, false);
+	D2DMANAGER->drawRectangle(_collisionAtk, false);
 	//
 	D2DMANAGER->drawText(format(L"%d", _state->getState()).c_str(), _collision.left, _collision.top, false);
 	if(_act)
@@ -299,28 +299,28 @@ void player::initAnimaion()
 	{
 		image* img = IMAGEMANAGER->findImage("knight_attack1");
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Attack_1, "knight_attack1"
-										   , 0, img->GetMaxFrameX(), 2, PLAYER_ANI_SPEED, false);
+										   , 0, img->GetMaxFrameX(), 2, PLAYER_ANI_SPEED_FAST, false);
 	}
 
 	// animation attack 2 : 근접
 	{
 		image* img = IMAGEMANAGER->findImage("knight_attack2");
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Attack_2, "knight_attack2"
-										   , 0, img->GetMaxFrameX(), 1, PLAYER_ANI_SPEED, false);
+										   , 0, img->GetMaxFrameX(), 1, PLAYER_ANI_SPEED_FAST, false);
 	}
 
 	// animation attack up
 	{
 		image* img = IMAGEMANAGER->findImage("knight_attack_up");
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Attack_Up, "knight_attack_up"
-										   , 0, img->GetMaxFrameX(), 1, PLAYER_ANI_SPEED, false);
+										   , 0, img->GetMaxFrameX(), 1, PLAYER_ANI_SPEED_FAST, false);
 	}
 
 	// animation attack down
 	{
 		image* img = IMAGEMANAGER->findImage("knight_attack_down");
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Attack_Down, "knight_attack_down"
-										   , 0, img->GetMaxFrameX(), 1, PLAYER_ANI_SPEED, false);
+										   , 0, img->GetMaxFrameX(), 1, PLAYER_ANI_SPEED_FAST, false);
 	}
 
 	// animation attack 3 : 원거리

@@ -81,7 +81,8 @@ public:
 	// 레이어에 있는 지형들
 	vTerrain* getLayerTerrains(UINT layer)	{ return &_terrainsByLayer[layer]; }
 	// 충돌체 있는 지형들
-	vTerrain* getColliderTerrains()			{ return& _colTerrains; }
+	vTerrain* getColliderTerrains()			{ return &_colTerrains; }
+	vTerrain* getCollisionTerains()			{ return &_colTerrains; }
 
 	vTerrain* getTerrains() { return &_terrains; }
 	

@@ -35,7 +35,7 @@
 #define PLAYER_UID				9999
 
 //=============================================
-//   지형 속성
+//   enum
 //=============================================
 enum eAttribute
 {
@@ -74,6 +74,17 @@ enum eSceneName
 
 	eSceneName_None,
 	eSceneName_Count = eSceneName_None
+};
+
+enum eEnemy_Type
+{
+	eEnemy_Gruzzer,
+	eEnemy_Tiktik,
+	eEnemy_Primalaspid,
+	eEnemy_Mawlek,
+
+	eEnemy_None,
+	eEnemy_Count = eEnemy_None,
 };
 
 //=============================================

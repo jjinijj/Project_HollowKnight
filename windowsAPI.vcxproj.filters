@@ -112,17 +112,20 @@
     <Filter Include="PlayGround\actor\npc">
       <UniqueIdentifier>{6f642e8c-1521-41c4-a804-a3b7f1da8fd3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PlayGround\actor\enemay">
-      <UniqueIdentifier>{743da22f-4e4f-4ef0-9caa-7000e92a805d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="PlayGround\player">
       <UniqueIdentifier>{1201c272-e2bd-441d-bb6d-b368a3e8cfd6}</UniqueIdentifier>
     </Filter>
     <Filter Include="PlayGround\player\state">
       <UniqueIdentifier>{6f06c1eb-e518-4c79-968e-c49cb8a57a99}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PlayGround\player\action">
-      <UniqueIdentifier>{dfc1e0e4-7f90-459c-8676-e4f75e5f060b}</UniqueIdentifier>
+    <Filter Include="PlayGround\actor\npcState">
+      <UniqueIdentifier>{6023bf43-d53c-472e-9d9d-a4dd2b742f5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\actor\enemyState">
+      <UniqueIdentifier>{e134d354-541c-4b6e-a114-ba13b8dd5743}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\actor\enemy">
+      <UniqueIdentifier>{743da22f-4e4f-4ef0-9caa-7000e92a805d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -280,7 +283,7 @@
       <Filter>PlayGround\actor\npc</Filter>
     </ClInclude>
     <ClInclude Include="enemy.h">
-      <Filter>PlayGround\actor\enemay</Filter>
+      <Filter>PlayGround\actor\enemy</Filter>
     </ClInclude>
     <ClInclude Include="actorManager.h">
       <Filter>PlayGround\actor</Filter>
@@ -299,6 +302,18 @@
     </ClInclude>
     <ClInclude Include="animationManager.h">
       <Filter>2DFramework\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="gruzzer.h">
+      <Filter>PlayGround\actor\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="actorState.h">
+      <Filter>PlayGround\actor</Filter>
+    </ClInclude>
+    <ClInclude Include="gruzzerState.h">
+      <Filter>PlayGround\actor\enemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="baseInGameScene.h">
+      <Filter>PlayGround\scene\ingame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -441,7 +456,7 @@
       <Filter>PlayGround\actor\npc</Filter>
     </ClCompile>
     <ClCompile Include="enemy.cpp">
-      <Filter>PlayGround\actor\enemay</Filter>
+      <Filter>PlayGround\actor\enemy</Filter>
     </ClCompile>
     <ClCompile Include="actorManager.cpp">
       <Filter>PlayGround\actor</Filter>
@@ -460,6 +475,18 @@
     </ClCompile>
     <ClCompile Include="animationManager.cpp">
       <Filter>2DFramework\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="gruzzer.cpp">
+      <Filter>PlayGround\actor\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="actorState.cpp">
+      <Filter>PlayGround\actor</Filter>
+    </ClCompile>
+    <ClCompile Include="gruzzerState.cpp">
+      <Filter>PlayGround\actor\enemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="baseInGameScene.cpp">
+      <Filter>PlayGround\scene\ingame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
