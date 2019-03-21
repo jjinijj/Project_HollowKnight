@@ -11,6 +11,7 @@ protected:
 	actorState* _next;
 
 	bool _isEnd;
+	bool _isRight;
 
 	UINT _state;
 	UINT _aniKey;

@@ -10,6 +10,10 @@ class actorManager : public singletonBase<actorManager>
 {
 
 private:
+	typedef map<UINT, actorBase*>::iterator iterA;
+	typedef map<UINT, enemy*>::iterator		iterE;
+	typedef map<UINT, npc*>::iterator		iterN;
+private:   
 	map<UINT, actorBase*>	_actorMap;
 	map<UINT, enemy*>		_enemyMap;
 	map<UINT, npc*>			_npcMap;
@@ -34,6 +38,7 @@ public:
 
 	void destroyActor(UINT uid);
 
+	actorBase* getActor(UINT uid);
 	npc* getNPC(UINT uid);
 	enemy* getEnemy(UINT uid);
 

@@ -30,13 +30,19 @@ void actorState::update()
 
 void actorState::render()
 {
-	_img->aniRender( _actor->getPositionX() - _width / 2.f
-					,_actor->getPositionY() - _height
-					, _ani, false);
+	if(_isRight)
+		_img->aniRender( _actor->getPositionX() - _width / 2.f
+						,_actor->getPositionY() - _height
+						,_ani, false);
+	else
+		_img->aniRenderReverseX( _actor->getPositionX() - _width / 2.f
+								,_actor->getPositionY() - _height
+								,_ani, false);
 }
 
 void actorState::start()
 {
+	_isRight = (_actor->getDirectionLR() == actorBase::eRIGHT);
 }
 
 void actorState::end()

@@ -26,6 +26,8 @@ HRESULT dirtMouthScene::init()
 	DEVTOOL->setDebugMode(DEBUG_SHOW_TEXT);
 	DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
 
+	_actorM->createEnemy(WINSIZEX / 2.f, WINSIZEY / 2.f + 100.f, eEnemy_Gruzzer);
+
 	return S_OK;
 }
 

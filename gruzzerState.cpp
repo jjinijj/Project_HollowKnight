@@ -37,6 +37,7 @@ void gruzzerMove::update()
 {
 	actorState::update();
 	
+	_isRight = (_gruzzer->getDirectionLR() == actorBase::eRIGHT);
 	if(_gruzzer->isAlive())
 		_gruzzer->move();
 	else

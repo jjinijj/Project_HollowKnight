@@ -7,8 +7,7 @@ enemy::enemy()
 , _hp(0)
 , _speed(0)
 , _target(nullptr)
-, _dir(eDirection_None)
-, _dirUD(eDirection_None)
+
 {
 	_colSize = {0.f, 0.f};
 	_collision = {};

@@ -8,18 +8,6 @@ class enemy: public actorBase
 {
 public:
 
-
-	enum eDirection
-	{
-		eRIGHT,
-		eLEFT,
-		eUP,
-		eDOWN,
-
-		eDirection_None,
-		eDirection_Count = eDirection_None,
-	};
-
 protected:
 	bool _isAlive;
 
@@ -28,9 +16,6 @@ protected:
 
 	player* _target;
 	mapData* _mapData;
-
-	eDirection _dir;
-	eDirection _dirUD;
 
 public:
 	enemy();

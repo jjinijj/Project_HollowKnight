@@ -10,6 +10,8 @@ actorBase::actorBase()
 , _nextState(nullptr)
 , _x(0.f)
 , _y(0.f)
+, _dir(eDirection_None)
+, _dirUD(eDirection_None)
 {
 	_colSize = {};
 	_collision = {};
