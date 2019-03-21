@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "tiktik.h"
+#include "terrain.h"
 
 HRESULT tiktik::init(UINT uid, float x, float y)
 {
@@ -95,17 +96,17 @@ void tiktik::move()
 			if ( eRIGHT == _dir )
 			{
 				_x += _speed;
-				isChange =  ( _activeArea->getCollision().right < _x );
+				isChange =  ( _area->getCollision().right < _x );
 			}
 			else
 			{
 				_x -= _speed;
-				isChange =  ( _x < _activeArea->getCollision().left );
+				isChange =  ( _x < _area->getCollision().left );
 			}
 
 			if(isChange)
 			{
-				changeState(eCLIME_ON_TO_SIDE);
+				//changeState(eCLIME_ON_TO_SIDE);
 				_dirUD = eDOWN;
 			}
 
@@ -117,18 +118,18 @@ void tiktik::move()
 			bool isChange = false;
 			if ( eRIGHT == _dir )
 			{
-				_position.x += _speed;
-				isChange = _activeArea->getCollision().right < _position.x;
+				_x += _speed;
+				isChange = _area->getCollision().right < _x;
 			}
 			else
 			{
-				_position.x -= _speed;
-				isChange = _position.x < _activeArea->getCollision().left;
+				_x -= _speed;
+				isChange = _x < _area->getCollision().left;
 			}
 
 			if ( isChange )
 			{
-				changeState(eCLIME_UNDER_TO_SIDE);
+				//changeState(eCLIME_UNDER_TO_SIDE);
 				_dirUD = eUP;
 			}
 
@@ -140,8 +141,8 @@ void tiktik::move()
 		{
 			bool isChange = false;
 
-			_position.y -= _speed;
-			isChange =  _position.y < _activeArea->getCollision().top + (_colSize.y / 2);
+			_y -= _speed;
+			isChange =  _y < _area->getCollision().top + (_colSize.y / 2);
 
 			if ( isChange )
 			{
@@ -150,7 +151,7 @@ void tiktik::move()
 				else
 					_dir = eRIGHT;
 
-				changeState(eCLIMB_SIDE_TO_ON);
+				//changeState(eCLIMB_SIDE_TO_ON);
 			}
 
 			break;
@@ -159,8 +160,8 @@ void tiktik::move()
 		case eMOVE_SIDE_DOWN:
 		{
 			bool isChange = false;
-			_position.y += _speed;
-			isChange = _activeArea->getCollision().bottom + (_colSize.y / 2) < _position.y;
+			_y += _speed;
+			isChange = _area->getCollision().bottom + (_colSize.y / 2) < _y;
 
 			if ( isChange )
 			{
@@ -169,7 +170,7 @@ void tiktik::move()
 				else
 					_dir = eRIGHT;
 
-				changeState(eCLIMB_SIDE_TO_UNDER);
+				//changeState(eCLIMB_SIDE_TO_UNDER);
 			}
 
 			break;
@@ -178,46 +179,46 @@ void tiktik::move()
 		case eCLIMB_SIDE_TO_ON:
 		{
 			if(eRIGHT == _dir)
-				_position.x += _speed;
+				_x += _speed;
 			else
-				_position.x -= _speed;
+				_x -= _speed;
 
-			_position.y -= _speed;
+			_y -= _speed;
 
 
-			if ( _anim )
-				if ( !_anim->IsPlayingAnimation() )
-					changeState(eMOVE_ON);
+			//if ( _anim )
+				//if ( !_anim->IsPlayingAnimation() )
+					//changeState(eMOVE_ON);
 			break;
 		}
 
 		case eCLIMB_SIDE_TO_UNDER:
 		{
 			if(eRIGHT == _dir)
-				_position.x += _speed;
+				_x += _speed;
 			else
-				_position.x -= _speed;
+				_x -= _speed;
 
-			_position.y += _speed;
+			_y += _speed;
 
-			if( _anim )
-				if(!_anim->IsPlayingAnimation())
-					changeState(eMOVE_UNDER);
+			//if( _anim )
+			//	if(!_anim->IsPlayingAnimation())
+			//		changeState(eMOVE_UNDER);
 			break;
 		}
 
 		case eCLIME_ON_TO_SIDE:
 		{
 			if(eRIGHT == _dir)
-				_position.x += _speed;
+				_x += _speed;
 			else
-				_position.x -= _speed;
+				_x -= _speed;
 
-			_position.y += _speed;
+			_y += _speed;
 
-			if ( _anim )
-				if ( !_anim->IsPlayingAnimation() )
-					changeState(eMOVE_SIDE_DOWN);
+			//if ( _anim )
+			//	if ( !_anim->IsPlayingAnimation() )
+			//		changeState(eMOVE_SIDE_DOWN);
 
 			break;
 		}
@@ -225,57 +226,57 @@ void tiktik::move()
 		case eCLIME_UNDER_TO_SIDE:
 		{
 			if(eRIGHT == _dir)
-				_position.x += _speed;
+				_x += _speed;
 			else
-				_position.x -= _speed;
+				_x -= _speed;
 
-			_position.y -= _speed;
+			_y -= _speed;
 
-			if( _anim )
-				if(!_anim->IsPlayingAnimation())
-					changeState(eMOVE_SIDE_UP);
+			//if( _anim )
+			//	if(!_anim->IsPlayingAnimation())
+			//		changeState(eMOVE_SIDE_UP);
 			break;
 		}
 	}
 }
 
-void tiktik::dead()
-{
-	enemy::dead();
-	changeState(eDEAD);
-}
+//void tiktik::dead()
+//{
+//	enemy::dead();
+//	changeState(eDEAD);
+//}
 
 void tiktik::setActiveArea()
 {
-	if(nullptr == _objM )
-		return;
-
-	lObject* objList = _objM->getObjectList(eOBJECT_GROUND);
-
-	if(objList->size() == 0)
-		return;
-
-	bool isFloating = true;
-	int offsetX = 0;
-	int offsetY = 0;
-
-	gameObject* obj = nullptr;
-	RECT objCol = {};
-	ilObject end = objList->end();
-
-	for ( ilObject iter = objList->begin(); end != iter; ++iter )
-	{
-		obj		= (*iter);
-		objCol	= ( obj->getCollision() );
-
-		if( !CheckIntersectRect(_collision, objCol) )
-			continue;
-
-		int offsetY = _collision.bottom - objCol.top;
-		_position.y -= offsetY;
-
-		_activeArea = obj;
-
-		break;
-	}
+	//if(nullptr == _objM )
+	//	return;
+	//
+	//lObject* objList = _objM->getObjectList(eOBJECT_GROUND);
+	//
+	//if(objList->size() == 0)
+	//	return;
+	//
+	//bool isFloating = true;
+	//int offsetX = 0;
+	//int offsetY = 0;
+	//
+	//gameObject* obj = nullptr;
+	//RECT objCol = {};
+	//ilObject end = objList->end();
+	//
+	//for ( ilObject iter = objList->begin(); end != iter; ++iter )
+	//{
+	//	obj		= (*iter);
+	//	objCol	= ( obj->getCollision() );
+	//
+	//	if( !CheckIntersectRect(_collision, objCol) )
+	//		continue;
+	//
+	//	int offsetY = _collision.bottom - objCol.top;
+	//	_y -= offsetY;
+	//
+	//	_area = obj;
+	//
+	//	break;
+	//}
 }

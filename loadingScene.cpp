@@ -139,7 +139,8 @@ void loadingScene::loadImageData()
 	IMAGEMANAGER->addImage("cliff_R", L"image/cliff_R.png", 513, 372);
 
 	// npc
-	IMAGEMANAGER->addFrameImage("npc", L"image/npc.png", 2219, 376, 7, 2);
+	IMAGEMANAGER->addFrameImage("npc", L"image/npc.png", 800, 800, 10, 10);
+	IMAGEMANAGER->addFrameImage("cornifer", L"image/cornifer.png", 2219, 376, 7, 2);
 
 	// item
 	IMAGEMANAGER->addImage("charm1", L"image/charm1_.png", 50, 50);
