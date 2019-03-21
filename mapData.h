@@ -3,14 +3,15 @@
 class terrain;
 class npc;
 class enemy;
+class actorBase;
 class mapData
 {
-	typedef vector<terrain*>			vTerrain;
-	typedef vector<terrain*>::iterator	iterVTerrain;
-	typedef vector<npc*>				vNpc;
-	typedef vector<npc*>::iterator		iterVNpc;
-	typedef vector<enemy*>				vEnemy;
-	typedef vector<enemy*>::iterator	iterEnemy;
+	typedef vector<terrain*>				vTerrain;
+	typedef vector<terrain*>::iterator		iterVTerrain;
+	typedef map<UINT, npc*>					mNpc;
+	typedef map<UINT, npc*>::iterator		iterMNpc;
+	typedef vector<enemy*>					vEnemy;
+	typedef vector<enemy*>::iterator		iterEnemy;
 
 	enum
 	{
@@ -19,7 +20,7 @@ class mapData
 
 private:
 	vTerrain _terrains;		// 모든 지형들
-	vNpc	 _npcs;			// npc
+	mNpc	 _npcs;			// npc
 	vEnemy	 _enemys;		// enemy
 
 	vTerrain _colTerrains;	// 충돌체가 있는 지형들
@@ -61,6 +62,9 @@ public:
 	terrain* addTerrainDrag(UINT layer, float destX, float destY, float sourX, float sourY, float width, float height, eImageUID imgUid);
 	terrain* addTerrainFrame(UINT layer, float destX, float destY, UINT frameX, UINT frameY, eImageUID imgUid);
 	terrain* addTerrainClear(UINT layer, float destX, float destY, float width, float height);
+
+	// npc 추가
+	npc* addNpc(float destX, float destY, eImageUID imgUid);
 
 	void deleteTerrain(UINT layer, UID uid);
 	

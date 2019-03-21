@@ -33,8 +33,8 @@ void loadingScene::update()
 	if (_iaDataAllLoad)
 	{
 		//SCENEMANAGER->changeScene(eSceneName_Title);
-		//SCENEMANAGER->changeScene(eSceneName_MapTool);
-		SCENEMANAGER->changeScene(eSceneName_DirtMouth);
+		SCENEMANAGER->changeScene(eSceneName_MapTool);
+		//SCENEMANAGER->changeScene(eSceneName_DirtMouth);
 		_iaDataAllLoad = false;
 	}
 }
@@ -141,6 +141,7 @@ void loadingScene::loadImageData()
 	// npc
 	IMAGEMANAGER->addFrameImage("npc", L"image/npc.png", 800, 800, 10, 10);
 	IMAGEMANAGER->addFrameImage("cornifer", L"image/cornifer.png", 2219, 376, 7, 2);
+	IMAGEMANAGER->addFrameImage("elderbug", L"image/elderbug.png", 440, 160, 4, 1);
 
 	// item
 	IMAGEMANAGER->addImage("charm1", L"image/charm1_.png", 50, 50);
@@ -203,6 +204,10 @@ void loadingScene::loadImageData()
 	
 	IMGDATABASE->insertImage(eImage_UI_Scroll_Back_Default, IMAGEMANAGER->findImage("uiBG4"));
 	IMGDATABASE->insertImage(eImage_UI_Scroll_Front_Default, IMAGEMANAGER->findImage("uiBG2"));
+
+	IMGDATABASE->insertImage(eImage_Npc_All, IMAGEMANAGER->findImage("npc"));
+	IMGDATABASE->insertImage(eImage_Npc_Elderbug, IMAGEMANAGER->findImage("elderbug"));
+	IMGDATABASE->insertImage(eImage_Npc_Cornifer, IMAGEMANAGER->findImage("cornifer"));
 }
 
 void loadingScene::loadSoundData()

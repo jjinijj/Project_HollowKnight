@@ -76,6 +76,7 @@ enum eSceneName
 	eSceneName_Count = eSceneName_None
 };
 
+// Àû
 enum eEnemy_Type
 {
 	eEnemy_Gruzzer,
@@ -85,6 +86,20 @@ enum eEnemy_Type
 
 	eEnemy_None,
 	eEnemy_Count = eEnemy_None,
+};
+
+// npc
+enum eNpc_Type
+{
+	eNpc_Elderbug,
+	eNpc_Sly,
+	eNpc_Quirrel,
+	eNpc_Iselda,
+	eNpc_Cornifer,
+	eNpc_TheLastStag,
+	
+	eNpc_None,
+	eNpc_Count = eNpc_None,
 };
 
 

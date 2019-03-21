@@ -272,6 +272,37 @@ void mapTool::pickSampleEnd()
 		case eToolMode_DrawNpc :	
 		{
 			curLnk = _imgLnksNpc[_sampleIdx]; 
+
+			int frameX = (int)(_ptMouse.x - _samplecanvas->getWorldPosition().x) / _sampleImg->GetFrameWidth();
+			int frameY = (int)(_ptMouse.y - _samplecanvas->getWorldPosition().y) / _sampleImg->GetFrameHeight();
+
+			int idx = 0;
+
+			if(0 <= frameX && frameX <= 1 && 0 <= frameY && frameY < 2)
+				idx = 0;
+			else if(1 < frameX && frameX <= 3 && 0 <= frameY && frameY < 2)
+				idx = 1;
+			else if(1 < frameX && frameX <= 3 && 2 <= frameY && frameY < 4)
+				idx = 2;
+			else if(0 <= frameX && frameX <= 1 && 2 <= frameY && frameY < 4)
+				idx = 3;
+			else if(0 <= frameX && frameX <= 4 &&  4 <= frameY && frameY < 6)
+				idx = 4;
+			else if(3 < frameX && frameX <= 7 && 0 <= frameY && frameY < 4)
+				idx = 5;
+
+			_pick.uid = curLnk->lnkUIDs[idx];
+			_pick.isFrame = true;
+
+			image* img = IMGDATABASE->getImage(_pick.uid);
+			if ( img )
+			{
+				_pick.width = static_cast<float>(img->GetFrameWidth());
+				_pick.height = static_cast<float>(img->GetFrameHeight());
+			}
+			else
+				return;
+
 			break; 
 		}
 
@@ -338,6 +369,8 @@ void mapTool::pickcanvasEnd()
 
 		case eToolMode_DrawNpc:
 		{
+			_mapData->addNpc(destX, destY, _pick.uid);
+			_pick.clear();
 			break;
 		}
 
@@ -1278,6 +1311,13 @@ void mapTool::initObjectImgLinks()
 
 void mapTool::initNpcImgLinks()
 {
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Npc_All, true);
+		for ( int ii = eImage_Npc_Elderbug; ii <= eImage_Npc_TheLastStag; ++ii )
+			lnk->pushBack((eImageUID)ii);
+		_imgLnksNpc.push_back(lnk);
+	}
 }
 
 void mapTool::updateDrawTerrain()
@@ -1334,7 +1374,7 @@ void mapTool::renderDrawNpc()
 	float destX = _ptMouse.x - _pick.width / 2.f;
 	float destY = _ptMouse.y - _pick.height / 2.f;
 	
-	IMGDATABASE->getImage(_pick.uid)->render(destX, destY, 0.5f, true);
+	IMGDATABASE->getImage(_pick.uid)->frameRender(destX, destY, 0, 0, 0.5f);
 }
 
 void mapTool::openSampleCanvas()

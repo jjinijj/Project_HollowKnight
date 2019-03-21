@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "mapData.h"
 #include "terrain.h"
+#include "npc.h"
 #include <string.h>
 #include <queue>
 
@@ -210,6 +211,38 @@ terrain* mapData::addTerrainClear(UINT layer, float destX, float destY, float wi
 	addTerrain(layer, clear);
 
 	return clear;
+}
+
+npc* mapData::addNpc(float destX, float destY, eImageUID imgUid)
+{
+	npc* n = nullptr;
+
+	if ( _npcs.find(imgUid) == _npcs.end() )
+	{
+		int value = (imgUid - eImage_Npc_Elderbug);
+		if ( eNpc_Elderbug <= value && value < eNpc_Count )
+		{
+			switch ( value )
+			{
+				case eNpc_Elderbug:		{ break; }
+				case eNpc_Sly:			{ break; }
+				case eNpc_Quirrel:		{ break; }
+				case eNpc_Iselda:		{ break; }
+				case eNpc_Cornifer:		{ break; }
+				case eNpc_TheLastStag:	{ break; }
+			}
+
+			if(n)
+			{
+				n->init(_uidCount, destX, destY);
+				_npcs.insert(make_pair(imgUid, n));
+				
+				++_uidCount;
+			}
+		}
+	}
+
+	return n;
 }
 
 void mapData::deleteTerrain(UINT layer, UID uid)

@@ -26,6 +26,14 @@ enum eImageUID
 	eImage_Town_Well,
 	eImage_StreetLamp,
 
+	eImage_Npc_All = 1500,
+	eImage_Npc_Elderbug,
+	eImage_Npc_Sly,
+	eImage_Npc_Quirrel,
+	eImage_Npc_Iselda,
+	eImage_Npc_Cornifer,
+	eImage_Npc_TheLastStag,
+
 
 	eImage_UI_BG = 10000,
 	eImage_UI_BG1,
