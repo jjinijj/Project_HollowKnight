@@ -7,8 +7,7 @@
 // jump start
 //=============================================
 flyingState::flyingState()
-: _flyingTime(0.f)
-, _jumpPower(0.f)
+: _jumpPower(0.f)
 , _gravity(0.f)
 {
 }
@@ -37,33 +36,27 @@ void flyingState::update()
 {
 	playerState::update();
 
-	//if( 1.0f <= _flyingTime)
-	//	end();
-	//else
+	// 이동
+	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
+		moveLeft();
+
+	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
+		moveRight();
+
+	// 위,아래
+	setUpAndDownDirection();
+
+	// 누르고 있는 일정기간동안 상승
+	if (KEYMANAGER->isStayKeyDown('Z'))
 	{
-		// 이동
-		if (KEYMANAGER->isStayKeyDown(VK_LEFT))
-			moveLeft();
-
-		if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
-			moveRight();
-
-		// 위,아래
-		setUpAndDownDirection();
-
-		// 누르고 있는 일정기간동안 상승
-		if (KEYMANAGER->isStayKeyDown('Z'))
-		{
-			_jumpPower -= (_gravity * TIMEMANAGER->getElapsedTime());
-			if(_jumpPower < 0.f)
-				end();
-
-			_flyingTime += TIMEMANAGER->getElapsedTime();
-			_player->moveJump(_jumpPower);
-		}
-		else
+		_jumpPower -= (_gravity * TIMEMANAGER->getElapsedTime());
+		if(_jumpPower < 0.f)
 			end();
+
+		_player->moveJump(_jumpPower);
 	}
+	else
+		end();
 }
 
 void flyingState::render()
@@ -74,7 +67,6 @@ void flyingState::render()
 void flyingState::start()
 {
 	playerState::start();
-	_flyingTime = 0.f;
 	_jumpPower	= static_cast<float>(PLAYER_JUMP_POWER);
 	_gravity	= static_cast<float>(PLAYER_GRAVITY);
 
@@ -257,8 +249,6 @@ void jumpFallingState::end()
 {
 	_nextState = ePlayer_State_Land;
 }
-
-
 
 
 //==========================================

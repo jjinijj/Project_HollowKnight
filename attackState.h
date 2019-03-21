@@ -1,3 +1,8 @@
+/*	
+	플레이어 상태 : 공격 관련
+	attack, standOff
+ */
+
 #pragma once
 #include "playerState.h"
 
@@ -17,8 +22,6 @@ public:
 
 	void start();
 	void end();
-
-	
 };
 
 class standOffState: public playerState
@@ -38,5 +41,4 @@ public:
 
 	void start();
 	void end();
-
 };

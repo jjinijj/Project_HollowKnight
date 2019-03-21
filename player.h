@@ -1,6 +1,7 @@
 #pragma once
 
 
+// default value
 enum
 {
 	// 속도
@@ -34,55 +35,54 @@ enum
 
 };
 
+// player state
 enum ePlayer_State
 {
-	ePlayer_State_Idle,
-	ePlayer_State_Walk,
+	ePlayer_State_Idle,			// 기본
+	ePlayer_State_Walk,			// 이동
 	
-	ePlayer_State_Sit,
-	ePlayer_State_Drowse,
-	ePlayer_State_WakeUp,
+	ePlayer_State_Sit,			// 앉기
+	ePlayer_State_Drowse,		// 졸기
+	ePlayer_State_WakeUp,		// 일어나기
 	
-	ePlayer_State_Dead,
+	ePlayer_State_Dead,			// 죽음
+		
+	ePlayer_State_Flying,		// 상승
+	ePlayer_State_Falling,		// 하강
+	ePlayer_State_JumpFalling,	// 점프 후 하강
+	ePlayer_State_Land,			// 착륙
 	
-	ePlayer_State_Flying,
-	ePlayer_State_FlyingStay,
-	ePlayer_State_Falling,
-	ePlayer_State_JumpFalling,
-	ePlayer_State_Land,
+	ePlayer_State_Attack,		// 근거리 공격
+	ePlayer_State_StandOff,		// 원거리 공격
 	
-	ePlayer_State_Attack,
-	ePlayer_State_StandOff,
-	
-	ePlayer_State_Look,
+	ePlayer_State_Look,			// (위로or아래로)보기
 
-	ePlayer_State_None,
+	ePlayer_State_None,			// 상태없음
 	ePlayer_State_Count = ePlayer_State_None,
 };
 
 enum ePlayer_Animation
 {
-	ePlayer_Ani_Idle,
-	ePlayer_Ani_Walk,
+	ePlayer_Ani_Idle,		// 기본
+	ePlayer_Ani_Walk,		// 이동
 	
-	ePlayer_Ani_Sit,
-	ePlayer_Ani_Drowse,
+	ePlayer_Ani_Sit,		// 앉기
+	ePlayer_Ani_Drowse,		// 졸기
 
-	ePlayer_Ani_Dead,
+	ePlayer_Ani_Dead,		// 죽음
 
-	ePlayer_Ani_Flying,
-	ePlayer_Ani_FlyingStay,
-	ePlayer_Ani_Falling,
-	ePlayer_Ani_Land,
+	ePlayer_Ani_Flying,		// 상승
+	ePlayer_Ani_Falling,	// 하강
+	ePlayer_Ani_Land,		// 착륙
 
-	ePlayer_Ani_Attack_1,
-	ePlayer_Ani_Attack_2,
-	ePlayer_Ani_Attack_Up,
-	ePlayer_Ani_Attack_Down,
-	ePlayer_Ani_StandOff,
+	ePlayer_Ani_Attack_1,	// 좌우 공격 1
+	ePlayer_Ani_Attack_2,	// 좌우 공격 2
+	ePlayer_Ani_Attack_Up,	// 위로 공격
+	ePlayer_Ani_Attack_Down,// 아래로 공격
+	ePlayer_Ani_StandOff,	// 원거리 공격
 	
-	ePlayer_Ani_Look_Up,
-	ePlayer_Ani_Look_Down,
+	ePlayer_Ani_Look_Up,	// 위로 보기
+	ePlayer_Ani_Look_Down,	// 아래로 보기
 
 	ePlayer_Ani_None,
 	ePlayer_Ani_Count = ePlayer_Ani_None,
@@ -103,31 +103,28 @@ class player
 {
 private:
 
-	UINT _coin;
-	bool _isFloating;
-	bool _isJumping;
+	UINT _coin;					// 돈
+	
+	bool _isFloating;			// 공중에 떠있는가
 
-	float _x;
-	float _y;
-	float _gravity;
-	float _jumpPower;
+	float _x;					// 위치 : center
+	float _y;					// 위치 : bottom
 
-	mapData* _mapData;
+	mapData* _mapData;			// 맵 정보
 
-	playerState* _state;
-	playerState* _act;
-	ePlayer_State _nextState;
+	playerState* _state;		// 현재 상태
+	playerState* _act;			// 추가 상태 : 현재 상태와 함께 사용되며 애니메이션 우선 출력
+	ePlayer_State _nextState;	// 다음 상태
 
-	RECTD2D _collision;
-	RECTD2D _collisionAtk;
+	RECTD2D _collision;			// 충돌체
+	RECTD2D _collisionAtk;		// 공격 충돌체
 
-	POINTF _atkRange;
+	POINTF _atkRange;			// 공격 범위
 
-	WORD _dir;
-	WORD _dir_ud;
-	WORD _dir_atk;
+	WORD _dir;					// 키가 눌린 방향
+	WORD _dir_atk;				// 공격 방향
 
-	map<UINT, playerState*> _stateMap;
+	map<UINT, playerState*> _stateMap;	// 상태 맵
 
 public:
 	player();

@@ -1,25 +1,30 @@
+/*
+	플레이어 상태
+	player state baseClass,
+	기본(idle), 이동(walk)
+ */
 #pragma once
 
 class player;
 class playerState
 {
 protected:
-	player* _player;
-	image* _img;
-	animation* _ani;
+	player* _player;			
+	image* _img;			// 애니메이션에 사용할 이미지
+	animation* _ani;		// 애니메이션
 
-	UINT _nextState;
+	UINT _nextState;		// 다음 상태
 
-	UINT _state;
-	UINT _aniKey;
+	UINT _state;			// 현재 상태
+	UINT _aniKey;			// 애니메이션 키
 
-	bool _isRight;
-	bool _isEnd;
-	bool _isDoEvent;
+	bool _isRight;			// 오른쪽을 향하는가
+	bool _isEnd;			// 애니메이션이 끝났는가
+	bool _isDoEvent;		// 애니메이션 이벤트를 행했는가
 	
-	playerState();
+	playerState();			// 상속을 통한 접근만 가능
 public:
-	~playerState();
+	~playerState();			// 해제는 public
 
 	virtual HRESULT init(player* p);
 	virtual void release();
@@ -41,6 +46,7 @@ protected:
 	void setUpAndDownDirection();
 };
 
+// 기본
 class idleState: public playerState
 {
 private:
@@ -60,6 +66,7 @@ public:
 	UINT nextState();
 };
 
+// 걷기
 class walkState: public playerState
 {
 private:

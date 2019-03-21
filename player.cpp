@@ -37,10 +37,25 @@ HRESULT player::init(float x, float y)
 
 void player::release()
 {
+	_mapData = nullptr;
+	_state = nullptr;
+	_act = nullptr;
+
+	map<UINT, playerState*>::iterator iter = _stateMap.begin();
+	for (iter; _stateMap.end() != iter; ++iter)
+	{
+		playerState* st = iter->second;
+		iter = _stateMap.erase(iter);
+
+		SAFE_RELEASE(st);
+		SAFE_DELETE(st);
+	}
+	_stateMap.clear();
 }
 
 void player::update()
 {
+	// 상태 갱신
 	_state->update();
 	if (_act)
 	{
@@ -51,7 +66,8 @@ void player::update()
 			_act = nullptr;
 		}
 	}
-	_nextState = (ePlayer_State)_state->nextState();
+	else
+		_nextState = (ePlayer_State)_state->nextState();
 
 	changeState(_nextState);
 
@@ -63,9 +79,9 @@ void player::update()
 
 void player::render()
 {
-	D2DMANAGER->drawRectangle(_collision, false);
-	D2DMANAGER->drawRectangle(_collisionAtk, false);
-
+	//D2DMANAGER->drawRectangle(_collision, false);
+	//D2DMANAGER->drawRectangle(_collisionAtk, false);
+	//
 	D2DMANAGER->drawText(format(L"%d", _state->getState()).c_str(), _collision.left, _collision.top, false);
 	if(_act)
 		_act->render();

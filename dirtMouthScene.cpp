@@ -37,6 +37,9 @@ HRESULT dirtMouthScene::init()
 void dirtMouthScene::release()
 {
 	SAFE_RELEASE(_player);
+	SAFE_RELEASE(_mapData);
+
+	SAFE_DELETE(_mapData);
 	SAFE_DELETE(_player);
 }
 

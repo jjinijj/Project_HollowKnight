@@ -67,7 +67,6 @@ void d2dManager::release()
 		iter = _brushMap.erase(iter);
 
 		SAFE_RELEASE2(brush);
-		SAFE_DELETE(brush);
 	}
 
 	map<wstring, mTextFormat>::iterator iter = _fontFormatMap.begin();
@@ -80,16 +79,19 @@ void d2dManager::release()
 			it = tf.erase(it);
 
 			SAFE_RELEASE2(wft);
-			SAFE_DELETE(wft);
 		}
 		iter = _fontFormatMap.erase(iter);
 	}
 
-	SAFE_RELEASE2(_defaultBrush);
+	_defaultBrush = nullptr;
+
 	SAFE_RELEASE2(_defaultTextFormat);
 	SAFE_RELEASE2(_writeFactory);
 	SAFE_RELEASE2(_renderTarget);
 	SAFE_RELEASE2(_d2dFactory);
+	
+	SAFE_RELEASE2(WICImagingFactory);
+	SAFE_RELEASE2(_collection);
 }
 
 void d2dManager::update()
@@ -112,7 +114,7 @@ void d2dManager::endDraw()
 	_renderTarget->EndDraw();
 }
 
-ID2D1SolidColorBrush * d2dManager::createBrush(COLORREF rgb, float opacity)
+ID2D1SolidColorBrush* d2dManager::createBrush(COLORREF rgb, float opacity)
 {
 	HRESULT hr;
 	ID2D1SolidColorBrush* brush = nullptr;
@@ -121,9 +123,16 @@ ID2D1SolidColorBrush * d2dManager::createBrush(COLORREF rgb, float opacity)
 		return _brushMap[rgb];
 
 	hr = _renderTarget->CreateSolidColorBrush(ColorF(rgb, opacity), &brush);
+	if(S_OK == hr)
+	{
+		_brushMap.insert(make_pair(rgb, brush));
 
-	return brush;
-	
+		return brush;
+	}
+	else
+	{
+		return _defaultBrush;
+	}
 }
 
 HRESULT d2dManager::createCollection(wstring path)
@@ -404,7 +413,8 @@ IDWriteTextFormat* d2dManager::getFontFormat(wstring fontName, UINT fontSize)
 	map<UINT, IDWriteTextFormat*> formats;
 	if (_fontFormatMap.find(fontName) == _fontFormatMap.end())
 		_fontFormatMap.insert(make_pair(fontName, formats));
-	else formats = _fontFormatMap[fontName];
+	
+	formats = _fontFormatMap[fontName];
 	
 	if (formats.find(fontSize) == formats.end())
 	{
@@ -415,9 +425,11 @@ IDWriteTextFormat* d2dManager::getFontFormat(wstring fontName, UINT fontSize)
 										,DWRITE_FONT_STRETCH_NORMAL
 										,fontSize
 										,L"", &font);
+		_fontFormatMap[fontName].insert(make_pair(fontSize, font));
+		formats = _fontFormatMap[fontName];
 	}
-	else
-		font = formats[fontSize];
+
+	font = formats[fontSize];
 
 	return font;
 }
