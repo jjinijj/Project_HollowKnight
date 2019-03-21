@@ -315,6 +315,9 @@
     <ClInclude Include="baseInGameScene.h">
       <Filter>PlayGround\scene\ingame</Filter>
     </ClInclude>
+    <ClInclude Include="tiktik.h">
+      <Filter>PlayGround\actor\enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -487,6 +490,9 @@
     </ClCompile>
     <ClCompile Include="baseInGameScene.cpp">
       <Filter>PlayGround\scene\ingame</Filter>
+    </ClCompile>
+    <ClCompile Include="tiktik.cpp">
+      <Filter>PlayGround\actor\enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

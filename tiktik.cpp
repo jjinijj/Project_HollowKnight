@@ -1,89 +1,77 @@
 #include "stdafx.h"
 #include "tiktik.h"
-#include "ObjectManager.h"
 
-HRESULT tiktik::init(POINTF position, unsigned int uid)
+HRESULT tiktik::init(UINT uid, float x, float y)
 {
-	enemy::init(position, uid);
-
+	enemy::init(uid, x, y);
 	{
-		animation* anim = new animation;
 		image* img = IMAGEMANAGER->findImage("tiktik_move");
-		anim->init(img, true, 0, img->GetMaxFrameX(), 10, _dir);
-		_animMap.insert(make_pair(eMOVE_ON, anim));
-
-		_imgSize.x = img->GetFrameWidth();
-		_imgSize.y = img->GetFrameWidth();
-		_imgSizeHalf.x = img->GetFrameWidth() / 2;
-		_imgSizeHalf.y = img->GetFrameWidth() / 2;
+		ANIMANAGER->addArrayFrameAnimation( _uid, eMOVE_ON, "tiktik_move"
+										   ,0, img->GetMaxFrameX()
+										   ,TIKTIK_ANI_SPEED, true);
 	}
-
 	{
-		animation* anim = new animation;
 		image* img = IMAGEMANAGER->findImage("tiktik_move_under");
-		anim->init(img, true, 0, img->GetMaxFrameX(), 10, _dir);
-		_animMap.insert(make_pair(eMOVE_UNDER, anim));
+		ANIMANAGER->addArrayFrameAnimation(_uid, eMOVE_UNDER, "tiktik_move_under"
+										   , 0, img->GetMaxFrameX()
+										   , TIKTIK_ANI_SPEED, true);
 	}
 
 	{
-		animation* anim = new animation;
 		image* img = IMAGEMANAGER->findImage("tiktik_move_sideup");
-		anim->init(img, true, 0, img->GetMaxFrameX(), 10, _dir);
-		_animMap.insert(make_pair(eMOVE_SIDE_UP, anim));
+		ANIMANAGER->addArrayFrameAnimation(_uid, eMOVE_SIDE_UP, "tiktik_move_sideup"
+										   , 0, img->GetMaxFrameX()
+										   , TIKTIK_ANI_SPEED, true);
 	}
 
 	{
-		animation* anim = new animation;
 		image* img = IMAGEMANAGER->findImage("tiktik_move_sidedown");
-		anim->init(img, true, 0, img->GetMaxFrameX(), 10, _dir);
-		_animMap.insert(make_pair(eMOVE_SIDE_DOWN, anim));
+		ANIMANAGER->addArrayFrameAnimation(_uid, eMOVE_SIDE_DOWN, "tiktik_move_sidedown"
+										   , 0, img->GetMaxFrameX()
+										   , TIKTIK_ANI_SPEED, true);
 	}
 
 	{
-		animation* anim = new animation;
 		image* img = IMAGEMANAGER->findImage("tiktik_climbup_stu");
-		anim->init(img, false, 0, img->GetMaxFrameX(), 10, _dir);
-		_animMap.insert(make_pair(eCLIMB_SIDE_TO_ON, anim));
+		ANIMANAGER->addArrayFrameAnimation(_uid, eCLIMB_SIDE_TO_ON, "tiktik_climbup_stu"
+										   , 0, img->GetMaxFrameX()
+										   , TIKTIK_ANI_SPEED, true);
 	}
 
 	{
-		animation* anim = new animation;
 		image* img = IMAGEMANAGER->findImage("tiktik_climbup_uts");
-		anim->init(img, false, 0, img->GetMaxFrameX(), 10, _dir);
-		_animMap.insert(make_pair(eCLIME_UNDER_TO_SIDE, anim));
+		ANIMANAGER->addArrayFrameAnimation(_uid, eCLIME_UNDER_TO_SIDE, "tiktik_climbup_uts"
+										   , 0, img->GetMaxFrameX()
+										   , TIKTIK_ANI_SPEED, true);
 	}
 
 	{
-		animation* anim = new animation;
 		image* img = IMAGEMANAGER->findImage("tiktik_climbdown_stu");
-		anim->init(img, false, 0, img->GetMaxFrameX(), 10, _dir);
-		_animMap.insert(make_pair(eCLIMB_SIDE_TO_UNDER, anim));
+		ANIMANAGER->addArrayFrameAnimation(_uid, eCLIMB_SIDE_TO_UNDER, "tiktik_climbup_uts"
+										   , 0, img->GetMaxFrameX()
+										   , TIKTIK_ANI_SPEED, true);
 	}
 
 	{
-		animation* anim = new animation;
 		image* img = IMAGEMANAGER->findImage("tiktik_climbdown_ots");
-		anim->init(img, false, 0, img->GetMaxFrameX(), 10, _dir);
-		_animMap.insert(make_pair(eCLIME_ON_TO_SIDE, anim));
+		ANIMANAGER->addArrayFrameAnimation(_uid, eCLIME_ON_TO_SIDE, "tiktik_climbdown_ots"
+										   , 0, img->GetMaxFrameX()
+										   , TIKTIK_ANI_SPEED, true);
 	}
 
 	{
-		animation* anim = new animation;
 		image* img = IMAGEMANAGER->findImage("tiktik_dead");
-		anim->init(img, false, 0, img->GetMaxFrameX(), 20, _dir);
-		_animMap.insert(make_pair(eDEAD, anim));
+		ANIMANAGER->addArrayFrameAnimation(_uid, eDEAD, "tiktik_dead"
+										   , 0, img->GetMaxFrameX()
+										   , TIKTIK_ANI_SPEED, true);
 	}
 
-	_colSize.x = _imgSize.x - 20;
-	_colSize.y = _imgSize.y - 20;
-	_anim = _animMap[eMOVE_ON];
-	_anim->start();
-	_hp = 2;
-	_speed = 1;
+	_hp = TIKTIK_MAX_HP;
+	_speed = TIKTIK_MOVE_SPEED;
 
-	_type = eENEMY_TIKTIK;
-	_collision = {   (int)_position.x - _colSize.x / 2, (int)_position.y - _colSize.y
-					,(int)_position.x + _colSize.x / 2, (int)_position.y};
+	_subType = eEnemy_Tiktik;
+	_collision = {   _x - TIKTIK_WIDTH / 2, _y - TIKTIK_HIEGHT
+					,_x + TIKTIK_WIDTH / 2, _y};
 	setActiveArea();
 
 	return S_OK;
@@ -92,30 +80,27 @@ HRESULT tiktik::init(POINTF position, unsigned int uid)
 void tiktik::update()
 {
 	enemy::update();
-
-	if (_isAlive)
-		move();
 }
 
 void tiktik::move()
 {
-	if(nullptr == _activeArea )
+	if(nullptr == _area)
 		return;
 
-	switch ( _state )
+	switch ( _state->getState() )
 	{
 		case eMOVE_ON:
 		{
 			bool isChange = false;
 			if ( eRIGHT == _dir )
 			{
-				_position.x += _speed;
-				isChange =  ( _activeArea->getCollision().right < _position.x );
+				_x += _speed;
+				isChange =  ( _activeArea->getCollision().right < _x );
 			}
 			else
 			{
-				_position.x -= _speed;
-				isChange =  ( _position.x < _activeArea->getCollision().left );
+				_x -= _speed;
+				isChange =  ( _x < _activeArea->getCollision().left );
 			}
 
 			if(isChange)

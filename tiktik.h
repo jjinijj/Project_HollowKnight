@@ -3,8 +3,20 @@
 #include "animation.h"
 #include "enemy.h"
 
+class terrain;
 class tiktik : public enemy
 {
+	enum
+	{
+		TIKTIK_ANI_SPEED = 10,
+		
+		TIKTIK_MOVE_SPEED = 1,
+		TIKTIK_MAX_HP = 2,
+
+		TIKTIK_WIDTH = 50,
+		TIKTIK_HIEGHT = 50,
+	};
+
 private:
 	enum eSTATE
 	{
@@ -24,14 +36,19 @@ private:
 
 
 private:
-	gameObject* _activeArea;
+	terrain* _area;
 
 public:
 
-	HRESULT init(POINTF position, unsigned int uid);
+	HRESULT init(UINT uid, float x, float y);
 	void update();
+	void release();
+	void render();
+
 	void move();
-	void dead();
+
+	// 활동구역
+	void terrainLink(terrain* ter) { _area = ter; }
 
 private:
 	void setActiveArea();

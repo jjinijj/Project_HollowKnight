@@ -165,6 +165,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="playerState.h" />
     <ClInclude Include="jumpState.h" />
+    <ClInclude Include="tiktik.h" />
     <ClInclude Include="uiButton.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="d2dManager.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playerState.cpp" />
     <ClCompile Include="jumpState.cpp" />
+    <ClCompile Include="tiktik.cpp" />
     <ClCompile Include="uiButton.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="d2dManager.cpp" />
