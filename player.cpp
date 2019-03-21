@@ -22,11 +22,11 @@ HRESULT player::init(float x, float y)
 	_y = y;
 
 	_collision = { x, y, x + 10.f, y + 10.f };
+	_atkRange = {100.f, 25.f};
 
+	// 카메라
 	RECTD2D rc = { 0.f, 0.f, WINSIZEX, WINSIZEY };
 	POINTFLOAT pf = {MAPSIZEX, MAPSIZEY};
-	//CAMERA->init(pf, rc, (float)PLAYER_MOVE_SPEED, &_x, &_y);
-
 	CAMERA->init(pf, rc, PLAYER_MOVE_SPEED, &_x, &_y);
 
 	initAnimaion();
@@ -41,13 +41,6 @@ void player::release()
 
 void player::update()
 {
-	if(KEYMANAGER->isStayKeyDown(VK_UP))
-		setDirectionUp();
-	else if(KEYMANAGER->isStayKeyDown(VK_DOWN))
-		setDirectionDown();
-	else
-		setDirectionIdle();
-
 	_state->update();
 	if (_act)
 	{
@@ -71,6 +64,8 @@ void player::update()
 void player::render()
 {
 	D2DMANAGER->drawRectangle(_collision, false);
+	D2DMANAGER->drawRectangle(_collisionAtk, false);
+
 	D2DMANAGER->drawText(format(L"%d", _state->getState()).c_str(), _collision.left, _collision.top, false);
 	if(_act)
 		_act->render();
@@ -78,13 +73,7 @@ void player::render()
 		_state->render();
 }
 
-
-bool player::checkDirection(eDirection dir)
-{
-	bool result = (_dir & dir) == dir;
-
-	return result;
-}
+//===================================================================================================
 
 void player::moveRight()
 {
@@ -98,12 +87,12 @@ void player::moveLeft()
 
 void player::moveJump(float jumpPower)
 {
-	_y -= (jumpPower);// * TIMEMANAGER->getElapsedTime());
+	_y -= (jumpPower);
 }
 
 void player::moveFall(float gravity)
 {
-	_y += (gravity );//* TIMEMANAGER->getElapsedTime());
+	_y += (gravity);
 }
 
 void player::moveUp()
@@ -118,16 +107,17 @@ void player::moveDown()
 
 void player::attack()
 {
-	if(_act)
+	if (_act)
 		return;
 
 	_act = findState(ePlayer_State_Attack);
-	if(_act)
+	if (_act)
 		_act->start();
 }
 
 void player::attackDamage()
 {
+	// enemy check
 }
 
 void player::standOff()
@@ -138,7 +128,56 @@ void player::standOff()
 
 void player::standOffDamage()
 {
+	// fire bullet
 }
+
+//===================================================================================================
+
+bool player::checkDirection(eDirection dir)
+{
+	bool result = (_dir & dir) == dir;
+
+	return result;
+}
+
+//===================================================================================================
+
+void player::setDirectionRight()
+{
+	_dir |= eDirection_Right;
+}
+
+void player::setDirectionLeft()
+{
+	if (checkDirection(eDirection_Right))
+		_dir ^= eDirection_Right;
+}
+
+void player::setDirectionUp()
+{
+	if (checkDirection(eDirection_Down))
+		_dir ^= eDirection_Down;
+
+	_dir |= eDirection_Up;
+}
+
+void player::setDirectionDown()
+{
+	if (checkDirection(eDirection_Up))
+		_dir ^= eDirection_Up;
+
+	_dir |= eDirection_Down;
+}
+
+void player::setDirectionIdle()
+{
+	if (checkDirection(eDirection_Right))
+		_dir = eDirection_Right;
+	else
+		_dir = eDirection_Left;
+}
+
+//===================================================================================================
 
 void player::initState()
 {
@@ -177,15 +216,21 @@ void player::initState()
 		st->init(this);
 		_stateMap.insert(make_pair(ePlayer_State_Land, st));
 	}
-
-	// attack
+	// attack : 근거리 공격
 	{
 		playerState* st = new attackState;
 		st->init(this);
 		_stateMap.insert(make_pair(ePlayer_State_Attack, st));
 	}
+	// attack : standOff : 원거리 공격
+	{
+		playerState* st = new standOffState;
+		st->init(this);
+		_stateMap.insert(make_pair(ePlayer_State_StandOff, st));
+	}
 
-	//
+
+	// set idle
 	_state = _stateMap[ePlayer_State_Idle];
 }
 
@@ -266,7 +311,7 @@ void player::initAnimaion()
 	{
 		image* img = IMAGEMANAGER->findImage("knight_attack3");
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_StandOff, "knight_attack3"
-										   , 0, img->GetMaxFrameX(), 4, PLAYER_ANI_SPEED, false);
+										   , 0, img->GetMaxFrameX(), 4, PLAYER_ANI_SPEED_SLOW, false);
 	}
 
 	// animation look up
@@ -304,27 +349,38 @@ void player::updateCollision()
 				  , _x + PLAYER_COL_SIZE_WIDE_HALF, _y };
 
 	// 공격범위
-	//if (ePLAYER_STATE_ATTACK_1 == _state || ePLAYER_STATE_ATTACK_2 == _state)
-	//{
-	//	if (eDIRECTION_RIGHT == _dir_LR)
-	//		_collisionAtk = { _collision.right, (int)_position.y - PLAYER_COL_SIZE_HEIGHT_HALF - _atkRange.y
-	//						, _collision.right + _atkRange.x, (int)_position.y - PLAYER_COL_SIZE_HEIGHT_HALF + _atkRange.y };
-	//	else if (eDIRECTION_LEFT == _dir_LR)
-	//		_collisionAtk = { _collision.left - _atkRange.x, (int)_position.y - PLAYER_COL_SIZE_HEIGHT_HALF - _atkRange.y
-	//						, _collision.left, (int)_position.y - PLAYER_COL_SIZE_HEIGHT_HALF + _atkRange.y };
-	//}
-	//else if (ePLAYER_STATE_ATTACK_UP == _state)
-	//{
-	//	_collisionAtk = { (int)_position.x - _atkRange.y, _collision.top - _atkRange.x
-	//					, (int)_position.x + _atkRange.y, _collision.top };
-	//}
-	//else if (ePLAYER_STATE_ATTACK_DOWN == _state)
-	//{
-	//	_collisionAtk = { (int)_position.x - _atkRange.y, _collision.bottom
-	//					, (int)_position.x + _atkRange.y, _collision.bottom + _atkRange.x };
-	//}
-	//else
-	//	_collisionAtk = {};
+	if (_act && _act->getState() == ePlayer_State_Attack)
+	{
+		switch (_dir_atk)
+		{
+			case eDirection_Up : 
+			{
+				_collisionAtk = { _x - _atkRange.y, _collision.top - _atkRange.x
+								, _x + _atkRange.y, _collision.top };
+				break; 
+			}
+			case eDirection_Down: 
+			{
+				_collisionAtk = { _x - _atkRange.y, _collision.bottom
+								, _x + _atkRange.y, _collision.bottom + _atkRange.x };
+				break; 
+			}
+			case eDirection_Right: 
+			{
+				_collisionAtk = { _collision.right, _y - PLAYER_COL_SIZE_HEIGHT_HALF - _atkRange.y
+								, _collision.right + _atkRange.x, _y - PLAYER_COL_SIZE_HEIGHT_HALF + _atkRange.y };
+				break; 
+			}
+			case eDirection_Left: 
+			{
+				_collisionAtk = { _collision.left - _atkRange.x, _y - PLAYER_COL_SIZE_HEIGHT_HALF - _atkRange.y
+								, _collision.left, _y - PLAYER_COL_SIZE_HEIGHT_HALF + _atkRange.y };
+				break; 
+			}
+		}
+	}
+	else
+		_collisionAtk = {};
 
 }
 

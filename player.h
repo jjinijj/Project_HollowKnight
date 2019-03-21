@@ -5,6 +5,7 @@ enum
 {
 	// 속도
 	PLAYER_ANI_SPEED = 10,
+	PLAYER_ANI_SPEED_SLOW = 5,
 	PLAYER_ATTACK_SPEED = 3,
 	PLAYER_MOVE_SPEED = 250,
 
@@ -112,18 +113,19 @@ private:
 	float _jumpPower;
 
 	mapData* _mapData;
-	image* _img;
-	animation* _ani;
 
 	playerState* _state;
 	playerState* _act;
 	ePlayer_State _nextState;
 
 	RECTD2D _collision;
-	RECTD2D _attkCol;
+	RECTD2D _collisionAtk;
+
+	POINTF _atkRange;
 
 	WORD _dir;
 	WORD _dir_ud;
+	WORD _dir_atk;
 
 	map<UINT, playerState*> _stateMap;
 
@@ -162,48 +164,7 @@ public:
 	//bool isMoveable();
 	//
 
-	bool isStateFloating() { return  _isFloating; }
-	//
-	void setPositionX(float x) { _x = x; }
-	void setPositionY(float y) { _y = y; }
-	//
-	float getPositionX() { return _x; }
-	float getPositionY() { return _y; }
-	//RECTD2D getCollisionRECT() { return _collision; }
-	//UINT getCoin() { return _coin; }
-	void setDirectionRight() { _dir |= eDirection_Right; }
-	void setDirectionLeft()	
-	{
-		if(checkDirection(eDirection_Right))
-			_dir ^= eDirection_Right; 
-	}
-	void setDirectionUp() 
-	{
-		if (checkDirection(eDirection_Down))
-			_dir ^= eDirection_Down; 
-		
-		_dir |= eDirection_Up; 
-	}
-	void setDirectionDown()
-	{
-		if (checkDirection(eDirection_Up))
-			_dir ^= eDirection_Up;
-
-		_dir |= eDirection_Down;
-	}
-
-	void setDirectionIdle()
-	{
-		if (checkDirection(eDirection_Right))
-			_dir = eDirection_Right;
-		else
-			_dir = eDirection_Left;
-	}
-	WORD getDirection() {return _dir;}
-
-	bool checkDirection(eDirection dir);
-
-	void setAnimation(animation* ani) {_ani = ani;}
+	// 이동
 	void moveRight();
 	void moveLeft();
 	void moveJump(float jumpPower);
@@ -211,20 +172,67 @@ public:
 	void moveUp();
 	void moveDown();
 
+	// 근접 공격
 	void attack();
+	// 근접 공격 데미지 적용
 	void attackDamage();
+	// 원거리 공격
 	void standOff();
+	// 원거리 공격 데미지 적용
 	void standOffDamage();
+
+	//=====================================================
+	// check
+	//=====================================================
+
+	// 공중에 떠 있는가
+	bool isStateFloating() { return  _isFloating; }
+	// 방향 확인
+	bool checkDirection(eDirection dir);
+
+	//=====================================================
+	// set
+	//=====================================================
+	
+	// 위치 x : mid
+	void setPositionX(float x) { _x = x; }
+	void setPositionY(float y) { _y = y; }
+	// 위치 y : bottom
+	void setAttkDirection(eDirection dir) {_dir_atk = dir;}
+
+	// 방향
+	void setDirectionRight();
+	void setDirectionLeft();
+	void setDirectionUp();
+	void setDirectionDown();
+	// 방향 초기화 : R or L
+	void setDirectionIdle();
+
+
+	//=====================================================
+	// get
+	//=====================================================
+
+	// 위치 x : mid
+	float getPositionX() { return _x; }
+	// 위치 y : bottom   
+	float getPositionY() { return _y; }
+	// 방향			   
+	WORD getDirection()	 { return _dir;}
 
 
 private:
+	// 상태 초기화
 	void initState();
+	// 애니메이션 초기화
 	void initAnimaion();
+	// 상태 전환
 	void changeState(ePlayer_State state);
+	// 충돌체 갱신
 	void updateCollision();
-
+	// 위치 보정 및 공중에 떠있는지 확인
 	void fixPosition();
-
+	// 상태 찾기
 	playerState* findState(ePlayer_State state);
 };
 

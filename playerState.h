@@ -38,6 +38,7 @@ protected:
 	void setAnimation(UINT aniKey);
 	void moveLeft();
 	void moveRight();
+	void setUpAndDownDirection();
 };
 
 class idleState: public playerState

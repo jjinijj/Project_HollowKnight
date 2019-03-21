@@ -64,7 +64,7 @@ void animationManager::addArrayFrameAnimation(UINT uid, UINT key, const char* im
 	for (int ii = 0; ii < size; ++ii)
 		arr[ii] = startIdx + ii;
 
-	addArrayFrameAnimation(uid, key, imageKeyName, arr, size, -1, fps, loop);
+	addArrayFrameAnimation(uid, key, imageKeyName, arr, size, eventFrame, fps, loop);
 }
 
 void animationManager::addArrayFrameAnimation(UINT uid, UINT key, const char* imageKeyName, int* arr, int arrLen, int eventFrame, int fps, bool loop)

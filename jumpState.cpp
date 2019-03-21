@@ -41,12 +41,17 @@ void flyingState::update()
 	//	end();
 	//else
 	{
+		// 이동
 		if (KEYMANAGER->isStayKeyDown(VK_LEFT))
 			moveLeft();
 
 		if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
 			moveRight();
 
+		// 위,아래
+		setUpAndDownDirection();
+
+		// 누르고 있는 일정기간동안 상승
 		if (KEYMANAGER->isStayKeyDown('Z'))
 		{
 			_jumpPower -= (_gravity * TIMEMANAGER->getElapsedTime());
@@ -117,14 +122,23 @@ void fallingState::update()
 
 	if (_player->isStateFloating())
 	{
+		// 이동
 		if (KEYMANAGER->isStayKeyDown(VK_LEFT))
 			moveLeft();
-
 		if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
 			moveRight();
 
-		if (KEYMANAGER->isOnceKeyDown('X'))
+		// 위,아래
+		setUpAndDownDirection();
+
+		// 공격
+		if (KEYMANAGER->isOnceKeyDown('X'))			// 근거리 공격
 			_player->attack();
+		else if (KEYMANAGER->isOnceKeyDown('A'))	// 원거리 공격
+		{
+			_player->standOff();
+			_nextState = ePlayer_State_StandOff;
+		}
 
 		_fallingPower += (_gravity * TIMEMANAGER->getElapsedTime());
 		if(PLAYER_JUMP_POWER < _fallingPower)
@@ -159,7 +173,7 @@ void fallingState::end()
 
 
 //=============================================
-// falling after jumping
+// falling after jump
 //=============================================
 jumpFallingState::jumpFallingState()
 : _jumpPower(0.f)
@@ -191,17 +205,28 @@ void jumpFallingState::update()
 {
 	playerState::update();
 
+	// 공중에 떠 있다면
 	if (_player->isStateFloating())
 	{
+		// 이동
 		if (KEYMANAGER->isStayKeyDown(VK_LEFT))
 			moveLeft();
-
 		if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
 			moveRight();
 
-		if (KEYMANAGER->isOnceKeyDown('X'))
-			_player->attack();
+		// 위,아래
+		setUpAndDownDirection();
 
+		// 공격
+		if (KEYMANAGER->isOnceKeyDown('X'))			// 근거리 공격
+			_player->attack();
+		else if (KEYMANAGER->isOnceKeyDown('A'))	// 원거리 공격
+		{
+			_player->standOff();
+			_nextState = ePlayer_State_StandOff;
+		}
+
+		// falling
 		_jumpPower += (_gravity * TIMEMANAGER->getElapsedTime());
 		if (PLAYER_JUMP_POWER <= _jumpPower)
 			_jumpPower = static_cast<float>(PLAYER_JUMP_POWER);
@@ -268,16 +293,10 @@ void landState::update()
 	playerState::update();
 
 	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
-	{
-		_nextState = ePlayer_State_Walk;
-		_player->setDirectionLeft();
-	}
+		moveLeft();
 
 	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
-	{
-		_nextState = ePlayer_State_Walk;
-		_player->setDirectionRight();
-	}
+		moveRight();
 	
 	if(_isEnd)
 		end();

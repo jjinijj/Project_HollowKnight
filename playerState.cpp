@@ -95,6 +95,16 @@ void playerState::moveRight()
 	_player->moveRight();
 }
 
+void playerState::setUpAndDownDirection()
+{
+	if (KEYMANAGER->isStayKeyDown(VK_UP))
+		_player->setDirectionUp();
+	else if (KEYMANAGER->isStayKeyDown(VK_DOWN))
+		_player->setDirectionDown();
+	else
+		_player->setDirectionIdle();
+}
+
 
 
 //=============================================
@@ -141,22 +151,24 @@ void idleState::update()
 		_player->setDirectionRight();
 	}
 
+	if (KEYMANAGER->isStayKeyDown(VK_UP))
+		_player->setDirectionUp();
+	else if (KEYMANAGER->isStayKeyDown(VK_DOWN))
+		_player->setDirectionDown();
+	else
+		_player->setDirectionIdle();
+
 	if (KEYMANAGER->isOnceKeyDown('Z'))
-	{
 		_nextState = ePlayer_State_Flying;
-	} 
 	else if (KEYMANAGER->isOnceKeyDown('X'))
-	{
 		_player->attack();
-	}
 	else if (KEYMANAGER->isOnceKeyDown('A'))
 	{
 		_player->standOff();
+		_nextState = ePlayer_State_StandOff;
 	}
 	else if (_player->checkDirection(eDirection_Up) || _player->checkDirection(eDirection_Down))
-	{
 		_nextState = ePlayer_State_Look;
-	}
 
 	if (_player->isStateFloating())
 		_nextState = ePlayer_State_Falling;
@@ -220,23 +232,22 @@ void walkState::update()
 	else
 		leftMove();
 
+	if (KEYMANAGER->isStayKeyDown(VK_UP))
+		_player->setDirectionUp();
+	else if (KEYMANAGER->isStayKeyDown(VK_DOWN))
+		_player->setDirectionDown();
+	else
+		_player->setDirectionIdle();
+
+
 	if (KEYMANAGER->isOnceKeyDown('Z'))
 		_nextState = ePlayer_State_Flying;
 	else if (KEYMANAGER->isOnceKeyDown('X'))
-	{
 		_player->attack();
-	}
 	else if (KEYMANAGER->isOnceKeyDown('A'))
 	{
+		_player->standOff();
 		_nextState = ePlayer_State_StandOff;
-	}
-	else if (KEYMANAGER->isOnceKeyDown(VK_UP))
-	{
-		_player->setDirectionUp();
-	}
-	else if (KEYMANAGER->isOnceKeyDown(VK_DOWN))
-	{
-		_player->setDirectionDown();
 	}
 
 	if (_player->isStateFloating() && ePlayer_State_None == _nextState)

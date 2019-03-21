@@ -36,9 +36,10 @@ void attackState::update()
 
 	if (_isEnd)
 	{
-		end();
 		if (_player->isStateFloating())
-			_state = ePlayer_State_Falling;
+			_nextState = ePlayer_State_Falling;
+		else
+			end();
 	}
 	else if (_ani->isEventFrame())
 	{
@@ -62,17 +63,31 @@ void attackState::render()
 void attackState::start()
 {
 	playerState::start();
-	if(_player->checkDirection(eDirection_Up))
+
+	// 방향키가 눌린 방향으로 공격
+	if (_player->checkDirection(eDirection_Up))
+	{
 		_aniKey = ePlayer_Ani_Attack_Up;
+		_player->setAttkDirection(eDirection_Up);
+	}
 	else if (_player->checkDirection(eDirection_Down))
+	{
 		_aniKey = ePlayer_Ani_Attack_Down;
+		_player->setAttkDirection(eDirection_Down);
+	}
 	else
 	{
+		// 2개의 공격모션 중 랜덤 출력
 		int value = RND->getInt(100);
 		if(value < 50)
 			_aniKey = ePlayer_Ani_Attack_1;
 		else
 			_aniKey = ePlayer_Ani_Attack_2;
+
+		if(_isRight)
+			_player->setAttkDirection(eDirection_Right);
+		else
+			_player->setAttkDirection(eDirection_Left);
 	}
 	
 	setAnimation(_aniKey);
@@ -81,7 +96,7 @@ void attackState::start()
 
 void attackState::end()
 {
-	_state = ePlayer_State_Idle;
+	_nextState = ePlayer_State_Idle;
 }
 
 
@@ -120,9 +135,11 @@ void standOffState::update()
 
 	if (_isEnd)
 	{
-		end();
 		if (_player->isStateFloating())
-			_state = ePlayer_State_Falling;
+			_nextState = ePlayer_State_Falling;
+		else 
+			end();
+			
 	}
 	else if (_ani->isEventFrame())
 	{
@@ -147,5 +164,5 @@ void standOffState::start()
 
 void standOffState::end()
 {
-	_state = ePlayer_State_Idle;
+	_nextState = ePlayer_State_Idle;
 }
