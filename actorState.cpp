@@ -31,12 +31,12 @@ void actorState::update()
 void actorState::render()
 {
 	if(_isRight)
-		_img->aniRender( _actor->getPositionX() - _width / 2.f
-						,_actor->getPositionY() - _height
+		_img->aniRender( _actor->getPosX() - _width / 2.f
+						,_actor->getPosY() - _height
 						,_ani, false);
 	else
-		_img->aniRenderReverseX( _actor->getPositionX() - _width / 2.f
-								,_actor->getPositionY() - _height
+		_img->aniRenderReverseX( _actor->getPosX() - _width / 2.f
+								,_actor->getPosY() - _height
 								,_ani, false);
 }
 

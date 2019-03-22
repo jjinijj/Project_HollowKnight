@@ -16,7 +16,7 @@ HRESULT elderbugIdle::init(elderbug* actor)
 {
 	actorState::init(actor);
 	_aniKey = elderbug::eIdle;
-	setAnimaion(actor->getUid(), _aniKey);
+	setAnimaion(actor->getUID(), _aniKey);
 
 	return S_OK;
 }

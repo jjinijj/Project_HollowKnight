@@ -3,13 +3,10 @@
 
 
 actorBase::actorBase()
-: _uid(NULL)
-, _type(eActor_None)
+: _type(eActor_None)
 , _subType(NULL)
 , _state(nullptr)
 , _nextState(nullptr)
-, _x(0.f)
-, _y(0.f)
 , _dir(eDirection_None)
 , _dirUD(eDirection_None)
 {
@@ -25,9 +22,7 @@ actorBase::~actorBase()
 
 HRESULT actorBase::init(UINT uid, float x, float y)
 {
-	_uid = uid;
-	_x = x;
-	_y = y;
+	gameObject::init(uid, x, y);
 
 	return S_OK;
 }

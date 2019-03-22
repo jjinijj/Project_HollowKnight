@@ -1,4 +1,5 @@
 #pragma once
+#include "gameObject.h"
 
 typedef struct tagTerrainPack
 {
@@ -52,17 +53,12 @@ typedef struct tagTerrainPack
 
 
 // 지형
-class terrain
+class terrain : public gameObject
 {
 protected:
-	UID		_uid;		// 고유 번호
-
 	eTerrainType _type;
 
-	float	_x;			// 위치
-	float	_y;			// 위치
 	RECTD2D	_rc;		
-	RECTD2D _collision;	// 충돌체
 
 	bool _isReverse;		// 반전
 
@@ -112,15 +108,10 @@ public:
 	// 위치 이동
 	void setPosition(float x, float y);
 
-	UID getUID() {return _uid;}
-
 	WORD getAtrribute()			{ return _attr; }
 	RECTD2D getRect()			{ return _rc;	}
 	RECTD2D getCollision()		{ return _collision;	}
 	eTerrainType getType()		{ return _type; }
-	
-	float getPosX() { return _x; }
-	float getPosY() { return _y; }
 }; 
 
 

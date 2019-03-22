@@ -46,12 +46,12 @@ void playerState::update()
 void playerState::render()
 {
 	if(_isRight)
-		_img->aniRender( _player->getPositionX() - PLAYER_SIZE_WIDE_HALF
-						,_player->getPositionY() - PLAYER_SIZE_HEIGHT
+		_img->aniRender( _player->getPosX() - PLAYER_SIZE_WIDE_HALF
+						,_player->getPosY() - PLAYER_SIZE_HEIGHT
 						, _ani, false);
 	else
-		_img->aniRenderReverseX( _player->getPositionX() - PLAYER_SIZE_WIDE_HALF
-								,_player->getPositionY() - PLAYER_SIZE_HEIGHT
+		_img->aniRenderReverseX( _player->getPosX() - PLAYER_SIZE_WIDE_HALF
+								,_player->getPosY() - PLAYER_SIZE_HEIGHT
 								,_ani, false);
 }
 

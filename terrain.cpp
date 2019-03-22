@@ -5,10 +5,7 @@
 //   ÁöÇü
 //=============================================
 terrain::terrain()
-: _uid(NULL)
-,_type(eTarrain_None)
-, _x(0.f)
-, _y(0.f)
+:_type(eTarrain_None)
 ,_isReverse(false)
 ,_isExistCollision(false)
 , _attr(NULL)
@@ -23,6 +20,8 @@ terrain::~terrain()
 
 HRESULT terrain::init()
 {
+	gameObject::init();
+
 	_x = 0.f;
 	_y = 0.f;
 	_attr = NULL;

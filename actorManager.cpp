@@ -83,8 +83,8 @@ npc* actorManager::createNPC(float x, float y, WORD type)
 		++_uidCount;
 		n->init(_uidCount, x, y);
 
-		_actorMap.insert(make_pair(n->getUid(), n));
-		_npcMap.insert(make_pair(n->getUid(),n));
+		_actorMap.insert(make_pair(n->getUID(), n));
+		_npcMap.insert(make_pair(n->getUID(),n));
 	}
 
 	return n;
@@ -111,8 +111,8 @@ enemy* actorManager::createEnemy(float x, float y, WORD type)
 		em->init(_uidCount, x, y);
 		em->mapDataLink(_mapData);
 
-		_actorMap.insert(make_pair(em->getUid(), em));
-		_enemyMap.insert(make_pair(em->getUid(), em));
+		_actorMap.insert(make_pair(em->getUID(), em));
+		_enemyMap.insert(make_pair(em->getUID(), em));
 	}
 
 	return em;

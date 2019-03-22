@@ -24,7 +24,7 @@ HRESULT gruzzerMove::init(gruzzer* actor)
 	_state = eMOVE;
 	_state = eMOVE;
 	
-	setAnimaion(_gruzzer->getUid(), eMOVE);
+	setAnimaion(_gruzzer->getUID(), eMOVE);
 	return S_OK;
 }
 

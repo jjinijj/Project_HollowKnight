@@ -390,8 +390,8 @@ void mapTool::pickcanvasEnd()
 		uiButton* btn = new uiButton;
 		btn->init("uiBG2", "uiBG3", "uiBG", 0.f, 0.f, 10.f, 10.f);
 		btn->setText(actor->getName());
-		btn->setOnClickFunction(std::bind(&mapTool::clickBtnActor, this, actor->getUid(), btn));
-		btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnActor, this, actor->getUid()));
+		btn->setOnClickFunction(std::bind(&mapTool::clickBtnActor, this, actor->getUID(), btn));
+		btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnActor, this, actor->getUID()));
 
 		//actor는 무조건 elyaer_play에 생성
 		_uiListHierarcy[eLayer_Play]->insertChild(btn);

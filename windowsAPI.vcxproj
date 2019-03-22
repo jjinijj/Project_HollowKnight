@@ -160,6 +160,7 @@
     <ClInclude Include="elderbug.h" />
     <ClInclude Include="elderbugState.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="gameObject.h" />
     <ClInclude Include="gruzzer.h" />
     <ClInclude Include="gruzzerState.h" />
     <ClInclude Include="iTween.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="elderbug.cpp" />
     <ClCompile Include="elderbugState.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="gameObject.cpp" />
     <ClCompile Include="gruzzer.cpp" />
     <ClCompile Include="gruzzerState.cpp" />
     <ClCompile Include="iTween.cpp" />

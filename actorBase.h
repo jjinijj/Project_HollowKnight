@@ -1,5 +1,6 @@
 #pragma once
 #include "actorState.h"
+#include "gameObject.h"
 
 enum eActorType
 {
@@ -10,7 +11,7 @@ enum eActorType
 	eActor_Count = eActor_None,
 };
 
-class actorBase
+class actorBase : public gameObject
 {
 public:
 	enum eDirection
@@ -25,7 +26,6 @@ public:
 	};
 
 protected:
-	UID _uid;
 	eActorType	_type;
 	UINT		_subType;
 	
@@ -37,9 +37,6 @@ protected:
 
 	actorState* _state;
 	actorState* _nextState;
-
-	float _x;
-	float _y;
 
 	POINTF	_colSize;
 	RECTD2D _collision;
@@ -53,10 +50,6 @@ public:
 	virtual void update();
 	virtual void render();
 
-	UINT getUid() { return _uid; }
-	const RECTD2D& getCollision() { return _collision; }
-	float getPositionX() { return _x; }
-	float getPositionY() { return _y; }
 	eActorType getType() { return _type; }
 	UINT getSubType()	 { return _subType; }
 	eDirection getDirectionLR() { return _dir;}

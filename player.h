@@ -212,9 +212,9 @@ public:
 	//=====================================================
 
 	// 위치 x : mid
-	float getPositionX() { return _x; }
+	float getPosX() { return _x; }
 	// 위치 y : bottom   
-	float getPositionY() { return _y; }
+	float getPosY() { return _y; }
 	// 방향			   
 	WORD getDirection()	 { return _dir;}
 
