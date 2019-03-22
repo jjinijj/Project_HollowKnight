@@ -17,7 +17,8 @@ private:
 
 	float _snap;
 
-	RECTD2D _scope;
+	RECTD2D _scope;			// 화면에 보여질
+	RECTD2D _activeArea;	// 화면밖이지만 행동은 할 수 있는
 	int _scopeWidth;
 	int _scopeHeight;
 
@@ -45,6 +46,7 @@ public:
 	void setMoveSnap(float value) { _snap = value; };
 
 	bool isRangeInCamera(float left, float top, int width, int height);
+	bool inRangeInActiveArea(float left, float top, int width, int height);
 	void getPosInCamera(float* x, float* y);
 
 	RECTD2D getScopeRect() { return _scope; }

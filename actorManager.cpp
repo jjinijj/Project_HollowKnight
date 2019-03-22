@@ -60,10 +60,10 @@ void actorManager::update()
 	for (iter; iter != end; ++iter)
 	{
 		actorBase* actor = iter->second;
-		//if(CAMERA->isRangeInCamera(	 actor->getRect().left
-		//							,actor->getRect().top
-		//							,actor->getWidth()
-		//							,actor->getHeight()))
+		if(CAMERA->inRangeInActiveArea(	 actor->getRect().left
+										,actor->getRect().top
+										,actor->getWidth()
+										,actor->getHeight()))
 			actor->update();
 	}
 }

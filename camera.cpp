@@ -84,10 +84,29 @@ void camera::setScope(RECTD2D scope)
 	_scopeWidth = scope.right - scope.left;
 	_scopeHeight = scope.bottom - scope.top;
 
+	_activeArea.left	= scope.left  - _scopeWidth;
+	_activeArea.right	= scope.right + _scopeWidth;
+	_activeArea.top		= scope.top	  - _scopeHeight;
+	_activeArea.bottom	= scope.bottom+ _scopeHeight;
+
 	fixCameroPos();
 }
 
 bool camera::isRangeInCamera(float left, float top, int width, int height)
+{
+	float destX = left;
+	float destY = top;
+	getPosInCamera(&destX, &destY);
+
+	if (_scope.right <= destX)			return false;
+	if (destX + width <= _scope.left)	return false;
+	if (_scope.bottom <= destY)			return false;
+	if (destY + height <= _scope.top)	return false;
+
+	return true;
+}
+
+bool camera::inRangeInActiveArea(float left, float top, int width, int height)
 {
 	float destX = left;
 	float destY = top;
