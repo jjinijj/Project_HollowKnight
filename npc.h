@@ -9,10 +9,14 @@ public:
 	npc();
 	~npc();
 
+	HRESULT init();
 	HRESULT init(UINT uid, float x, float y);
 	void release();
 	void update();
 	void render();
+
+	ACTORPACK* makePack();
+	void loadPack(ACTORPACK* pack);
 
 	void changeState();
 

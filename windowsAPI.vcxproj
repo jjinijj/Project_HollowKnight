@@ -160,6 +160,7 @@
     <ClInclude Include="elderbug.h" />
     <ClInclude Include="elderbugState.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemyHeaders.h" />
     <ClInclude Include="gameObject.h" />
     <ClInclude Include="gruzzer.h" />
     <ClInclude Include="gruzzerState.h" />

@@ -333,6 +333,9 @@
     <ClInclude Include="gameObject.h">
       <Filter>2DFramework</Filter>
     </ClInclude>
+    <ClInclude Include="enemyHeaders.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

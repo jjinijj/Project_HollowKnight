@@ -118,6 +118,28 @@ enemy* actorManager::createEnemy(float x, float y, WORD type)
 	return em;
 }
 
+npc* actorManager::addNpc(npc* npc)
+{
+	if (npc)
+	{
+		_actorMap.insert(make_pair(npc->getUID(), npc));
+		_npcMap.insert(make_pair(npc->getUID(), npc));
+	}
+
+	return npc;
+}
+
+enemy* actorManager::addEnemy(enemy* enemy)
+{
+	if (enemy)
+	{
+		_actorMap.insert(make_pair(enemy->getUID(), enemy));
+		_enemyMap.insert(make_pair(enemy->getUID(), enemy));
+	}
+
+	return enemy;
+}
+
 void actorManager::destroyActor(UINT uid)
 {
 	if(_actorMap.find(uid) == _actorMap.end())

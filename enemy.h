@@ -29,6 +29,9 @@ public:
 	void setTarget(player* target)  { _target = target; }
 	void mapDataLink(mapData* data) { _mapData = data;  }
 
+	ACTORPACK* makePack();
+	void loadPack(ACTORPACK* pack);
+
 	virtual bool isFireState();
 	virtual void bulletFire();
 	virtual POINTF getBulletFirePoint();

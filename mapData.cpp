@@ -3,6 +3,7 @@
 #include "terrain.h"
 #include "enemy.h"
 #include "npcHeaders.h"
+#include "enemyHeaders.h"
 #include <string.h>
 #include <queue>
 
@@ -282,49 +283,48 @@ terrain* mapData::addTerrainClear(UINT layer, float destX, float destY, float wi
 
 npc* mapData::addNpc(float destX, float destY, eImageUID imgUid)
 {
-	npc* n = nullptr;
-
-	// npc는 하나씩만.
-	if ( _npcs.find(imgUid) == _npcs.end() )
-	{
+	npc* actor = nullptr;
 		int value = (imgUid - eImage_Npc_Elderbug);
-		if ( eNpc_Elderbug <= value && value < eNpc_Count )
+	if (eNpc_Elderbug <= value && value < eNpc_Count)
+	{
+		// npc는 하나씩만.
+		if (_npcs.find(value) != _npcs.end())
+			return actor;
+
+		float width = 0.f;
+		float height = 0.f;
+
+		switch (value)
 		{
-			float width = 0.f;
-			float height = 0.f;
-
-			switch ( value )
+			case eNpc_Elderbug:
 			{
-				case eNpc_Elderbug:
-				{
-					n = new elderbug;
-					width = elderbug::ELDERBUG_WIDTH;
-					height = elderbug::ELDERBUG_HEIGHT;
+				actor = new elderbug;
+				width = elderbug::ELDERBUG_WIDTH;
+				height = elderbug::ELDERBUG_HEIGHT;
 
-					break;
-				}
-				case eNpc_Sly:			{ break; }
-				case eNpc_Quirrel:		{ break; }
-				case eNpc_Iselda:		{ break; }
-				case eNpc_Cornifer:		{ break; }
-				case eNpc_TheLastStag:	{ break; }
+				break;
 			}
+			case eNpc_Sly:			{ break; }
+			case eNpc_Quirrel:		{ break; }
+			case eNpc_Iselda:		{ break; }
+			case eNpc_Cornifer:		{ break; }
+			case eNpc_TheLastStag:	{ break; }
+		}
 
-			if(n)
-			{
-				float x = destX + width / 2.f;
-				float y = destY + height;
+		if(actor)
+		{
+			float x = destX + width / 2.f;
+			float y = destY + height;
 
-				n->init(_uidCount, x, y);
-				_npcs.insert(make_pair(imgUid, n));
-				_actors.push_back(n);
-				
-				++_uidCount;
-			}
+			actor->init(_uidCount, x, y);
+			_npcs.insert(make_pair(imgUid, actor));
+			_actors.push_back(actor);
+
+			++_uidCount;
 		}
 	}
 
-	return n;
+	return actor;
 }
 
 void mapData::deleteTerrain(UINT layer, UID uid)
@@ -585,6 +585,7 @@ HRESULT mapData::save(string fileName)
 {
 	saveMapDate(fileName);
 	saveMapInfo(fileName);
+	saveActorData(fileName);
 
 	return S_OK;
 }
@@ -594,8 +595,10 @@ HRESULT mapData::load(string fileName)
 	clear();
 
 	int terrainCnt[eLayer_Count];
-	loadMapInfo(fileName, terrainCnt);
+	int actorCnt = 0;
+	loadMapInfo(fileName, terrainCnt, actorCnt);
 	loadMapDate(fileName, terrainCnt);
+	loadActorData(fileName, actorCnt);
 
 	return S_OK;
 }
@@ -654,7 +657,7 @@ void mapData::loadMapDate(string fileName, int* terrainCnt)
 
 }
 
-void mapData::loadMapInfo(string fileName, int* terrainCnt)
+void mapData::loadMapInfo(string fileName, int* terrainCnt, int& actorCnt)
 {
 	string address;
 	char info[512] = "";
@@ -708,6 +711,105 @@ void mapData::loadMapInfo(string fileName, int* terrainCnt)
 		else
 			_triggerPool[ii] = NULL;
 	}
+
+	if(!infos.empty())
+	{
+		actorCnt = infos.front();
+		infos.pop();
+	}
+}
+
+void mapData::loadActorData(string fileName, int actorCnt)
+{
+	string address;
+	address.clear();
+
+	address.append(format("data/%s_Actor_data.txt", fileName.c_str()));
+
+	ACTORPACK* packs = new ACTORPACK[actorCnt];
+
+	HANDLE file;
+	DWORD read;
+	file = CreateFile(address.c_str(), GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	ReadFile(file, packs, sizeof(ACTORPACK) * actorCnt, &read, NULL);
+	CloseHandle(file);
+
+	for (int ii = 0; ii < actorCnt; ++ii)
+	{
+		if(eActor_Npc == packs->type)
+		{
+			npc* actor = nullptr;
+			ACTORPACK* pack = &packs[ii];
+
+			switch (pack->subType)
+			{
+				case eNpc_Elderbug:			{ actor = new elderbug;	break;	}
+				case eNpc_Sly:				{ break; }
+				case eNpc_Quirrel:			{ break; }
+				case eNpc_Iselda:			{ break; }
+				case eNpc_Cornifer:			{ break; }
+				case eNpc_TheLastStag:		{ break; }
+			}
+
+			if(actor)
+			{
+				actor->init(pack->uid, pack->x, pack->y);
+				actor->loadPack(pack);
+				_actors.push_back(actor);
+				_npcs.insert(make_pair(actor->getSubType(), actor));
+			}
+		}
+		else if(eActor_Enemy == packs->type)
+		{
+			enemy* actor = nullptr;
+			ACTORPACK* pack = &packs[ii];
+
+			switch (pack->subType)
+			{
+				case eEnemy_Gruzzer:		{ actor = new gruzzer; break; }
+				case eEnemy_Tiktik:			{ break; }
+				case eEnemy_Primalaspid:	{ break; }
+				case eEnemy_Mawlek:			{ break; }
+			}
+
+			if (actor)
+			{
+				actor->init(pack->uid, pack->x, pack->y);
+				actor->loadPack(pack);
+				_actors.push_back(actor);
+				_enemys.push_back(actor);
+			}
+		}
+	}
+
+	SAFE_DELETE_ARRAY(packs);
+}
+
+void mapData::saveMapInfo(string fileName)
+{
+	string address;
+	string info;
+	address.clear();
+	info.clear();
+
+	address.append(format("data/%s_info.txt", fileName.c_str()));
+
+	info.append(format("%d,", _uidCount));
+	for (int ii = 0; ii < eLayer_Count; ++ii)
+		info.append(format("%d,", _terrainsByLayer[ii].size()));
+	for (int ii = 0; ii < TRRIGER_MAX_COUNT; ++ii)
+		info.append(format("%d,", _triggerPool[ii]));
+
+	info.append(format("%d,", _actors.size()));
+
+	HANDLE file;
+	DWORD write;
+	file = CreateFile(address.c_str(), GENERIC_WRITE, NULL, NULL,
+					  CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	WriteFile(file, info.c_str(), info.size(), &write, NULL);
+	CloseHandle(file);
 }
 
 void mapData::saveMapDate(string fileName)
@@ -741,28 +843,29 @@ void mapData::saveMapDate(string fileName)
 	SAFE_DELETE_ARRAY(packs);
 }
 
-void mapData::saveMapInfo(string fileName)
+void mapData::saveActorData(string fileName)
 {
 	string address;
-	string info;
 	address.clear();
-	info.clear();
 
-	address.append(format("data/%s_info.txt",fileName.c_str()));
+	address.append(format("data/%s_Actor_data.txt", fileName.c_str()));
 
-	info.append(format("%d,", _uidCount));
-	for( int ii = 0; ii < eLayer_Count; ++ii )
-		info.append(format("%d,", _terrainsByLayer[ii].size()));
-	for ( int ii = 0; ii < TRRIGER_MAX_COUNT; ++ii )
-		info.append(format("%d,", _triggerPool[ii]));
+	int size = _actors.size();
+	ACTORPACK* packs = new ACTORPACK[_actors.size()];
+	for (int ii = 0; ii < size; ++ii)
+	{
+		packs[ii].clear();
+		packs[ii] = *_actors[ii]->makePack();
+	}
 
 	HANDLE file;
 	DWORD write;
-	file = CreateFile(address.c_str(), GENERIC_WRITE, NULL, NULL,
-					  CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
-	WriteFile(file, info.c_str(), info.size(), &write, NULL);
+	file = CreateFile(address.c_str(), GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	WriteFile(file, packs, sizeof(ACTORPACK) * size, &write, NULL);
 	CloseHandle(file);
+
+	SAFE_DELETE_ARRAY(packs);
 }
 
 WORD mapData::getUsableTriggerIndex()

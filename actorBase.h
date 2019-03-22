@@ -11,6 +11,27 @@ enum eActorType
 	eActor_Count = eActor_None,
 };
 
+typedef struct tagActorPack
+{
+	UINT uid;
+	UINT type;
+	UINT subType;
+	UINT value;
+
+	float x;
+	float y;
+
+	void clear()
+	{
+		uid = NULL;
+		type = NULL;
+		subType = NULL;
+		value = NULL;
+		x = 0.f;
+		y = 0.f;
+	}
+}ACTORPACK;
+
 class actorBase : public gameObject
 {
 public:
@@ -29,7 +50,6 @@ protected:
 	eActorType	_type;
 	UINT		_subType;
 	
-
 	eDirection _dir;
 	eDirection _dirUD;
 
@@ -38,17 +58,18 @@ protected:
 	actorState* _state;
 	actorState* _nextState;
 
-	POINTF	_colSize;
-	RECTD2D _collision;
-
 public:
 	actorBase();
 	~actorBase();
 
+	virtual HRESULT init();
 	virtual HRESULT init(UINT uid, float x, float y);
 	virtual void release();
 	virtual void update();
 	virtual void render();
+
+	virtual ACTORPACK* makePack() = 0;
+	virtual void loadPack(ACTORPACK* pack) = 0;
 
 	void setPosition(float x, float y);
 
@@ -60,4 +81,5 @@ public:
 
 protected:
 	void chansgeState(actorState* state);
+	virtual void updateRect();
 };

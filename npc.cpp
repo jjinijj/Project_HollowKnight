@@ -3,12 +3,18 @@
 
 
 npc::npc()
+: _dialogIdx(NULL)
 {
 }
 
 
 npc::~npc()
 {
+}
+
+HRESULT npc::init()
+{
+	return S_OK;
 }
 
 HRESULT npc::init(UINT uid, float x, float y)
@@ -32,6 +38,26 @@ void npc::update()
 void npc::render()
 {
 	actorBase::render();
+}
+
+ACTORPACK* npc::makePack()
+{
+	ACTORPACK* pack = actorBase::makePack();
+	if(pack)
+	{
+		pack->value = _dialogIdx;
+	}
+
+	return pack;
+}
+
+void npc::loadPack(ACTORPACK* pack)
+{
+	if (pack)
+	{
+		actorBase::loadPack(pack);
+		_dialogIdx = pack->value;
+	}
 }
 
 void npc::changeState()

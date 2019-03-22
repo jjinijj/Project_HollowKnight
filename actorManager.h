@@ -36,6 +36,10 @@ public:
 	npc* createNPC(float x, float y, WORD type);
 	enemy* createEnemy(float x, float y, WORD type);
 
+	npc* addNpc(npc* npc);
+	enemy* addEnemy(enemy* enemy);
+
+
 	void destroyActor(UINT uid);
 
 	actorBase* getActor(UINT uid);

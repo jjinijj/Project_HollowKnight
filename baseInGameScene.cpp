@@ -37,8 +37,10 @@ HRESULT baseInGameScene::init()
 	DEVTOOL->setDebugMode(DEBUG_SHOW_TEXT);
 	DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
 
-	_actorM->createEnemy(WINSIZEX / 2.f, WINSIZEY / 2.f + 100.f, eEnemy_Gruzzer);
-	_actorM->createNPC(WINSIZEX / 2.f, WINSIZEY / 2.f, eNpc_Elderbug);
+	setActors();
+
+	//_actorM->createEnemy(WINSIZEX / 2.f, WINSIZEY / 2.f + 100.f, eEnemy_Gruzzer);
+	//_actorM->createNPC(WINSIZEX / 2.f, WINSIZEY / 2.f, eNpc_Elderbug);
 
 	return S_OK;
 
@@ -69,7 +71,28 @@ void baseInGameScene::render()
 	baseScene::render();
 
 	_mapData->renderBack();
-	_player->render();
 	_actorM->render();
+	_player->render();
 	_mapData->renderFront();
+}
+
+void baseInGameScene::setActors()
+{
+	{
+		map<UINT, npc*>* npcs = _mapData->getNpcs();
+		map<UINT, npc*>::iterator iter = npcs->begin();
+		map<UINT, npc*>::iterator end = npcs->end();
+
+		for (iter; end != iter; ++iter)
+			_actorM->addNpc(iter->second);
+	}
+	
+	{
+		vector<enemy*>* enemys = _mapData->getEnemys();
+		vector<enemy*>::iterator iter = enemys->begin();
+		vector<enemy*>::iterator end = enemys->end();
+
+		for(iter; end != iter; ++iter)
+			_actorM->addEnemy(*iter);
+	}
 }

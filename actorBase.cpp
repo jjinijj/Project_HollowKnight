@@ -10,7 +10,6 @@ actorBase::actorBase()
 , _dir(eDirection_None)
 , _dirUD(eDirection_None)
 {
-	_colSize = {};
 	_collision = {};
 	_name.clear();
 }
@@ -18,6 +17,12 @@ actorBase::actorBase()
 
 actorBase::~actorBase()
 {
+}
+
+HRESULT actorBase::init()
+{
+	gameObject::init();
+	return S_OK;
 }
 
 HRESULT actorBase::init(UINT uid, float x, float y)
@@ -49,6 +54,32 @@ void actorBase::render()
 	_state->render();
 }
 
+ACTORPACK* actorBase::makePack()
+{
+	ACTORPACK* pack = new ACTORPACK;
+	pack->clear();
+	pack->uid = _uid;
+	pack->x = _x;
+	pack->y = _y;
+	pack->type = _type;
+	pack->subType = _subType;
+
+	return pack;
+}
+
+void actorBase::loadPack(ACTORPACK* pack)
+{
+	if (pack)
+	{
+		_uid = pack->uid;
+		_x = pack->x;
+		_y = pack->y;
+		_type = (eActorType)pack->type;
+		_subType = pack->subType;
+	}
+}
+
+
 void actorBase::setPosition(float x, float y)
 {
 	float disX = x - _x;
@@ -57,11 +88,7 @@ void actorBase::setPosition(float x, float y)
 	_x = x;
 	_y = y;
 
-	float width = _rc.right - _rc.left;
-	float height = _rc.bottom - _rc.top;
-
-	_rc = RectMake( _x - width / 2.f, _y - height, width, height);
-	_collision = _rc;
+	updateRect();
 }
 
 void actorBase::chansgeState(actorState* state)
@@ -78,4 +105,13 @@ void actorBase::chansgeState(actorState* state)
 	state = nullptr;
 	
 	_state->start();
+}
+
+void actorBase::updateRect()
+{
+	_collision = {_x - _colWidth / 2.f, _y - _colHeight
+				 ,_x + _colWidth / 2.f, _y };
+
+	_rc = {  _x - _width / 2.f, _y - _height
+			,_x + _width / 2.f, _y };
 }

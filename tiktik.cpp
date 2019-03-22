@@ -142,7 +142,7 @@ void tiktik::move()
 			bool isChange = false;
 
 			_y -= _speed;
-			isChange =  _y < _area->getCollision().top + (_colSize.y / 2);
+			isChange =  _y < _area->getCollision().top + (_colHeight / 2);
 
 			if ( isChange )
 			{
@@ -161,7 +161,7 @@ void tiktik::move()
 		{
 			bool isChange = false;
 			_y += _speed;
-			isChange = _area->getCollision().bottom + (_colSize.y / 2) < _y;
+			isChange = _area->getCollision().bottom + (_colHeight / 2) < _y;
 
 			if ( isChange )
 			{

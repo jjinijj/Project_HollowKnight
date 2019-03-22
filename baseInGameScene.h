@@ -19,5 +19,7 @@ public:
 	void release()  override;
 	void update()	override;
 	void render()	override;
+
+	virtual void setActors();
 };
 

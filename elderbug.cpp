@@ -12,17 +12,32 @@ elderbug::~elderbug()
 {
 }
 
+HRESULT elderbug::init()
+{
+	_subType = eNpc_Elderbug;
+
+	_width = ELDERBUG_WIDTH;
+	_colWidth = ELDERBUG_WIDTH;
+	_height = ELDERBUG_HEIGHT;
+	_colHeight = ELDERBUG_HEIGHT;
+
+	return S_OK;
+}
+
 HRESULT elderbug::init(UINT uid, float x, float y)
 {
 	npc::init(uid, x, y);
 	_subType = eNpc_Elderbug;
 	_name = L"Elderbug";
-
 	{
 		image* img = IMAGEMANAGER->findImage("elderbug");
 		ANIMANAGER->addArrayFrameAnimation( uid, eIdle, "elderbug"
 										   ,0, img->GetMaxFrameX(), ELDERBUG_ANI_SPEED, true);
 	}
+	_width = ELDERBUG_WIDTH;
+	_colWidth = ELDERBUG_WIDTH;
+	_height = ELDERBUG_HEIGHT;
+	_colHeight = ELDERBUG_HEIGHT;
 
 	elderbugIdle* idleState = new elderbugIdle;
 	idleState->init(this);
@@ -32,13 +47,9 @@ HRESULT elderbug::init(UINT uid, float x, float y)
 	_state = idleState;
 	_state->start();
 
-	_collision = {	 _x - ELDERBUG_WIDTH / 2.f, _y - ELDERBUG_HEIGHT
-					,_x + ELDERBUG_WIDTH / 2.f, _y};
-
-	_rc = {  _x - ELDERBUG_WIDTH / 2.f, _y - ELDERBUG_HEIGHT
-			,_x + ELDERBUG_WIDTH / 2.f, _y };
-
 	_dialogIdx = NULL;
+
+	updateRect();
 
 	return S_OK;
 }

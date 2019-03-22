@@ -96,8 +96,10 @@ public:
 	vTerrain* getColliderTerrains()			{ return &_colTerrains; }
 	vTerrain* getCollisionTerains()			{ return &_colTerrains; }
 
-	vTerrain* getTerrains() { return &_terrains; }
-	vActor*	getActors()		{ return &_actors;}
+	vTerrain* getTerrains() { return &_terrains;}
+	vActor*	getActors()		{ return &_actors;	}
+	mNpc* getNpcs()			{ return &_npcs;	}
+	vEnemy* getEnemys()		{ return &_enemys;	}
 
 	actorBase* getActor(UINT uid);
 	
@@ -108,11 +110,13 @@ public:
 private:
 	void addTerrain(UINT layer, terrain* ter);
 	
+	void loadMapInfo(string fileName, int* terrainCnt, int& actorCnt);
 	void loadMapDate(string fileName, int* terrainCnt);
-	void loadMapInfo(string fileName, int* terrainCnt);
+	void loadActorData(string fileName, int actorCnt);
 
-	void saveMapDate(string fileName);
 	void saveMapInfo(string fileName);
+	void saveMapDate(string fileName);
+	void saveActorData(string fileName);
 
 	WORD getUsableTriggerIndex();
 

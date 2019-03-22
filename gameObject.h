@@ -7,6 +7,12 @@ protected:
 	float _x;
 	float _y;
 
+	float _width;
+	float _height;
+	
+	float _colWidth;
+	float _colHeight;
+
 	RECTD2D _rc;
 	RECTD2D _collision;
 
@@ -14,8 +20,8 @@ public:
 	gameObject();
 	~gameObject();
 
-	HRESULT init();
-	HRESULT init(const UID uid, const float destX, const  float destY);
+	virtual HRESULT init();
+	virtual HRESULT init(const UID uid, const float destX, const  float destY);
 	virtual void release() = 0;
 	virtual void update() = 0;
 	virtual void render() = 0;

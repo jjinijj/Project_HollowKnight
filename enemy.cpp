@@ -7,10 +7,7 @@ enemy::enemy()
 , _hp(0)
 , _speed(0)
 , _target(nullptr)
-
 {
-	_colSize = {0.f, 0.f};
-	_collision = {};
 }
 
 enemy::~enemy()
@@ -38,6 +35,25 @@ void enemy::release()
 void enemy::render()
 {
 	actorBase::render();
+}
+
+ACTORPACK* enemy::makePack()
+{
+	ACTORPACK* pack = actorBase::makePack();
+	
+	if (pack)
+	{
+
+	}
+	return pack;
+}
+
+void enemy::loadPack(ACTORPACK* pack)
+{
+	if (pack)
+	{
+		actorBase::loadPack(pack);
+	}
 }
 
 bool enemy::isFireState()
