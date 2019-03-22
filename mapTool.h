@@ -24,18 +24,7 @@ class terrain;
 
 
 
-// ·¹ÀÌ¾î
-enum eLayer
-{
-	eLayer_FarBack,
-	eLayer_NearBack,
-	eLayer_Play,
-	eLayer_NearFront,
-	eLayer_CloseFront,
 
-	eLayer_None,
-	eLayer_Count = eLayer_None,
-};
 
 enum eToolMode
 {

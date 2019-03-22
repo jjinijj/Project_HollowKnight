@@ -2,6 +2,7 @@
 #include "mapData.h"
 #include "terrain.h"
 #include "npc.h"
+#include "enemy.h"
 #include <string.h>
 #include <queue>
 
@@ -12,7 +13,7 @@ mapData::mapData()
 	_terrains.clear();
 	_colTerrains.clear();
 	
-	for(int ii = 0 ; ii < MAP_LAYER_COUNT; ++ii)
+	for(int ii = 0 ; ii < eLayer_Count; ++ii)
 		_terrainsByLayer[ii].clear();
 }
 
@@ -36,13 +37,13 @@ void mapData::clear()
 	_terrains.clear();
 	_colTerrains.clear();
 
-	for(int ii = 0 ; ii < MAP_LAYER_COUNT; ++ii)
+	for(int ii = 0 ; ii < eLayer_Count; ++ii)
 		_terrainsByLayer[ii].clear();
 
 	iterVTerrain iter;
 	int size = 0;
 
-	for (int ii = 0; ii < MAP_LAYER_COUNT; ++ii)
+	for (int ii = 0; ii < eLayer_Count; ++ii)
 	{
 		size = _terrainsByLayer[ii].size();
 		for (iter = _terrainsByLayer[ii].begin(); _terrainsByLayer[ii].end() != iter; )
@@ -80,13 +81,59 @@ void mapData::render()
 {
 	iterVTerrain iter;
 	iterVTerrain end;
-	for (int ii = 0; ii < MAP_LAYER_COUNT; ++ii)
+	for (int ii = 0; ii < eLayer_Count; ++ii)
 	{
 		end = _terrainsByLayer[ii].end();
 		for (iter = _terrainsByLayer[ii].begin(); iter != end; ++iter)
 		{
 			(*iter)->render();
 		}
+	}
+}
+
+void mapData::renderBack()
+{
+	iterVTerrain iter;
+	iterVTerrain end;
+	for (int ii = 0; ii < eLayer_NearFront; ++ii)
+	{
+		end = _terrainsByLayer[ii].end();
+		for (iter = _terrainsByLayer[ii].begin(); iter != end; ++iter)
+		{
+			(*iter)->render();
+		}
+	}
+}
+
+void mapData::rendreFront()
+{
+	iterVTerrain iter;
+	iterVTerrain end;
+	for (int ii = eLayer_NearFront; ii < eLayer_Count; ++ii)
+	{
+		end = _terrainsByLayer[ii].end();
+		for (iter = _terrainsByLayer[ii].begin(); iter != end; ++iter)
+		{
+			(*iter)->render();
+		}
+	}
+}
+
+void mapData::renderActors()
+{
+	{
+		iterMNpc iter = _npcs.begin();
+		iterMNpc end = _npcs.end();
+
+		for(iter; end != iter; ++iter)
+			iter->second->render();
+	}
+	{
+		iterEnemy iter = _enemys.begin();
+		iterEnemy end = _enemys.end();
+
+		for (iter; end != iter; ++iter)
+			(*iter)->render();
 	}
 }
 
@@ -426,7 +473,7 @@ HRESULT mapData::load(string fileName)
 {
 	clear();
 
-	int terrainCnt[MAP_LAYER_COUNT];
+	int terrainCnt[eLayer_Count];
 	loadMapInfo(fileName, terrainCnt);
 	loadMapDate(fileName, terrainCnt);
 
@@ -452,7 +499,7 @@ void mapData::loadMapDate(string fileName, int* terrainCnt)
 	address.append(format("data/%s_data.txt",fileName.c_str()));
 	
 	int count = 0;
-	for(int ii = 0 ; ii < MAP_LAYER_COUNT; ++ii )
+	for(int ii = 0 ; ii < eLayer_Count; ++ii )
 		count += terrainCnt[ii];
 	TARRAINPACK* packs = new TARRAINPACK[count];
 
@@ -464,7 +511,7 @@ void mapData::loadMapDate(string fileName, int* terrainCnt)
 	CloseHandle(file);
 
 	int size = 0;
-	for ( int layer = 0; layer < MAP_LAYER_COUNT; ++layer )
+	for ( int layer = 0; layer < eLayer_Count; ++layer )
 	{
 		for ( int ii = 0; ii < terrainCnt[layer]; ++ii )
 		{
@@ -525,7 +572,7 @@ void mapData::loadMapInfo(string fileName, int* terrainCnt)
 
 
 	// 레이어당 지형의 수
-	for(int ii = 0; ii < MAP_LAYER_COUNT && !infos.empty(); ++ii)
+	for(int ii = 0; ii < eLayer_Count && !infos.empty(); ++ii)
 	{
 		terrainCnt[ii] = infos.front();
 		infos.pop();
@@ -553,7 +600,7 @@ void mapData::saveMapDate(string fileName)
 	TARRAINPACK* packs = new TARRAINPACK[_terrains.size()];
 	int size = 0;
 	int count = 0;
-	for ( int ii = 0; ii < MAP_LAYER_COUNT; ++ii )
+	for ( int ii = 0; ii < eLayer_Count; ++ii )
 	{
 		size = _terrainsByLayer[ii].size();
 		for ( int idx = 0; idx < size; ++idx )
@@ -584,7 +631,7 @@ void mapData::saveMapInfo(string fileName)
 	address.append(format("data/%s_info.txt",fileName.c_str()));
 
 	info.append(format("%d,", _uidCount));
-	for( int ii = 0; ii < MAP_LAYER_COUNT; ++ii )
+	for( int ii = 0; ii < eLayer_Count; ++ii )
 		info.append(format("%d,", _terrainsByLayer[ii].size()));
 	for ( int ii = 0; ii < TRRIGER_MAX_COUNT; ++ii )
 		info.append(format("%d,", _triggerPool[ii]));

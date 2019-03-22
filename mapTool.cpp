@@ -2004,7 +2004,7 @@ void mapTool::clickBtnLoadMap()
 	_mapData->load(fileNamestr);
 
 
-	for(int layer = 0 ; layer < MAP_LAYER_COUNT; ++layer )
+	for(int layer = 0 ; layer < eLayer_Count; ++layer )
 	{
 		_uiListHierarcy[layer]->removeChildAll();
 		vector<terrain*>* vTerrains = _mapData->getLayerTerrains(layer);

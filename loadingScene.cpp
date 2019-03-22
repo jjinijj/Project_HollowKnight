@@ -33,8 +33,8 @@ void loadingScene::update()
 	if (_iaDataAllLoad)
 	{
 		//SCENEMANAGER->changeScene(eSceneName_Title);
-		SCENEMANAGER->changeScene(eSceneName_MapTool);
-		//SCENEMANAGER->changeScene(eSceneName_DirtMouth);
+		//SCENEMANAGER->changeScene(eSceneName_MapTool);
+		SCENEMANAGER->changeScene(eSceneName_DirtMouth);
 		_iaDataAllLoad = false;
 	}
 }

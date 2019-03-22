@@ -1,11 +1,13 @@
 #pragma once
 #include "baseScene.h"
+#include "player.h"
+#include "actorManager.h"
+#include "mapData.h"
 
-class mapData;
-class actorManager;
 class baseInGameScene: public baseScene
 {
 protected:
+	player*			_player;
 	mapData*		_mapData;
 	actorManager*	_actorM;
 

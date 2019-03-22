@@ -24,7 +24,7 @@ private:
 	vEnemy	 _enemys;		// enemy
 
 	vTerrain _colTerrains;	// 충돌체가 있는 지형들
-	vTerrain _terrainsByLayer[MAP_LAYER_COUNT];	// 레이어단위로 분류
+	vTerrain _terrainsByLayer[eLayer_Count];	// 레이어단위로 분류
 
 	UINT _uidCount;
 
@@ -40,6 +40,9 @@ public:
 
 	void update();
 	void render();
+	void renderBack();
+	void rendreFront();
+	void renderActors();
 
 	// 해당 레이어만 렌더
 	void render(UINT layer);
@@ -65,6 +68,7 @@ public:
 
 	// npc 추가
 	npc* addNpc(float destX, float destY, eImageUID imgUid);
+	npc* createNpc(float destX, float destY, eImageUID imgUid);
 
 	void deleteTerrain(UINT layer, UID uid);
 	

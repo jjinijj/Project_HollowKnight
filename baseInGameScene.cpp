@@ -5,6 +5,9 @@
 
 
 baseInGameScene::baseInGameScene()
+: _player(nullptr)
+, _mapData(nullptr)
+, _actorM(nullptr)
 {
 }
 
@@ -16,6 +19,7 @@ baseInGameScene::~baseInGameScene()
 HRESULT baseInGameScene::init()
 {
 	baseScene::init();
+	_isInGameScene = true;
 
 	_mapData = new mapData;
 	_mapData->init();
@@ -24,6 +28,16 @@ HRESULT baseInGameScene::init()
 	_actorM = new actorManager;
 	_actorM->init();
 	_actorM->mapDataLink(_mapData);
+
+	_player = new player;
+	_player->init(WINSIZEX / 2.f, WINSIZEY / 2.f);
+
+	_player->mapDataLink(_mapData);
+
+	DEVTOOL->setDebugMode(DEBUG_SHOW_TEXT);
+	DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
+
+	_actorM->createEnemy(WINSIZEX / 2.f, WINSIZEY / 2.f + 100.f, eEnemy_Gruzzer);
 
 	return S_OK;
 
@@ -35,20 +49,26 @@ void baseInGameScene::release()
 
 	SAFE_RELEASE(_mapData);
 	SAFE_RELEASE(_actorM);
+	SAFE_RELEASE(_player);
 
 	SAFE_DELETE(_mapData);
 	SAFE_DELETE(_actorM);
+	SAFE_DELETE(_player);
 }
 
 void baseInGameScene::update()
 {
 	baseScene::update();
+	_player->update();
 	_actorM->update();
 }
 
 void baseInGameScene::render()
 {
 	baseScene::render();
-	_mapData->render();
+
+	_mapData->renderBack();
+	_player->render();
 	_actorM->render();
+	_mapData->rendreFront();
 }

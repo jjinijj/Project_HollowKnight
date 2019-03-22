@@ -20,8 +20,6 @@
 
 #define BGCOLORCODE 0x465d8f
 
-#define MAP_LAYER_COUNT 5
-
 #define DEFAULT_FONT_SIZE 15
 #define DEFAULT_FONT_COLOR RGB(0, 0, 0)
 
@@ -100,6 +98,20 @@ enum eNpc_Type
 	
 	eNpc_None,
 	eNpc_Count = eNpc_None,
+};
+
+
+// ·¹ÀÌ¾î
+enum eLayer
+{
+	eLayer_FarBack,
+	eLayer_NearBack,
+	eLayer_Play,
+	eLayer_NearFront,
+	eLayer_CloseFront,
+
+	eLayer_None,
+	eLayer_Count = eLayer_None,
 };
 
 
