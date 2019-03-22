@@ -8,6 +8,7 @@ gameObject::gameObject()
 , _y(0.f)
 {
 	_collision = {};
+	_rc = {};
 }
 
 gameObject::~gameObject()
@@ -28,4 +29,10 @@ HRESULT gameObject::init(const UID uid, const float x, const float y)
 	_y = y;
 
 	return S_OK;
+}
+
+void gameObject::setPosition(float x, float y)
+{
+	_x = x;
+	_y = y;
 }

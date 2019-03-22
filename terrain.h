@@ -58,11 +58,8 @@ class terrain : public gameObject
 protected:
 	eTerrainType _type;
 
-	RECTD2D	_rc;		
-
 	bool _isReverse;		// 반전
-
-	WORD _attr;	// 속성
+	WORD _attr;				// 속성
 
 	bool _isExistCollision;	// 충돌체 사용여부
 
@@ -106,11 +103,9 @@ public:
 	bool checkAttribute(const eAttribute attr);
 
 	// 위치 이동
-	void setPosition(float x, float y);
+	void setPosition(float x, float y) override;
 
 	WORD getAtrribute()			{ return _attr; }
-	RECTD2D getRect()			{ return _rc;	}
-	RECTD2D getCollision()		{ return _collision;	}
 	eTerrainType getType()		{ return _type; }
 }; 
 

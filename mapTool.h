@@ -1,7 +1,6 @@
 #pragma once
 #include "toolState.h"
 
-
 #define SAMPLABOARD_WIDTH 1010.f
 
 #define DISTANCE 10.f
@@ -21,7 +20,7 @@ class uiImage;
 class uiList;
 class uiText;
 class terrain;
-
+class gameObject;
 
 
 
@@ -116,31 +115,44 @@ typedef struct tagImageLink
 
 }IMGLNK;
 
-typedef struct tagTerrainInfo
+typedef struct tagSelectInfo
 {
-	terrain*	ter;
+	gameObject* obj;
 	eLayer		layer;
+	WORD		attr;
 	bool		isSet;
 
-	void infoSet(terrain* inTer, eLayer inLayer)
+
+	void infoSet(gameObject* inObj, eLayer inLayer)
 	{
-		ter = inTer;
+		clear();
+		obj = inObj;
+		layer = inLayer;
+		isSet = true;
+	}
+	void infoSet(gameObject* inObj, WORD inattr, eLayer inLayer)
+	{
+		clear();
+		obj = inObj;
+		attr = inattr;
 		layer = inLayer;
 		isSet = true;
 	}
 	void clear()
 	{
-		ter = nullptr;
+		obj = nullptr;
+		attr = NULL;
 		layer = eLayer_None;
 		isSet = false;
 	}
-	void operator= (tagTerrainInfo info)
+	void operator= (tagSelectInfo info)
 	{
-		ter = info.ter;
+		obj = info.obj;
+		attr = info.attr;
 		layer = info.layer;
 		isSet = info.isSet;
 	}
-}TERRAIN;
+}SELECT;
 
 class mapTool : public uiBase
 {
@@ -149,7 +161,7 @@ private:
 	eToolMode _mode;
 	eToolMode _beforeMode;
 	//toolState* _state;
-	TERRAIN _terrain;
+	SELECT _select;
 	uiButton* _curBtnTerrain;
 	uiButton* _selBtnFileName;
 

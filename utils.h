@@ -116,6 +116,9 @@ namespace JJIN_UTIL
 
 	WORD attribute(eAttribute attr);
 
+	// 속성 확인 : 속성묶음, 확인 할 속성
+	bool checkAttribute(WORD attr, WORD checkAttr);
+
 	inline bool CheckIntersectRect(const RECTD2D& rc1, const RECTD2D& rc2)
 	{
 		int hightL	= rc1.left < rc2.left ? rc2.left : rc1.left;

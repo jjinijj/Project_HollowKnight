@@ -10,8 +10,6 @@ terrain::terrain()
 ,_isExistCollision(false)
 , _attr(NULL)
 {
-	_rc = {};
-	_collision = {};
 }
 
 terrain::~terrain()

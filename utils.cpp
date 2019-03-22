@@ -394,4 +394,12 @@ namespace JJIN_UTIL
 		return value;
 	}
 
+	bool checkAttribute(WORD attr, WORD checkAttr)
+	{
+		if ((attr & checkAttr) == checkAttr)
+			return true;
+		else
+			return false;
+	}
+
 }
