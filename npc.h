@@ -2,6 +2,9 @@
 #include "actorBase.h"
 class npc :	public actorBase
 {
+protected:
+	UINT _dialogIdx;
+
 public:
 	npc();
 	~npc();

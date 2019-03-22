@@ -318,6 +318,12 @@
     <ClInclude Include="tiktik.h">
       <Filter>PlayGround\actor\enemy</Filter>
     </ClInclude>
+    <ClInclude Include="elderbug.h">
+      <Filter>PlayGround\actor\npc</Filter>
+    </ClInclude>
+    <ClInclude Include="elderbugState.h">
+      <Filter>PlayGround\actor\npcState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -493,6 +499,12 @@
     </ClCompile>
     <ClCompile Include="tiktik.cpp">
       <Filter>PlayGround\actor\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="elderbug.cpp">
+      <Filter>PlayGround\actor\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="elderbugState.cpp">
+      <Filter>PlayGround\actor\npcState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

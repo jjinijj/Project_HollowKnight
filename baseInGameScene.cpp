@@ -38,6 +38,7 @@ HRESULT baseInGameScene::init()
 	DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
 
 	_actorM->createEnemy(WINSIZEX / 2.f, WINSIZEY / 2.f + 100.f, eEnemy_Gruzzer);
+	_actorM->createNPC(WINSIZEX / 2.f, WINSIZEY / 2.f, eNpc_Elderbug);
 
 	return S_OK;
 

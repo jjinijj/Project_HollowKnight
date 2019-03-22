@@ -13,19 +13,25 @@ npc::~npc()
 
 HRESULT npc::init(UINT uid, float x, float y)
 {
-	return E_NOTIMPL;
+	actorBase::init(uid, x, y);
+	_type = eActor_Npc;
+
+	return S_OK;
 }
 
 void npc::release()
 {
+	actorBase::release();
 }
 
 void npc::update()
 {
+	actorBase::update();
 }
 
 void npc::render()
 {
+	actorBase::render();
 }
 
 void npc::changeState()

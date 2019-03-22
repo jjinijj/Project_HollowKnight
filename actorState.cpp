@@ -51,12 +51,12 @@ void actorState::end()
 
 UINT actorState::getState()
 {
-	return 0;
+	return _state;
 }
 
 actorState* actorState::nextState()
 {
-	return nullptr;
+	return _next;
 }
 
 void actorState::setAnimaion(UINT uid, UINT aniKey)

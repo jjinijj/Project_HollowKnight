@@ -3,7 +3,7 @@
 #include "npc.h"
 #include "enemy.h"
 #include "gruzzer.h"
-
+#include "elderbug.h"
 
 
 actorManager::actorManager()
@@ -63,7 +63,31 @@ void actorManager::update()
 
 npc* actorManager::createNPC(float x, float y, WORD type)
 {
-	return nullptr;
+	npc* n = nullptr;
+
+	switch(type)
+	{
+		case eNpc_Elderbug:	  {n = new elderbug;  break; }
+		case eNpc_Sly:		  { break; }
+		case eNpc_Quirrel:	  { break; }
+		case eNpc_Iselda:	  { break; }
+		case eNpc_Cornifer:	  { break; }
+		case eNpc_TheLastStag:{ break; }
+
+		default:
+			break;
+	}
+
+	if(n)
+	{
+		++_uidCount;
+		n->init(_uidCount, x, y);
+
+		_actorMap.insert(make_pair(n->getUid(), n));
+		_npcMap.insert(make_pair(n->getUid(),n));
+	}
+
+	return n;
 }
 
 enemy* actorManager::createEnemy(float x, float y, WORD type)
