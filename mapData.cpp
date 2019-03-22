@@ -288,7 +288,7 @@ npc* mapData::addNpc(float destX, float destY, eImageUID imgUid)
 				float x = destX + width / 2.f;
 				float y = destY + height;
 
-				n->init(_uidCount, destX, destY);
+				n->init(_uidCount, x, y);
 				_npcs.insert(make_pair(imgUid, n));
 				
 				++_uidCount;
@@ -466,6 +466,44 @@ int mapData::getTerrainIndex(UINT layer, UINT uid)
 int mapData::getTerrainIndex(UINT uid)
 {
 	return -1;
+}
+
+actorBase* mapData::getActor(UINT uid)
+{
+	actorBase* actor = nullptr;
+	
+	// npc
+	{
+		iterMNpc iter = _npcs.begin();
+		iterMNpc end = _npcs.end();
+
+		for (iter; end != iter; ++iter)
+		{
+			if (iter->second->getUID() == uid)
+			{
+				actor = iter->second;
+				break;
+			}
+		}
+	}
+
+	// enemy
+	if(!actor)
+	{
+		iterEnemy iter = _enemys.begin();
+		iterEnemy end = _enemys.end();
+
+		for(iter; end != iter; ++iter)
+		{
+			if((*iter)->getUID() == uid)
+			{
+				actor = (*iter);
+				break;
+			}
+		}
+	}
+
+	return actor;
 }
 
 HRESULT mapData::save(string fileName)

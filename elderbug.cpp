@@ -35,6 +35,9 @@ HRESULT elderbug::init(UINT uid, float x, float y)
 	_collision = {	 _x - ELDERBUG_WIDTH / 2.f, _y - ELDERBUG_HEIGHT
 					,_x + ELDERBUG_WIDTH / 2.f, _y};
 
+	_rc = {  _x - ELDERBUG_WIDTH / 2.f, _y - ELDERBUG_HEIGHT
+			,_x + ELDERBUG_WIDTH / 2.f, _y };
+
 	_dialogIdx = NULL;
 
 	return S_OK;

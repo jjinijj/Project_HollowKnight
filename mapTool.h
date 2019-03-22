@@ -162,7 +162,7 @@ private:
 	eToolMode _beforeMode;
 	//toolState* _state;
 	SELECT _select;
-	uiButton* _curBtnTerrain;
+	uiButton* _curBtnSelect;
 	uiButton* _selBtnFileName;
 
 	int _sampleIdx;
@@ -184,7 +184,7 @@ private:
 	bool _isOpenSampleBoard;
 	bool _isCloseSampleBoard;
 	bool _isShowAllLayer;			// 모든 레이어 렌더
-	bool _isTerrainReposition;		// 지형 위치 다시
+	bool _isReposition;				// 위치 다시
 
 	POINTF _pickMousePos;
 	POINTF _originPos;				// 움직이기 전 위치

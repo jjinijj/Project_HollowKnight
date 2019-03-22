@@ -50,6 +50,8 @@ public:
 	virtual void update();
 	virtual void render();
 
+	void setPosition(float x, float y);
+
 	eActorType getType() { return _type; }
 	UINT getSubType()	 { return _subType; }
 	eDirection getDirectionLR() { return _dir;}

@@ -68,7 +68,6 @@ public:
 
 	// npc Ãß°¡
 	npc* addNpc(float destX, float destY, eImageUID imgUid);
-	npc* createNpc(float destX, float destY, eImageUID imgUid);
 
 	void deleteTerrain(UINT layer, UID uid);
 	
@@ -93,6 +92,8 @@ public:
 	vTerrain* getCollisionTerains()			{ return &_colTerrains; }
 
 	vTerrain* getTerrains() { return &_terrains; }
+
+	actorBase* getActor(UINT uid);
 	
 	HRESULT save(string fileName);
 	HRESULT load(string fileName);

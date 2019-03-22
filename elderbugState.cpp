@@ -18,6 +18,9 @@ HRESULT elderbugIdle::init(elderbug* actor)
 	_aniKey = elderbug::eIdle;
 	setAnimaion(actor->getUID(), _aniKey);
 
+	_width = elderbug::ELDERBUG_WIDTH;
+	_height = elderbug::ELDERBUG_HEIGHT;
+
 	return S_OK;
 }
 

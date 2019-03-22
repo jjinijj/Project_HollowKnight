@@ -61,7 +61,7 @@ void mapTool::release()
 	_select.clear();
 	_pick.clear();
 
-	_curBtnTerrain = nullptr;
+	_curBtnSelect = nullptr;
 	_sampleImg = nullptr;
 	_samplePanel = nullptr;
 	_samplecanvas = nullptr;
@@ -1481,12 +1481,12 @@ void mapTool::clickBtnTerrain(UID uid, uiButton* btn)
 	{
 		_select.infoSet(ter, ter->getAtrribute(), _curLayer);
 		
-		if (_curBtnTerrain)
+		if (_curBtnSelect)
 		{
-			if(_curBtnTerrain != btn)
-				_curBtnTerrain->setState(eButton_Up);
+			if(_curBtnSelect != btn)
+				_curBtnSelect->setState(eButton_Up);
 		}
-		_curBtnTerrain = btn;
+		_curBtnSelect = btn;
 
 		_pick.clear();
 
@@ -1494,7 +1494,7 @@ void mapTool::clickBtnTerrain(UID uid, uiButton* btn)
 		UINT attr = 0;
 		for (int ii = 0; ii < eAttr_Count; ++ii)
 		{
-			if (checkAttribute(_select.attr, ii))
+			if (checkAttribute(_select.attr, attribute((eAttribute)ii)))
 				_uiBtnInspectors[ii]->setState(eButton_Down);
 			else
 				_uiBtnInspectors[ii]->setState(eButton_Up);
@@ -1521,14 +1521,14 @@ void mapTool::clickBtnTerrain(UID uid, uiButton* btn)
 		}
 	}
 
-	_isTerrainReposition = false;
+	_isReposition = false;
 	refreshDetailText();
 }
 
 void mapTool::clickUpBtnTerrain(UID uid)
 {
 	_select.clear();
-	_curBtnTerrain = nullptr;
+	_curBtnSelect = nullptr;
 	for (int ii = 0; ii < eAttr_Count; ++ii)
 	{
 		_uiBtnInspectors[ii]->setState(eButton_Up);
@@ -1539,10 +1539,52 @@ void mapTool::clickUpBtnTerrain(UID uid)
 
 void mapTool::clickBtnActor(UID uid, uiButton* btn)
 {
+	actorBase* actor = _mapData->getActor(uid);
+	if (actor)
+	{
+		_select.infoSet(actor, eLayer_Play);
+		if (_curBtnSelect)
+		{
+			if (_curBtnSelect != btn)
+				_curBtnSelect->setState(eButton_Up);
+		}
+		_curBtnSelect = btn;
+
+		_pick.clear();
+
+		// 카메라 밖에 있다면 카메라 이동
+		RECTD2D rc = actor->getRect();
+		if (!CAMERA->isRangeInCamera(rc.left, rc.top
+			, static_cast<int>(rc.right - rc.left)
+			, static_cast<int>(rc.bottom - rc.top)))
+		{
+			float offsetX = _canvas->getWidth() / 2.f;
+			float offsetY = _canvas->getHeight() / 2.f;
+
+			CAMERA->setPosX(rc.left - offsetX);
+			CAMERA->setPosY(rc.top - offsetY);
+		}
+	}
+
+	for (int ii = 0; ii < eAttr_Count; ++ii)
+	{
+		_uiBtnInspectors[ii]->setState(eButton_Up);
+	}
+
+	_isReposition = false;
+	refreshDetailText();
 }
 
 void mapTool::clickUpBtnActor(UID uid)
 {
+	_select.clear();
+	_curBtnSelect = nullptr;
+	for (int ii = 0; ii < eAttr_Count; ++ii)
+	{
+		_uiBtnInspectors[ii]->setState(eButton_Up);
+	}
+
+	refreshDetailText();
 }
 
 void mapTool::clickBtnInspector(eAttribute attr, uiButton* btn)
@@ -1581,9 +1623,9 @@ void mapTool::clickBtnDelTerrain()
 		if (_select.obj)
 		{
 			_mapData->deleteTerrain(_select.layer, _select.obj->getUID());
-			_uiListHierarcy[_select.layer]->removeChild(_curBtnTerrain);
+			_uiListHierarcy[_select.layer]->removeChild(_curBtnSelect);
 
-			_curBtnTerrain = nullptr;
+			_curBtnSelect = nullptr;
 
 			_select.clear();
 			refreshDetailText();
@@ -1624,8 +1666,8 @@ void mapTool::clickBtnUpIndex()
 
 			if (ter->getUID() == _select.obj->getUID())
 			{
-				_curBtnTerrain = btn;
-				_curBtnTerrain->setState(eButton_Down);
+				_curBtnSelect = btn;
+				_curBtnSelect->setState(eButton_Down);
 			}
 		}
 	}
@@ -1668,8 +1710,8 @@ void mapTool::clickBtnDownIndex()
 
 				if (ter->getUID() == _select.obj->getUID())
 				{
-					_curBtnTerrain = btn;
-					_curBtnTerrain->setState(eButton_Down);
+					_curBtnSelect = btn;
+					_curBtnSelect->setState(eButton_Down);
 				}
 			}
 		}
@@ -1710,8 +1752,8 @@ void mapTool::clickBtnChangeLayer(UINT layer)
 
 		if (ter->getUID() == _select.obj->getUID())
 		{
-			_curBtnTerrain = btn;
-			_curBtnTerrain->setState(eButton_Down);
+			_curBtnSelect = btn;
+			_curBtnSelect->setState(eButton_Down);
 
 			_select.layer = (eLayer)layer;
 		}
@@ -1736,8 +1778,8 @@ void mapTool::clickBtnChangeLayer(UINT layer)
 
 		if (ter->getUID() == _select.obj->getUID())
 		{
-			_curBtnTerrain = btn;
-			_curBtnTerrain->setState(eButton_Down);
+			_curBtnSelect = btn;
+			_curBtnSelect->setState(eButton_Down);
 			_select.layer = (eLayer)layer;
 		}
 	}
@@ -1787,7 +1829,7 @@ void mapTool::clickBtnMoveReset()
 		startMoveTerrain();
 
 		_select.obj->setPosition(_originPos.x, _originPos.y);
-		_isTerrainReposition = false;
+		_isReposition = false;
 	}
 }
 
@@ -1911,7 +1953,6 @@ void mapTool::refreshDetailText()
 	wstring txt;
 	txt.clear();
 
-
 	if (!_select.isSet || !_select.obj)
 	{
 		_select.clear();
@@ -1922,7 +1963,7 @@ void mapTool::refreshDetailText()
 		txt.append(format(L"[UID : %d] \n", _select.obj->getUID()));
 		for (int ii = 0; ii < eAttr_Count; ++ii)
 		{
-			if (!checkAttribute(_select.attr, ii))
+			if (!checkAttribute(_select.attr, attribute((eAttribute)ii)))
 				continue;
 
 			switch (ii)
@@ -1967,10 +2008,10 @@ bool mapTool::checkSelectingTerrain()
 
 void mapTool::startMoveTerrain()
 {
-	if (!_isTerrainReposition)
+	if (!_isReposition)
 	{
 		_originPos = { _select.obj->getPosX(), _select.obj->getPosY() };
-		_isTerrainReposition = true;
+		_isReposition = true;
 	}
 }
 

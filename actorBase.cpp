@@ -49,6 +49,21 @@ void actorBase::render()
 	_state->render();
 }
 
+void actorBase::setPosition(float x, float y)
+{
+	float disX = x - _x;
+	float disY = y - _y;
+
+	_x = x;
+	_y = y;
+
+	float width = _rc.right - _rc.left;
+	float height = _rc.bottom - _rc.top;
+
+	_rc = RectMake( _x - width / 2.f, _y - height, width, height);
+	_collision = _rc;
+}
+
 void actorBase::chansgeState(actorState* state)
 {
 	assert(nullptr != state);
