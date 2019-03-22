@@ -16,8 +16,8 @@ HRESULT gruzzerMove::init(gruzzer* actor)
 {
 	actorState::init(actor);
 
-	_width = GRUZZER_WIDTH;
-	_height = GRUZZER_HEIGHT;
+	_width = actor->getWidth();
+	_height = actor->getHeight();
 	
 	_gruzzer = actor;
 

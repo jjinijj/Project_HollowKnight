@@ -79,10 +79,14 @@ void player::update()
 
 void player::render()
 {
-	D2DMANAGER->drawRectangle(_collision, false);
-	D2DMANAGER->drawRectangle(_collisionAtk, false);
-	//
-	D2DMANAGER->drawText(format(L"%d", _state->getState()).c_str(), _collision.left, _collision.top, false);
+	if (DEVTOOL->checkDebugMode(DEBUG_SHOW_RECT))
+	{
+		D2DMANAGER->drawRectangle(_collision, false);
+		D2DMANAGER->drawRectangle(_collisionAtk, false);
+	}
+	if (DEVTOOL->checkDebugMode(DEBUG_SHOW_TEXT))
+		D2DMANAGER->drawText(format(L"%d", _state->getState()).c_str(), _collision.left, _collision.top, false);
+	
 	if(_act)
 		_act->render();
 	else

@@ -36,7 +36,5 @@ public:
 
 	float getPosX() { return _x; }
 	float getPosY() { return _y; }
-
-
 };
 

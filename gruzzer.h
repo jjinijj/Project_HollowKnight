@@ -1,15 +1,7 @@
 #pragma once
 #include "enemy.h"
 
-enum
-{
-	GRUZZER_ANI_SPEED = 5,
-	GRUZZER_MAX_HP = 1,
-	GRUZZER_SPEED = 1,
 
-	GRUZZER_WIDTH = 100,
-	GRUZZER_HEIGHT = 109,
-};
 
 enum eSTATE
 {
@@ -23,6 +15,17 @@ enum eSTATE
 
 class gruzzer : public enemy
 {
+public:
+	enum
+	{
+		GRUZZER_ANI_SPEED = 5,
+		GRUZZER_MAX_HP = 1,
+		GRUZZER_SPEED = 1,
+
+		GRUZZER_WIDTH = 100,
+		GRUZZER_HEIGHT = 109,
+	};
+
 private:
 
 public:

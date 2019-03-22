@@ -71,6 +71,9 @@ void loadingScene::loadImageData()
 	IMAGEMANAGER->addFrameImage("tiktik_climbdown_ots", L"image/tiktik_climbdown_ots.png", 416, 190, 4, 2);
 	IMAGEMANAGER->addFrameImage("tiktik_dead", L"image/tiktik_dead.png", 208, 190, 2, 2);
 
+	// enemy
+	IMAGEMANAGER->addFrameImage("enemy", L"image/enemy.png", 800, 800, 10, 10);
+
 	// enemy gruzze
 	IMAGEMANAGER->addFrameImage("gruzzer_move", L"image/gruzzer_move.png", 524, 218, 4, 2);
 	IMAGEMANAGER->addFrameImage("gruzzer_dead", L"image/gruzzer_dead.png", 655, 218, 5, 2);
@@ -208,6 +211,9 @@ void loadingScene::loadImageData()
 	IMGDATABASE->insertImage(eImage_Npc_All, IMAGEMANAGER->findImage("npc"));
 	IMGDATABASE->insertImage(eImage_Npc_Elderbug, IMAGEMANAGER->findImage("elderbug"));
 	IMGDATABASE->insertImage(eImage_Npc_Cornifer, IMAGEMANAGER->findImage("cornifer"));
+
+	IMGDATABASE->insertImage(eImage_Enemy_All, IMAGEMANAGER->findImage("enemy"));
+	IMGDATABASE->insertImage(eImage_Enemy_Gruzzer, IMAGEMANAGER->findImage("gruzzer_move"));
 }
 
 void loadingScene::loadSoundData()

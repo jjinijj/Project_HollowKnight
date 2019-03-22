@@ -79,6 +79,9 @@ public:
 	eDirection getDirectionUD() { return _dirUD;}
 	wstring getName()			{ return _name; }
 
+	float getWidth()	{ return _width; }
+	float getHeight()	{ return _height;}
+
 protected:
 	void chansgeState(actorState* state);
 	virtual void updateRect();

@@ -31,6 +31,7 @@ enum eToolMode
 	eToolMode_DrawCollider,
 	eToolMode_DrawObject,
 	eToolMode_DrawNpc,
+	eToolMode_DrawEnemy,
 
 	eToolMode_None,
 	eToolMode_Count = eToolMode_None,
@@ -176,6 +177,7 @@ private:
 	vector<IMGLNK*> _imgLnksTerrain;		// 맵툴에서 사용할 이미지 번호들
 	vector<IMGLNK*> _imgLnksObject;			// 맵툴에서 사용할 이미지 번호들
 	vector<IMGLNK*> _imgLnksNpc;			// 맵툴에서 사용할 이미지 번호들
+	vector<IMGLNK*> _imgLnksEnemy;			// 맵툴에서 사용할 이미지 번호들
 	
 	eLayer _curLayer;
 
@@ -207,6 +209,7 @@ private:
 	uiButton* _uiBtnDrawTerrain;	// 지형
 	uiButton* _uiBtnDrawObject;		// 오브젝트(프레임 이미지)
 	uiButton* _uiBtnDrawNpc;		// npc
+	uiButton* _uiBtnDrawEnemy;		// enemy
 
 	uiButton* _uiBtnDelTerrain;		// 지형 삭제
 	uiButton* _uiBtnUpIndex;		// 위로 올리기(렌더를 먼저)
@@ -312,6 +315,7 @@ private:
 	void initTerrainImgLinks();
 	void initObjectImgLinks();
 	void initNpcImgLinks();
+	void initEnemyImgLinks();
 
 	void updateDrawTerrain();
 	void updateDrawCollider();
@@ -320,6 +324,7 @@ private:
 	void renderDrawCollider();
 	void renderDrawObject();
 	void renderDrawNpc();
+	void renderDrawEnemy();
 
 	void openSampleCanvas();
 	void openingSampleCanvas();

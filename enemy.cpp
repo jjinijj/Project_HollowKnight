@@ -43,8 +43,8 @@ ACTORPACK* enemy::makePack()
 	
 	if (pack)
 	{
-
 	}
+
 	return pack;
 }
 

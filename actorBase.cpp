@@ -52,6 +52,14 @@ void actorBase::update()
 void actorBase::render()
 {
 	_state->render();
+	if (DEVTOOL->checkDebugMode(DEBUG_SHOW_RECT))
+		D2DMANAGER->drawRectangle(_collision, false);
+	if (DEVTOOL->checkDebugMode(DEBUG_SHOW_TEXT))
+	{
+		D2DMANAGER->drawText(format(L"[%d]", _uid).c_str(), _collision.left, _collision.top, false);
+		D2DMANAGER->drawText(format(L"%d", _state->getState()).c_str(), _collision.left, _collision.top + 20.f, false);
+		D2DMANAGER->drawText(format(L"(%.2f, %.2f)", _x, _y).c_str(), _collision.left, _collision.top + 40.f, false);
+	}
 }
 
 ACTORPACK* actorBase::makePack()

@@ -58,7 +58,14 @@ void actorManager::update()
 	iterA iter = _actorMap.begin();
 	iterA end = _actorMap.end();
 	for (iter; iter != end; ++iter)
-		iter->second->update();
+	{
+		actorBase* actor = iter->second;
+		//if(CAMERA->isRangeInCamera(	 actor->getRect().left
+		//							,actor->getRect().top
+		//							,actor->getWidth()
+		//							,actor->getHeight()))
+			actor->update();
+	}
 }
 
 npc* actorManager::createNPC(float x, float y, WORD type)
@@ -133,6 +140,7 @@ enemy* actorManager::addEnemy(enemy* enemy)
 {
 	if (enemy)
 	{
+		enemy->mapDataLink(_mapData);
 		_actorMap.insert(make_pair(enemy->getUID(), enemy));
 		_enemyMap.insert(make_pair(enemy->getUID(), enemy));
 	}

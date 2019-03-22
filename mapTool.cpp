@@ -4,6 +4,7 @@
 #include "terrain.h"
 #include "npc.h"
 #include "uiHeaders.h"
+#include "enemyHeaders.h"
 
 
 mapTool::mapTool()
@@ -48,6 +49,7 @@ HRESULT mapTool::init()
 	initTerrainImgLinks();
 	initObjectImgLinks();
 	initNpcImgLinks();
+	initEnemyImgLinks();
 
 	initUI();
 	setSampleImage();
@@ -150,7 +152,8 @@ void mapTool::update()
 		case eToolMode_DrawTerrain: { updateDrawTerrain();	break;}
 		case eToolMode_DrawCollider:{ updateDrawCollider(); break;}
 		case eToolMode_DrawObject:  { break; }
-		case eToolMode_DrawNpc:   { break; }
+		case eToolMode_DrawNpc:		{ break; }
+		case eToolMode_DrawEnemy:	{ break; }
 	}
 
 	_samplePanelRc = _samplePanel->getRect();
@@ -214,6 +217,7 @@ void mapTool::render()
 		case eToolMode_DrawCollider:{ renderDrawCollider(); break; }
 		case eToolMode_DrawObject:  { renderDrawObject();	break; }
 		case eToolMode_DrawNpc:		{ renderDrawNpc();		break; }
+		case eToolMode_DrawEnemy:	{ renderDrawEnemy();	break; }
 	}
 }
 
@@ -312,8 +316,36 @@ void mapTool::pickSampleEnd()
 			}
 			else
 				return;
+			
 
 			break; 
+		}
+
+		case eToolMode_DrawEnemy:
+		{
+			curLnk = _imgLnksEnemy[_sampleIdx];
+
+			int frameX = (int)(_ptMouse.x - _samplecanvas->getWorldPosition().x) / _sampleImg->GetFrameWidth();
+			int frameY = (int)(_ptMouse.y - _samplecanvas->getWorldPosition().y) / _sampleImg->GetFrameHeight();
+
+			int idx = frameY * (_sampleImg->GetMaxFrameX() + 1) + frameX;
+
+			if (curLnk->lnkSize <= idx)
+				return;
+
+			_pick.uid = curLnk->lnkUIDs[idx];
+			_pick.isFrame = true;
+
+			image* img = IMGDATABASE->getImage(_pick.uid);
+			if (img)
+			{
+				_pick.width = static_cast<float>(img->GetFrameWidth());
+				_pick.height = static_cast<float>(img->GetFrameHeight());
+			}
+			else 
+				return;
+
+			break;
 		}
 
 		default:
@@ -385,10 +417,15 @@ void mapTool::pickcanvasEnd()
 			break;
 		}
 
+		case eToolMode_DrawEnemy:
+		{
+			actor = _mapData->addEnemy(destX, destY, _pick.uid);
+			break;
+		}
+
 		default:
 			break;
 	}
-
 
 	if (ter)
 	{
@@ -408,7 +445,7 @@ void mapTool::pickcanvasEnd()
 		btn->setOnClickFunction(std::bind(&mapTool::clickBtnActor, this, actor->getUID(), btn));
 		btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnActor, this, actor->getUID()));
 
-		//actor는 무조건 elyaer_play에 생성
+		//actor는 무조건 eLayer_Actor에 생성
 		_uiListHierarcy[eLayer_Actor]->insertChild(btn);
 	}
 
@@ -523,6 +560,12 @@ void mapTool::nextSample()
 				_sampleIdx = 0;
 			break;
 		}
+		case eToolMode_DrawEnemy:
+		{
+			if(_imgLnksEnemy.size() <= _sampleIdx)
+				_sampleIdx=  0;
+			break;
+		}
 
 		default:
 		{
@@ -563,6 +606,12 @@ void mapTool::beforeSample()
 				_sampleIdx = static_cast<int>(_imgLnksNpc.size()) - 1;
 			break;
 		}
+		case eToolMode_DrawEnemy:
+		{
+			if(_sampleIdx < 0)
+				_sampleIdx = static_cast<int>(_imgLnksEnemy.size()) - 1;
+			break;
+		}
 	}
 
 	setSampleImage();
@@ -577,6 +626,7 @@ void mapTool::setToolMode(eToolMode mode)
 			_uiBtnDrawCollision->setState(eButton_Up);
 			_uiBtnDrawObject->setState(eButton_Up);
 			_uiBtnDrawNpc->setState(eButton_Up);
+			_uiBtnDrawEnemy->setState(eButton_Up);
 
 			break;
 		}
@@ -585,6 +635,7 @@ void mapTool::setToolMode(eToolMode mode)
 			_uiBtnDrawTerrain->setState(eButton_Up);
 			_uiBtnDrawObject->setState(eButton_Up);
 			_uiBtnDrawNpc->setState(eButton_Up);
+			_uiBtnDrawEnemy->setState(eButton_Up);
 			break;
 		}
 		case eToolMode_DrawObject:
@@ -592,6 +643,7 @@ void mapTool::setToolMode(eToolMode mode)
 			_uiBtnDrawCollision->setState(eButton_Up);
 			_uiBtnDrawTerrain->setState(eButton_Up);
 			_uiBtnDrawNpc->setState(eButton_Up);
+			_uiBtnDrawEnemy->setState(eButton_Up);
 			break;
 		}
 		case eToolMode_DrawNpc:
@@ -599,6 +651,15 @@ void mapTool::setToolMode(eToolMode mode)
 			_uiBtnDrawCollision->setState(eButton_Up);
 			_uiBtnDrawTerrain->setState(eButton_Up);
 			_uiBtnDrawObject->setState(eButton_Up);
+			_uiBtnDrawEnemy->setState(eButton_Up);
+			break;
+		}
+		case eToolMode_DrawEnemy:
+		{
+			_uiBtnDrawCollision->setState(eButton_Up);
+			_uiBtnDrawTerrain->setState(eButton_Up);
+			_uiBtnDrawObject->setState(eButton_Up);
+			_uiBtnDrawNpc->setState(eButton_Up);
 			break;
 		}
 	}
@@ -644,6 +705,14 @@ void mapTool::setSampleImage()
 		{
 			if(_sampleIdx < _imgLnksNpc.size())
 				_sampleImg = IMGDATABASE->getImage(_imgLnksNpc[_sampleIdx]->mainUID);
+			else
+				_sampleImg = nullptr;
+			break;
+		}
+		case eToolMode_DrawEnemy:
+		{
+			if (_sampleIdx < _imgLnksEnemy.size())
+				_sampleImg = IMGDATABASE->getImage(_imgLnksEnemy[_sampleIdx]->mainUID);
 			else
 				_sampleImg = nullptr;
 			break;
@@ -768,6 +837,17 @@ void mapTool::initUI()
 		_uiBtnDrawNpc->setOnClickFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawNpc));
 		_uiBtnDrawNpc->setOnClickUPFunction(bind(&mapTool::clickBtnUpNone, this, _uiBtnDrawNpc));
 		_samplePanel->insertChild(_uiBtnDrawNpc);
+
+		// enemy
+		_uiBtnDrawEnemy = new uiButton;
+		_uiBtnDrawEnemy->init("uiBG3", "uiBG", "uiBG2"
+							, _uiBtnDrawNpc->getRect().right + UI_SPACE
+							, _uiBtnDrawNpc->getLocalPosition().y
+							, 150.f, 50.f);
+		_uiBtnDrawEnemy->setText(L"Enemy", 50);
+		_uiBtnDrawEnemy->setOnClickFunction(bind(&mapTool::setToolMode, this, eToolMode_DrawEnemy));
+		_uiBtnDrawEnemy->setOnClickUPFunction(bind(&mapTool::clickBtnUpNone, this, _uiBtnDrawEnemy));
+		_samplePanel->insertChild(_uiBtnDrawEnemy);
 
 		setToolMode(_mode);
 		_uiBtnDrawTerrain->setState(eButton_Down);
@@ -1345,6 +1425,17 @@ void mapTool::initNpcImgLinks()
 	}
 }
 
+void mapTool::initEnemyImgLinks()
+{
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Enemy_All, true);
+		for (int ii = eImage_Enemy_Gruzzer; ii <= eImage_Enemy_TikTik; ++ii)
+			lnk->pushBack((eImageUID)ii);
+		_imgLnksEnemy.push_back(lnk);
+	}
+}
+
 void mapTool::updateDrawTerrain()
 {
 	// 마우스 입력이 없다면 picking해제
@@ -1399,6 +1490,17 @@ void mapTool::renderDrawNpc()
 	float destX = _ptMouse.x - _pick.width / 2.f;
 	float destY = _ptMouse.y - _pick.height / 2.f;
 	
+	IMGDATABASE->getImage(_pick.uid)->frameRender(destX, destY, 0, 0, 0.5f, true);
+}
+
+void mapTool::renderDrawEnemy()
+{
+	if (!_pick.isPick || !_sampleImg)
+		return;
+
+	float destX = _ptMouse.x - _pick.width / 2.f;
+	float destY = _ptMouse.y - _pick.height / 2.f;
+
 	IMGDATABASE->getImage(_pick.uid)->frameRender(destX, destY, 0, 0, 0.5f, true);
 }
 

@@ -20,6 +20,7 @@ public:
 	void update()	override;
 	void render()	override;
 
+	// actorµé ¹èÄ¡(npc, enemy)
 	virtual void setActors();
 };
 

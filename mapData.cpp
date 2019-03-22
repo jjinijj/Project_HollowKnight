@@ -73,16 +73,12 @@ void mapData::clear()
 
 	{
 		iterMNpc iter = _npcs.begin();
-		iterMNpc end = _npcs.end();
-
-		for (iter; end != iter; )
+		for (iter; _npcs.end() != iter; )
 			iter = _npcs.erase(iter);
 	}
 	{
 		iterEnemy iter = _enemys.begin();
-		iterEnemy end = _enemys.end();
-
-		for (iter; end != iter; )
+		for (iter; _enemys.end() != iter; )
 			iter = _enemys.erase(iter);
 	}
 	{
@@ -318,6 +314,48 @@ npc* mapData::addNpc(float destX, float destY, eImageUID imgUid)
 
 			actor->init(_uidCount, x, y);
 			_npcs.insert(make_pair(imgUid, actor));
+			_actors.push_back(actor);
+
+			++_uidCount;
+		}
+	}
+
+	return actor;
+}
+
+enemy* mapData::addEnemy(float destX, float destY, eImageUID imgUid)
+{
+	enemy* actor = nullptr;
+	int value = (imgUid - eImage_Enemy_StartId);
+	if (eEnemy_Gruzzer <= value && value < eEnemy_Count)
+	{
+		float width = 0.f;
+		float height = 0.f;
+
+		image* img = IMGDATABASE->getImage(imgUid);
+		assert(nullptr != img);
+
+		switch (value)
+		{
+			case eEnemy_Gruzzer:
+			{
+				actor = new gruzzer;
+
+				width = img->GetFrameWidth();
+				height = img->GetFrameHeight();
+
+				break;
+			}
+			case eEnemy_Tiktik: { break; }
+		}
+
+		if (actor)
+		{
+			float x = destX + width / 2.f;
+			float y = destY + height;
+
+			actor->init(_uidCount, x, y);
+			_enemys.push_back(actor);
 			_actors.push_back(actor);
 
 			++_uidCount;
@@ -737,10 +775,10 @@ void mapData::loadActorData(string fileName, int actorCnt)
 
 	for (int ii = 0; ii < actorCnt; ++ii)
 	{
-		if(eActor_Npc == packs->type)
+		ACTORPACK* pack = &packs[ii];
+		if(eActor_Npc == pack->type)
 		{
 			npc* actor = nullptr;
-			ACTORPACK* pack = &packs[ii];
 
 			switch (pack->subType)
 			{
@@ -760,7 +798,7 @@ void mapData::loadActorData(string fileName, int actorCnt)
 				_npcs.insert(make_pair(actor->getSubType(), actor));
 			}
 		}
-		else if(eActor_Enemy == packs->type)
+		else if(eActor_Enemy == pack->type)
 		{
 			enemy* actor = nullptr;
 			ACTORPACK* pack = &packs[ii];

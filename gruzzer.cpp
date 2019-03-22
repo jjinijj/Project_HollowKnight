@@ -8,6 +8,8 @@ HRESULT gruzzer::init(UINT uid, float x, float y)
 {
 	enemy::init(uid, x, y);
 	_subType = eEnemy_Gruzzer;
+	_width = GRUZZER_WIDTH;
+	_height = GRUZZER_HEIGHT;
 
 	{
 		image* img = IMAGEMANAGER->findImage("gruzzer_move");
@@ -30,7 +32,7 @@ HRESULT gruzzer::init(UINT uid, float x, float y)
 	_hp = GRUZZER_MAX_HP;
 	_speed = GRUZZER_SPEED;
 
-	_dir = eLEFT;
+	_dir = (eDirection)RND->getInt(eUP);
 	_dirUD = (eDirection)RND->getFromIntTo(eUP, eDirection_None);
 	_collision = {   _x - GRUZZER_WIDTH/ 2.f, _y - GRUZZER_HEIGHT
 					,_x + GRUZZER_WIDTH/ 2.f, _y};
@@ -53,7 +55,6 @@ void gruzzer::update()
 void gruzzer::render()
 {
 	enemy::render();
-	D2DMANAGER->drawRectangle(_collision, false);
 }
 
 void gruzzer::move()

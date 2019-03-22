@@ -73,6 +73,9 @@ public:
 	// npc 추가
 	npc* addNpc(float destX, float destY, eImageUID imgUid);
 
+	// enemy 추가
+	enemy* addEnemy(float destX, float destY, eImageUID imgUid);
+
 	void deleteTerrain(UINT layer, UID uid);
 	void deleteActor(UINT uid);
 

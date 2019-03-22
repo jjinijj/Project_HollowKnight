@@ -34,6 +34,12 @@ enum eImageUID
 	eImage_Npc_Cornifer,
 	eImage_Npc_TheLastStag,
 
+	eImage_Enemy_All = 2000,
+	eImage_Enemy_Gruzzer,
+	eImage_Enemy_TikTik,
+
+	eImage_Enemy_StartId = eImage_Enemy_Gruzzer,
+	eImage_Enemy_EndId = eImage_Enemy_TikTik,
 
 	eImage_UI_BG = 10000,
 	eImage_UI_BG1,
