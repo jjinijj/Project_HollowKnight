@@ -109,6 +109,7 @@ enum eLayer
 	eLayer_Play,
 	eLayer_NearFront,
 	eLayer_CloseFront,
+	eLayer_Actor,
 
 	eLayer_None,
 	eLayer_Count = eLayer_None,

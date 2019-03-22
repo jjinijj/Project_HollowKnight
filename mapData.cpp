@@ -70,7 +70,34 @@ void mapData::clear()
 		SAFE_DELETE(ter);
 	}
 
+	{
+		iterMNpc iter = _npcs.begin();
+		iterMNpc end = _npcs.end();
+
+		for (iter; end != iter; )
+			iter = _npcs.erase(iter);
+	}
+	{
+		iterEnemy iter = _enemys.begin();
+		iterEnemy end = _enemys.end();
+
+		for (iter; end != iter; )
+			iter = _enemys.erase(iter);
+	}
+	{
+		itervActor iter = _actors.begin();
+		for(iter; _actors.end() != iter; )
+		{
+			actorBase* actor = *iter;
+			iter = _actors.erase(iter);
+
+			SAFE_RELEASE(actor);
+			SAFE_DELETE(actor);
+		}
+	}
+
 	_terrains.clear();
+	_actors.clear();
 }
 
 void mapData::update()
@@ -290,6 +317,7 @@ npc* mapData::addNpc(float destX, float destY, eImageUID imgUid)
 
 				n->init(_uidCount, x, y);
 				_npcs.insert(make_pair(imgUid, n));
+				_actors.push_back(n);
 				
 				++_uidCount;
 			}
@@ -340,6 +368,53 @@ void mapData::deleteTerrain(UINT layer, UID uid)
 				break;
 			}
 		}
+	}
+}
+
+void mapData::deleteActor(UINT uid)
+{
+	actorBase* actor = nullptr;
+	bool isFind = false;
+
+	// npc
+	{
+		iterMNpc iter = _npcs.begin();
+		iterMNpc end = _npcs.end();
+
+		for (iter; end != iter; ++iter)
+		{
+			actor = iter->second;
+			if (actor->getUID() == uid)
+			{
+				_npcs.erase(iter);
+				isFind = true;
+				break;
+			}
+		}
+	}
+
+	// enemy
+	if (!isFind)
+	{
+		iterEnemy iter = _enemys.begin();
+		iterEnemy end = _enemys.end();
+
+		for (iter; end != iter; ++iter)
+		{
+			actor = (*iter);
+			if (actor->getUID() == uid)
+			{
+				_enemys.erase(iter);
+				isFind= true;
+				break;
+			}
+		}
+	}
+
+	if (isFind)
+	{
+		SAFE_RELEASE(actor);
+		SAFE_DELETE(actor);
 	}
 }
 

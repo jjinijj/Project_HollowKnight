@@ -12,6 +12,8 @@ class mapData
 	typedef map<UINT, npc*>::iterator		iterMNpc;
 	typedef vector<enemy*>					vEnemy;
 	typedef vector<enemy*>::iterator		iterEnemy;
+	typedef vector<actorBase*>				vActor;
+	typedef vector<actorBase*>::iterator	itervActor;
 
 	enum
 	{
@@ -20,6 +22,8 @@ class mapData
 
 private:
 	vTerrain _terrains;		// 모든 지형들
+	vActor	 _actors;		// 모든 액터들
+	
 	mNpc	 _npcs;			// npc
 	vEnemy	 _enemys;		// enemy
 
@@ -70,7 +74,8 @@ public:
 	npc* addNpc(float destX, float destY, eImageUID imgUid);
 
 	void deleteTerrain(UINT layer, UID uid);
-	
+	void deleteActor(UINT uid);
+
 	// 지형에 속성 추가
 	void addTerrainAttribute(UINT layer, UID uid, eAttribute attr);
 	// 지형에 속성 제거
@@ -92,6 +97,7 @@ public:
 	vTerrain* getCollisionTerains()			{ return &_colTerrains; }
 
 	vTerrain* getTerrains() { return &_terrains; }
+	vActor*	getActors()		{ return &_actors;}
 
 	actorBase* getActor(UINT uid);
 	

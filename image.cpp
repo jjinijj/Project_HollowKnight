@@ -207,9 +207,9 @@ void image::renderReverseX(float destX, float destY, int showWidth, int showHeig
 //- Left Top ±âÁØ
 //===================================================================
 
-void image::frameRender(float destX, float destY, int currentFrameX, int currentFrameY, float alpha)
+void image::frameRender(float destX, float destY, int currentFrameX, int currentFrameY, float alpha, bool isAbsolute)
 {
-	frameRender(destX, destY, _imageInfo->frameWidth, _imageInfo->frameHeight, currentFrameX, currentFrameY, alpha);
+	frameRender(destX, destY, _imageInfo->frameWidth, _imageInfo->frameHeight, currentFrameX, currentFrameY, alpha, isAbsolute);
 }
 
 void image::frameRenderAngle(float destX, float destY, int currentFrameX, int currentFrameY, float angle, float alpha)
@@ -219,9 +219,11 @@ void image::frameRenderAngle(float destX, float destY, int currentFrameX, int cu
 	D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 }
 
-void image::frameRender(float destX, float destY, int showWidth, int showHeight, int currentFrameX, int currentFrameY, float alpha)
+void image::frameRender(float destX, float destY, int showWidth, int showHeight, int currentFrameX, int currentFrameY, float alpha, bool isAbsolute)
 {
-	POINTFLOAT pf = GetRenderPosition(destX, destY);
+	POINTFLOAT pf = { destX, destY };
+	if(!isAbsolute)
+		pf = GetRenderPosition(destX, destY);
 
 	if (_imageInfo->bitmap != NULL)
 	{

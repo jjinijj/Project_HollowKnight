@@ -121,6 +121,7 @@ typedef struct tagSelectInfo
 	eLayer		layer;
 	WORD		attr;
 	bool		isSet;
+	bool		isActor;
 
 
 	void infoSet(gameObject* inObj, eLayer inLayer)
@@ -129,6 +130,7 @@ typedef struct tagSelectInfo
 		obj = inObj;
 		layer = inLayer;
 		isSet = true;
+		isActor = true;
 	}
 	void infoSet(gameObject* inObj, WORD inattr, eLayer inLayer)
 	{
@@ -144,6 +146,7 @@ typedef struct tagSelectInfo
 		attr = NULL;
 		layer = eLayer_None;
 		isSet = false;
+		isActor = false;
 	}
 	void operator= (tagSelectInfo info)
 	{
@@ -151,6 +154,7 @@ typedef struct tagSelectInfo
 		attr = info.attr;
 		layer = info.layer;
 		isSet = info.isSet;
+		isActor = info.isActor;
 	}
 }SELECT;
 
@@ -236,8 +240,8 @@ private:
 	uiButton* _uiBtnLoad;				// 로드;
 
 	// hierarcy
-	uiButton* _uiBtnHierarcy[eLayer_Count];
-	uiList* _uiListHierarcy[eLayer_Count];
+	uiButton* _uiBtnHierarcy[eLayer_Count + 1];
+	uiList* _uiListHierarcy[eLayer_Count + 1];
 
 	// 상태창(옵션)
 	uiText* _uiTextInspector;
@@ -274,6 +278,7 @@ public:
 
 	HRESULT init();
 	void release();
+	void clear();
 	void update();
 	void render();
 

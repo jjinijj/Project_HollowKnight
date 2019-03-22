@@ -7,12 +7,22 @@
 
 
 mapTool::mapTool()
-: _sampleIdx(0)
+: _mode(eToolMode_Count)
+, _beforeMode(eToolMode_Count)
+, _curBtnSelect(nullptr)
+, _selBtnFileName(nullptr)
+, _sampleIdx(0)
 , _moveSnap(1)
 , _mapData(nullptr)
+, _curLayer(eLayer_None)
 , _sampleImg(nullptr)
+, _curFileName(eSceneName_None)
+, _selFileName(eSceneName_None)
 , _isPicking(false)
+, _isOpenSampleBoard(false)
+, _isCloseSampleBoard(false)
 , _isShowAllLayer(true)
+, _isReposition(false)
 , _canvas(nullptr)
 , _sampleBoardOpenX(WINSIZEX - SAMPLABOARD_WIDTH)
 , _sampleBoardCloseX(WINSIZEX - 5.f)
@@ -20,6 +30,7 @@ mapTool::mapTool()
 {
 	_pickMousePos = {0.f, 0.f};
 	_select.clear();
+	clear();
 }
 
 
@@ -61,42 +72,7 @@ void mapTool::release()
 	_select.clear();
 	_pick.clear();
 
-	_curBtnSelect = nullptr;
-	_sampleImg = nullptr;
-	_samplePanel = nullptr;
-	_samplecanvas = nullptr;
-	_sampleImage = nullptr;
-	_canvas = nullptr;
-	_qickOpen = nullptr;
-	_uiBtnDrawCollision = nullptr;
-	_uiBtnDrawTerrain = nullptr;
-	_uiBtnDrawObject = nullptr;
-	_uiBtnDrawNpc = nullptr;
-	_uiBtnDelTerrain = nullptr;
-	_uiBtnUpIndex = nullptr;
-	_uiBtnDownIndex = nullptr;
-	_uiBtnDropChangeLayer = nullptr;
-
-	for(int ii = 0; ii < eViewMode_Count; ++ii)
-		_uiBtnViewMode[ii] = nullptr;
-
-	for (int ii = 0; ii < eLayer_Count; ++ii)
-	{
-		_uiBtnHierarcy[ii] = nullptr;
-		_uiListHierarcy[ii] = nullptr;
-	}
-
-	_uiTextInspector = nullptr;
-	_uiPanelInspector = nullptr;
-
-	for(int ii = 0 ; ii < eAttr_Count; ++ii)
-		_uiBtnInspectors[ii] = nullptr;
-
-	_uiTextInspectorSub = nullptr;
-	_uiPanelInspectorInfo = nullptr;
-	_uiTextInspectorSubInfo = nullptr;
-	_uiPanelPopUpLayerChange = nullptr;
-
+	clear();
 
 	SAFE_RELEASE(_mapData);
 	SAFE_DELETE(_mapData);
@@ -124,6 +100,45 @@ void mapTool::release()
 
 		SAFE_DELETE(lnk);
 	}
+}
+
+void mapTool::clear()
+{
+	_curBtnSelect = nullptr;
+	_sampleImg = nullptr;
+	_samplePanel = nullptr;
+	_samplecanvas = nullptr;
+	_sampleImage = nullptr;
+	_canvas = nullptr;
+	_qickOpen = nullptr;
+	_uiBtnDrawCollision = nullptr;
+	_uiBtnDrawTerrain = nullptr;
+	_uiBtnDrawObject = nullptr;
+	_uiBtnDrawNpc = nullptr;
+	_uiBtnDelTerrain = nullptr;
+	_uiBtnUpIndex = nullptr;
+	_uiBtnDownIndex = nullptr;
+	_uiBtnDropChangeLayer = nullptr;
+
+	for (int ii = 0; ii < eViewMode_Count; ++ii)
+		_uiBtnViewMode[ii] = nullptr;
+
+	for (int ii = 0; ii < eLayer_Count; ++ii)
+	{
+		_uiBtnHierarcy[ii] = nullptr;
+		_uiListHierarcy[ii] = nullptr;
+	}
+
+	_uiTextInspector = nullptr;
+	_uiPanelInspector = nullptr;
+
+	for (int ii = 0; ii < eAttr_Count; ++ii)
+		_uiBtnInspectors[ii] = nullptr;
+
+	_uiTextInspectorSub = nullptr;
+	_uiPanelInspectorInfo = nullptr;
+	_uiTextInspectorSubInfo = nullptr;
+	_uiPanelPopUpLayerChange = nullptr;
 }
 
 void mapTool::update()
@@ -394,7 +409,7 @@ void mapTool::pickcanvasEnd()
 		btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnActor, this, actor->getUID()));
 
 		//actor는 무조건 elyaer_play에 생성
-		_uiListHierarcy[eLayer_Play]->insertChild(btn);
+		_uiListHierarcy[eLayer_Actor]->insertChild(btn);
 	}
 
 }
@@ -814,7 +829,7 @@ void mapTool::initUI()
 
 	// 레이어 별 지형목록
 	{
-		float btnWitdh = 60.f;
+		float btnWitdh = 50.f;
 		float btnHeight = 30.f;
 		for (int ii = 0; ii < eLayer_Count; ++ii)
 		{
@@ -822,7 +837,12 @@ void mapTool::initUI()
 			_uiBtnHierarcy[ii] = new uiButton;
 			_uiBtnHierarcy[ii]->init("uiBG3", "uiBG", "uiBG5"
 									, canvas.right + UI_SPACE + (btnWitdh * ii), UI_SPACE, btnWitdh, btnHeight);
-			_uiBtnHierarcy[ii]->setText(format(L"%d", (ii + 1)));
+			
+			if(eLayer_Actor == ii)
+				_uiBtnHierarcy[ii]->setText(L"Actor");
+			else
+				_uiBtnHierarcy[ii]->setText(format(L"%d", (ii + 1)));
+
 			_uiBtnHierarcy[ii]->setOnClickFunction(std::bind(&mapTool::clickBtnHierarcy, this, (eLayer)ii));
 			_uiBtnHierarcy[ii]->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnHierarcy, this, (eLayer)ii));
 
@@ -896,7 +916,7 @@ void mapTool::initUI()
 								, 65.f, 50.f);
 		_uiBtnDropChangeLayer->setText(L"Change\nLayer", 20);
 
-		for (int ii = 0; ii < eLayer_Count; ++ii)
+		for (int ii = 0; ii < eLayer_Actor; ++ii)
 		{
 			uiButton* btn = new uiButton;
 			btn->init("uiBG3", "uiBG"
@@ -1379,7 +1399,7 @@ void mapTool::renderDrawNpc()
 	float destX = _ptMouse.x - _pick.width / 2.f;
 	float destY = _ptMouse.y - _pick.height / 2.f;
 	
-	IMGDATABASE->getImage(_pick.uid)->frameRender(destX, destY, 0, 0, 0.5f);
+	IMGDATABASE->getImage(_pick.uid)->frameRender(destX, destY, 0, 0, 0.5f, true);
 }
 
 void mapTool::openSampleCanvas()
@@ -1542,7 +1562,7 @@ void mapTool::clickBtnActor(UID uid, uiButton* btn)
 	actorBase* actor = _mapData->getActor(uid);
 	if (actor)
 	{
-		_select.infoSet(actor, eLayer_Play);
+		_select.infoSet(actor, eLayer_Actor);
 		if (_curBtnSelect)
 		{
 			if (_curBtnSelect != btn)
@@ -1591,7 +1611,10 @@ void mapTool::clickBtnInspector(eAttribute attr, uiButton* btn)
 {
 	if (_select.obj)
 	{
-		_mapData->addTerrainAttribute(_select.layer, _select.obj->getUID(), attr);
+		if (eLayer_Actor != _select.layer)
+			_mapData->addTerrainAttribute(_select.layer, _select.obj->getUID(), attr);
+		else
+			btn->setState(eButton_Up);
 	}
 	else
 	{
@@ -1605,8 +1628,11 @@ void mapTool::clickUpBtnInspector(eAttribute attr)
 {
 	if (_select.obj)
 	{
-		_mapData->removeTerrainAttribute(_select.layer, _select.obj->getUID(), attr);
-		refreshDetailText();
+		if (eLayer_Actor != _select.layer)
+		{
+			_mapData->removeTerrainAttribute(_select.layer, _select.obj->getUID(), attr);
+			refreshDetailText();
+		}
 	}
 }
 
@@ -1622,7 +1648,11 @@ void mapTool::clickBtnDelTerrain()
 	{
 		if (_select.obj)
 		{
-			_mapData->deleteTerrain(_select.layer, _select.obj->getUID());
+			if( eLayer_Actor == _select.layer)
+				_mapData->deleteActor(_select.obj->getUID());
+			else
+				_mapData->deleteTerrain(_select.layer, _select.obj->getUID());
+
 			_uiListHierarcy[_select.layer]->removeChild(_curBtnSelect);
 
 			_curBtnSelect = nullptr;
@@ -1640,6 +1670,9 @@ void mapTool::clickBtnUpIndex()
 		_select.clear();
 		return;
 	}
+
+	if(eLayer_Actor == _select.layer)
+		return;
 
 	int idx = _mapData->getTerrainIndex(_curLayer, _select.obj->getUID());
 	if (0 < idx)
@@ -1682,6 +1715,9 @@ void mapTool::clickBtnDownIndex()
 		_select.clear();
 		return;
 	}
+
+	if(eLayer_Actor == _select.layer)
+		return;
 
 	int idx = _mapData->getTerrainIndex(_curLayer, _select.obj->getUID());
 	if (0 < idx)
@@ -1727,6 +1763,9 @@ void mapTool::clickBtnChangeLayer(UINT layer)
 		_select.clear();
 		return;
 	}
+
+	if(eLayer_Actor == _select.layer)
+		return;
 
 	if(layer == _select.layer)
 		return;
@@ -2057,7 +2096,8 @@ void mapTool::clickBtnLoadMap()
 	_mapData->load(fileNamestr);
 
 
-	for(int layer = 0 ; layer < eLayer_Count; ++layer )
+	// terrain
+	for(int layer = 0 ; layer < eLayer_Actor; ++layer )
 	{
 		_uiListHierarcy[layer]->removeChildAll();
 		vector<terrain*>* vTerrains = _mapData->getLayerTerrains(layer);
@@ -2076,6 +2116,28 @@ void mapTool::clickBtnLoadMap()
 			btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnTerrain, this, ter->getUID()));
 
 			_uiListHierarcy[layer]->insertChild(btn);
+		}
+	}
+
+	// actor
+	{
+		_uiListHierarcy[eLayer_Actor]->removeChildAll();
+		vector<actorBase*>* vActors = _mapData->getActors();
+
+		vector<actorBase*>::iterator iter = vActors->begin();
+		vector<actorBase*>::iterator end = vActors->end();
+
+		for (iter; end != iter; ++iter)
+		{
+			actorBase* actor = (*iter);
+			uiButton* btn = new uiButton;
+
+			btn->init("uiBG2", "uiBG3", "uiBG", 0.f, 0.f, 10.f, 10.f);
+			btn->setText(actor->getName());
+			btn->setOnClickFunction(std::bind(&mapTool::clickBtnActor, this, actor->getUID(), btn));
+			btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnActor, this, actor->getUID()));
+
+			_uiListHierarcy[eLayer_Actor]->insertChild(btn);
 		}
 	}
 
