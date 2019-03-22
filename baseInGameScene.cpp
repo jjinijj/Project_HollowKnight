@@ -71,5 +71,5 @@ void baseInGameScene::render()
 	_mapData->renderBack();
 	_player->render();
 	_actorM->render();
-	_mapData->rendreFront();
+	_mapData->renderFront();
 }

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "mapData.h"
 #include "terrain.h"
-#include "npc.h"
 #include "enemy.h"
+#include "npcHeaders.h"
 #include <string.h>
 #include <queue>
 
@@ -79,16 +79,9 @@ void mapData::update()
 
 void mapData::render()
 {
-	iterVTerrain iter;
-	iterVTerrain end;
-	for (int ii = 0; ii < eLayer_Count; ++ii)
-	{
-		end = _terrainsByLayer[ii].end();
-		for (iter = _terrainsByLayer[ii].begin(); iter != end; ++iter)
-		{
-			(*iter)->render();
-		}
-	}
+	renderBack();
+	renderActors();
+	renderFront();
 }
 
 void mapData::renderBack()
@@ -105,7 +98,7 @@ void mapData::renderBack()
 	}
 }
 
-void mapData::rendreFront()
+void mapData::renderFront()
 {
 	iterVTerrain iter;
 	iterVTerrain end;
@@ -264,14 +257,25 @@ npc* mapData::addNpc(float destX, float destY, eImageUID imgUid)
 {
 	npc* n = nullptr;
 
+	// npc는 하나씩만.
 	if ( _npcs.find(imgUid) == _npcs.end() )
 	{
 		int value = (imgUid - eImage_Npc_Elderbug);
 		if ( eNpc_Elderbug <= value && value < eNpc_Count )
 		{
+			float width = 0.f;
+			float height = 0.f;
+
 			switch ( value )
 			{
-				case eNpc_Elderbug:		{ break; }
+				case eNpc_Elderbug:
+				{
+					n = new elderbug;
+					width = elderbug::ELDERBUG_WIDTH;
+					height = elderbug::ELDERBUG_HEIGHT;
+
+					break;
+				}
 				case eNpc_Sly:			{ break; }
 				case eNpc_Quirrel:		{ break; }
 				case eNpc_Iselda:		{ break; }
@@ -281,6 +285,9 @@ npc* mapData::addNpc(float destX, float destY, eImageUID imgUid)
 
 			if(n)
 			{
+				float x = destX + width / 2.f;
+				float y = destY + height;
+
 				n->init(_uidCount, destX, destY);
 				_npcs.insert(make_pair(imgUid, n));
 				

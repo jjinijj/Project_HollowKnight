@@ -1,14 +1,9 @@
 #include "stdafx.h"
 #include "mapTool.h"
 #include "mapData.h"
-//#include "uiButton.h"
-#include "uiPanel.h"
-#include "uiImage.h"
-#include "uiList.h"
-#include "uiScroll.h"
-#include "uiText.h"
-#include "uiButtonDrop.h"
 #include "terrain.h"
+#include "npc.h"
+#include "uiHeaders.h"
 
 
 mapTool::mapTool()
@@ -336,6 +331,7 @@ void mapTool::pickcanvasEnd()
 	float destY = (_ptMouse.y - _pick.height / 2.f) + CAMERA->getPosY() - CAMERA->getScopeRect().top;
 
 	terrain* ter = nullptr;
+	actorBase* actor = nullptr;
 	switch (_mode)
 	{
 		case eToolMode_DrawTerrain:
@@ -369,7 +365,7 @@ void mapTool::pickcanvasEnd()
 
 		case eToolMode_DrawNpc:
 		{
-			_mapData->addNpc(destX, destY, _pick.uid);
+			actor = _mapData->addNpc(destX, destY, _pick.uid);
 			_pick.clear();
 			break;
 		}
@@ -388,8 +384,17 @@ void mapTool::pickcanvasEnd()
 		btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnTerrain, this, ter->getUID()));
 
 		_uiListHierarcy[_curLayer]->insertChild(btn);
+	}
+	else if (actor)
+	{
+		uiButton* btn = new uiButton;
+		btn->init("uiBG2", "uiBG3", "uiBG", 0.f, 0.f, 10.f, 10.f);
+		btn->setText(actor->getName());
+		btn->setOnClickFunction(std::bind(&mapTool::clickBtnActor, this, actor->getUid(), btn));
+		btn->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnActor, this, actor->getUid()));
 
-		btn = nullptr;
+		//actor는 무조건 elyaer_play에 생성
+		_uiListHierarcy[eLayer_Play]->insertChild(btn);
 	}
 
 }
@@ -1531,6 +1536,14 @@ void mapTool::clickUpBtnTerrain(UID uid)
 	}
 
 	refreshDetailText();
+}
+
+void mapTool::clickBtnActor(UID uid, uiButton* btn)
+{
+}
+
+void mapTool::clickUpBtnActor(UID uid)
+{
 }
 
 void mapTool::clickBtnInspector(eAttribute attr, uiButton* btn)

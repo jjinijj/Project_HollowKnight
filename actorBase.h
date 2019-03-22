@@ -29,8 +29,11 @@ protected:
 	eActorType	_type;
 	UINT		_subType;
 	
+
 	eDirection _dir;
 	eDirection _dirUD;
+
+	wstring		_name;
 
 	actorState* _state;
 	actorState* _nextState;
@@ -58,6 +61,7 @@ public:
 	UINT getSubType()	 { return _subType; }
 	eDirection getDirectionLR() { return _dir;}
 	eDirection getDirectionUD() { return _dirUD;}
+	wstring getName()			{ return _name; }
 
 protected:
 	void chansgeState(actorState* state);

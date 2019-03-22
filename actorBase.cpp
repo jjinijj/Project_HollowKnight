@@ -15,6 +15,7 @@ actorBase::actorBase()
 {
 	_colSize = {};
 	_collision = {};
+	_name.clear();
 }
 
 

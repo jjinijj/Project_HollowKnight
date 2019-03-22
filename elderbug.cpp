@@ -16,6 +16,7 @@ HRESULT elderbug::init(UINT uid, float x, float y)
 {
 	npc::init(uid, x, y);
 	_subType = eNpc_Elderbug;
+	_name = L"Elderbug";
 
 	{
 		image* img = IMAGEMANAGER->findImage("elderbug");

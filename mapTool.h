@@ -315,6 +315,9 @@ private:
 	void clickBtnTerrain(UID uid, uiButton* btn);
 	void clickUpBtnTerrain(UID uid);
 
+	void clickBtnActor(UID uid, uiButton* btn);
+	void clickUpBtnActor(UID uid);
+
 	void clickBtnInspector(eAttribute attr, uiButton* btn);
 	void clickUpBtnInspector(eAttribute attr);
 

@@ -41,7 +41,7 @@ public:
 	void update();
 	void render();
 	void renderBack();
-	void rendreFront();
+	void renderFront();
 	void renderActors();
 
 	// 해당 레이어만 렌더

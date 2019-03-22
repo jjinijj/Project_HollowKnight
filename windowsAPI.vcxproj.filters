@@ -324,6 +324,12 @@
     <ClInclude Include="elderbugState.h">
       <Filter>PlayGround\actor\npcState</Filter>
     </ClInclude>
+    <ClInclude Include="npcHeaders.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="uiHeaders.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

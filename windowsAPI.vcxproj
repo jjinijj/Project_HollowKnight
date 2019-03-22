@@ -164,6 +164,7 @@
     <ClInclude Include="gruzzerState.h" />
     <ClInclude Include="iTween.h" />
     <ClInclude Include="npc.h" />
+    <ClInclude Include="npcHeaders.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playerState.h" />
     <ClInclude Include="jumpState.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="mapTool.h" />
     <ClInclude Include="mapToolScene.h" />
     <ClInclude Include="uiButtonDrop.h" />
+    <ClInclude Include="uiHeaders.h" />
     <ClInclude Include="uiImage.h" />
     <ClInclude Include="uiList.h" />
     <ClInclude Include="uiPanel.h" />
