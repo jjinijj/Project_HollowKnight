@@ -372,6 +372,14 @@ enemy* mapData::addEnemy(float destX, float destY, eImageUID imgUid)
 				actor = tik;
 				break; 
 			}
+
+			case eEnemy_Primalaspid:
+			{
+				primalAspid* pri = new primalAspid;
+				
+
+				break;
+			}
 		}
 
 		if (actor)

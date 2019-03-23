@@ -1,107 +1,110 @@
 #pragma once
-
-
-// default value
-enum
-{
-	// 속도
-	PLAYER_ANI_SPEED = 10,
-	PLAYER_ANI_SPEED_SLOW = 5,
-	PLAYER_ANI_SPEED_FAST = 13,
-	PLAYER_ATTACK_SPEED = 3,
-	PLAYER_MOVE_SPEED = 250,
-
-	// 플레이어 한 프레임 이미지 크기
-	PLAYER_SIZE_WIDE = 142,
-	PLAYER_SIZE_HEIGHT = 133,
-	PLAYER_SIZE_WIDE_HALF = PLAYER_SIZE_WIDE / 2,
-
-	// 플레이어 collision 크기
-	PLAYER_COL_SIZE_WIDE = 50,
-	PLAYER_COL_SIZE_HEIGHT = 125,
-	PLAYER_COL_SIZE_WIDE_HALF = PLAYER_COL_SIZE_WIDE / 2,
-	PLAYER_COL_SIZE_HEIGHT_HALF = PLAYER_COL_SIZE_HEIGHT / 2,
-
-	// 플레이어 무적 시간
-	PLAYER_INVINCIBILITY_TIME = 50,
-	PLAYER_PUSHED_TIME = 10,
-
-	// 플레이어 점프 파워
-	PLAYER_JUMP_POWER = 10,
-	PLAYER_FALLING_POWER = 5,
-	PLAYER_GRAVITY = 13,
-
-	// 밀리는 힘의 크기
-	PLAYER_PUSHED_POW = 2,
-
-};
-
-// player state
-enum ePlayer_State
-{
-	ePlayer_State_Idle,			// 기본
-	ePlayer_State_Walk,			// 이동
-	
-	ePlayer_State_Sit,			// 앉기
-	ePlayer_State_Drowse,		// 졸기
-	ePlayer_State_WakeUp,		// 일어나기
-	
-	ePlayer_State_Dead,			// 죽음
-		
-	ePlayer_State_Flying,		// 상승
-	ePlayer_State_Falling,		// 하강
-	ePlayer_State_JumpFalling,	// 점프 후 하강
-	ePlayer_State_Land,			// 착륙
-	
-	ePlayer_State_Attack,		// 근거리 공격
-	ePlayer_State_StandOff,		// 원거리 공격
-	
-	ePlayer_State_Look,			// (위로or아래로)보기
-
-	ePlayer_State_None,			// 상태없음
-	ePlayer_State_Count = ePlayer_State_None,
-};
-
-enum ePlayer_Animation
-{
-	ePlayer_Ani_Idle,		// 기본
-	ePlayer_Ani_Walk,		// 이동
-	
-	ePlayer_Ani_Sit,		// 앉기
-	ePlayer_Ani_Drowse,		// 졸기
-
-	ePlayer_Ani_Dead,		// 죽음
-
-	ePlayer_Ani_Flying,		// 상승
-	ePlayer_Ani_Falling,	// 하강
-	ePlayer_Ani_Land,		// 착륙
-
-	ePlayer_Ani_Attack_1,	// 좌우 공격 1
-	ePlayer_Ani_Attack_2,	// 좌우 공격 2
-	ePlayer_Ani_Attack_Up,	// 위로 공격
-	ePlayer_Ani_Attack_Down,// 아래로 공격
-	ePlayer_Ani_StandOff,	// 원거리 공격
-	
-	ePlayer_Ani_Look_Up,	// 위로 보기
-	ePlayer_Ani_Look_Down,	// 아래로 보기
-
-	ePlayer_Ani_None,
-	ePlayer_Ani_Count = ePlayer_Ani_None,
-};
-
-enum eDirection
-{
-	eDirection_Left		= 0,
-	eDirection_Right	= 1,
-	eDirection_Up		= 2,
-	eDirection_Down		= 4,
-};
+#include "singletonBase.h"
 
 class playerState;
 class gameObject;
 class mapData;
-class player
+class player : public singletonBase<player>
 {
+public:
+	// default value
+	enum
+	{
+		// 속도
+		PLAYER_ANI_SPEED = 10,
+		PLAYER_ANI_SPEED_SLOW = 5,
+		PLAYER_ANI_SPEED_FAST = 13,
+		PLAYER_ATTACK_SPEED = 3,
+		PLAYER_MOVE_SPEED = 250,
+
+		// 플레이어 한 프레임 이미지 크기
+		PLAYER_SIZE_WIDE = 142,
+		PLAYER_SIZE_HEIGHT = 133,
+		PLAYER_SIZE_WIDE_HALF = PLAYER_SIZE_WIDE / 2,
+
+		// 플레이어 collision 크기
+		PLAYER_COL_SIZE_WIDE = 50,
+		PLAYER_COL_SIZE_HEIGHT = 125,
+		PLAYER_COL_SIZE_WIDE_HALF = PLAYER_COL_SIZE_WIDE / 2,
+		PLAYER_COL_SIZE_HEIGHT_HALF = PLAYER_COL_SIZE_HEIGHT / 2,
+
+		// 플레이어 무적 시간
+		PLAYER_INVINCIBILITY_TIME = 50,
+		PLAYER_PUSHED_TIME = 10,
+
+		// 플레이어 점프 파워
+		PLAYER_JUMP_POWER = 10,
+		PLAYER_FALLING_POWER = 5,
+		PLAYER_GRAVITY = 13,
+
+		// 밀리는 힘의 크기
+		PLAYER_PUSHED_POW = 2,
+
+	};
+
+	// player state
+	enum ePlayer_State
+	{
+		ePlayer_State_Idle,			// 기본
+		ePlayer_State_Walk,			// 이동
+
+		ePlayer_State_Sit,			// 앉기
+		ePlayer_State_Drowse,		// 졸기
+		ePlayer_State_WakeUp,		// 일어나기
+
+		ePlayer_State_Dead,			// 죽음
+
+		ePlayer_State_Flying,		// 상승
+		ePlayer_State_Falling,		// 하강
+		ePlayer_State_JumpFalling,	// 점프 후 하강
+		ePlayer_State_Land,			// 착륙
+
+		ePlayer_State_Attack,		// 근거리 공격
+		ePlayer_State_StandOff,		// 원거리 공격
+
+		ePlayer_State_Look,			// (위로or아래로)보기
+
+		ePlayer_State_None,			// 상태없음
+		ePlayer_State_Count = ePlayer_State_None,
+	};
+
+	enum ePlayer_Animation
+	{
+		ePlayer_Ani_Idle,		// 기본
+		ePlayer_Ani_Walk,		// 이동
+
+		ePlayer_Ani_Sit,		// 앉기
+		ePlayer_Ani_Drowse,		// 졸기
+
+		ePlayer_Ani_Dead,		// 죽음
+
+		ePlayer_Ani_Flying,		// 상승
+		ePlayer_Ani_Falling,	// 하강
+		ePlayer_Ani_Land,		// 착륙
+
+		ePlayer_Ani_Attack_1,	// 좌우 공격 1
+		ePlayer_Ani_Attack_2,	// 좌우 공격 2
+		ePlayer_Ani_Attack_Up,	// 위로 공격
+		ePlayer_Ani_Attack_Down,// 아래로 공격
+		ePlayer_Ani_StandOff,	// 원거리 공격
+
+		ePlayer_Ani_Look_Up,	// 위로 보기
+		ePlayer_Ani_Look_Down,	// 아래로 보기
+
+		ePlayer_Ani_None,
+		ePlayer_Ani_Count = ePlayer_Ani_None,
+	};
+
+	enum eDirection
+	{
+		eDirection_Left		= 0,
+		eDirection_Right	= 1,
+		eDirection_Up		= 2,
+		eDirection_Down		= 4,
+	};
+
+
+
 private:
 
 	UINT _coin;					// 돈

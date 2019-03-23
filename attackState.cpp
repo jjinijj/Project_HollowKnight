@@ -20,7 +20,7 @@ HRESULT attackState::init(player * p)
 	HRESULT hr = playerState::init(p);
 	assert(S_OK == hr);
 
-	_state = ePlayer_State_Attack;
+	_state = player::ePlayer_State_Attack;
 
 	return S_OK;
 }
@@ -37,7 +37,7 @@ void attackState::update()
 	if (_isEnd)
 	{
 		if (_player->isStateFloating())
-			_nextState = ePlayer_State_Falling;
+			_nextState = player::ePlayer_State_Falling;
 		else
 			end();
 	}
@@ -65,29 +65,29 @@ void attackState::start()
 	playerState::start();
 
 	// 방향키가 눌린 방향으로 공격
-	if (_player->checkDirection(eDirection_Up))
+	if (_player->checkDirection(player::eDirection_Up))
 	{
-		_aniKey = ePlayer_Ani_Attack_Up;
-		_player->setAttkDirection(eDirection_Up);
+		_aniKey = player::ePlayer_Ani_Attack_Up;
+		_player->setAttkDirection(player::eDirection_Up);
 	}
-	else if (_player->checkDirection(eDirection_Down))
+	else if (_player->checkDirection(player::eDirection_Down))
 	{
-		_aniKey = ePlayer_Ani_Attack_Down;
-		_player->setAttkDirection(eDirection_Down);
+		_aniKey = player::ePlayer_Ani_Attack_Down;
+		_player->setAttkDirection(player::eDirection_Down);
 	}
 	else
 	{
 		// 2개의 공격모션 중 랜덤 출력
 		int value = RND->getInt(100);
 		if(value < 50)
-			_aniKey = ePlayer_Ani_Attack_1;
+			_aniKey = player::ePlayer_Ani_Attack_1;
 		else
-			_aniKey = ePlayer_Ani_Attack_2;
+			_aniKey = player::ePlayer_Ani_Attack_2;
 
 		if(_isRight)
-			_player->setAttkDirection(eDirection_Right);
+			_player->setAttkDirection(player::eDirection_Right);
 		else
-			_player->setAttkDirection(eDirection_Left);
+			_player->setAttkDirection(player::eDirection_Left);
 	}
 	
 	setAnimation(_aniKey);
@@ -96,7 +96,7 @@ void attackState::start()
 
 void attackState::end()
 {
-	_nextState = ePlayer_State_Idle;
+	_nextState = player::ePlayer_State_Idle;
 }
 
 
@@ -117,9 +117,9 @@ HRESULT standOffState::init(player * p)
 {
 	HRESULT hr = playerState::init(p);
 	assert(S_OK == hr);
-	_state = ePlayer_State_StandOff;
+	_state = player::ePlayer_State_StandOff;
 	
-	setAnimation(ePlayer_Ani_StandOff);
+	setAnimation(player::ePlayer_Ani_StandOff);
 
 	return S_OK;
 }
@@ -136,7 +136,7 @@ void standOffState::update()
 	if (_isEnd)
 	{
 		if (_player->isStateFloating())
-			_nextState = ePlayer_State_Falling;
+			_nextState = player::ePlayer_State_Falling;
 		else 
 			end();
 			
@@ -164,5 +164,5 @@ void standOffState::start()
 
 void standOffState::end()
 {
-	_nextState = ePlayer_State_Idle;
+	_nextState = player::ePlayer_State_Idle;
 }

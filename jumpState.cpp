@@ -21,8 +21,8 @@ HRESULT flyingState::init(player* p)
 	HRESULT hr = playerState::init(p);
 	assert(S_OK == hr);
 
-	_state = ePlayer_State_Flying;
-	setAnimation(ePlayer_Ani_Flying);
+	_state = player::ePlayer_State_Flying;
+	setAnimation(player::ePlayer_Ani_Flying);
 
 	return S_OK;
 }
@@ -67,15 +67,15 @@ void flyingState::render()
 void flyingState::start()
 {
 	playerState::start();
-	_jumpPower	= static_cast<float>(PLAYER_JUMP_POWER);
-	_gravity	= static_cast<float>(PLAYER_GRAVITY);
+	_jumpPower	= static_cast<float>(player::PLAYER_JUMP_POWER);
+	_gravity	= static_cast<float>(player::PLAYER_GRAVITY);
 
 	_ani->start();
 }
 
 void flyingState::end()
 {
-	_nextState = ePlayer_State_JumpFalling;
+	_nextState = player::ePlayer_State_JumpFalling;
 }
 
 
@@ -97,8 +97,8 @@ HRESULT fallingState::init(player * p)
 	HRESULT hr = playerState::init(p);
 	assert(S_OK == hr);
 
-	_state = ePlayer_State_Falling;
-	setAnimation(ePlayer_Ani_Falling);
+	_state = player::ePlayer_State_Falling;
+	setAnimation(player::ePlayer_Ani_Falling);
 
 	return S_OK;
 }
@@ -129,12 +129,12 @@ void fallingState::update()
 		else if (KEYMANAGER->isOnceKeyDown('A'))	// 원거리 공격
 		{
 			_player->standOff();
-			_nextState = ePlayer_State_StandOff;
+			_nextState = player::ePlayer_State_StandOff;
 		}
 
 		_fallingPower += (_gravity * TIMEMANAGER->getElapsedTime());
-		if(PLAYER_JUMP_POWER < _fallingPower)
-			_fallingPower = static_cast<float>(PLAYER_JUMP_POWER);
+		if(player::PLAYER_JUMP_POWER < _fallingPower)
+			_fallingPower = static_cast<float>(player::PLAYER_JUMP_POWER);
 		_player->moveFall(_fallingPower);
 	}
 	else
@@ -151,15 +151,15 @@ void fallingState::render()
 void fallingState::start()
 {
 	playerState::start();
-	_fallingPower	= static_cast<float>(PLAYER_FALLING_POWER);
-	_gravity		= static_cast<float>(PLAYER_GRAVITY);
+	_fallingPower	= static_cast<float>(player::PLAYER_FALLING_POWER);
+	_gravity		= static_cast<float>(player::PLAYER_GRAVITY);
 
 	_ani->start();
 }
 
 void fallingState::end()
 {
-	_nextState = ePlayer_State_Land;
+	_nextState = player::ePlayer_State_Land;
 }
 
 
@@ -182,8 +182,8 @@ HRESULT jumpFallingState::init(player * p)
 	HRESULT hr = playerState::init(p);
 	assert(S_OK == hr);
 
-	_state = ePlayer_State_JumpFalling;
-	setAnimation(ePlayer_Ani_Falling);
+	_state = player::ePlayer_State_JumpFalling;
+	setAnimation(player::ePlayer_Ani_Falling);
 
 	return S_OK;
 }
@@ -215,13 +215,13 @@ void jumpFallingState::update()
 		else if (KEYMANAGER->isOnceKeyDown('A'))	// 원거리 공격
 		{
 			_player->standOff();
-			_nextState = ePlayer_State_StandOff;
+			_nextState = player::ePlayer_State_StandOff;
 		}
 
 		// falling
 		_jumpPower += (_gravity * TIMEMANAGER->getElapsedTime());
-		if (PLAYER_JUMP_POWER <= _jumpPower)
-			_jumpPower = static_cast<float>(PLAYER_JUMP_POWER);
+		if (player::PLAYER_JUMP_POWER <= _jumpPower)
+			_jumpPower = static_cast<float>(player::PLAYER_JUMP_POWER);
 
 		_player->moveFall(_jumpPower);
 	}
@@ -240,14 +240,14 @@ void jumpFallingState::start()
 {
 	playerState::start();
 	_jumpPower	= 0.f;
-	_gravity	= static_cast<float>(PLAYER_GRAVITY);
+	_gravity	= static_cast<float>(player::PLAYER_GRAVITY);
 
 	_ani->start();
 }
 
 void jumpFallingState::end()
 {
-	_nextState = ePlayer_State_Land;
+	_nextState = player::ePlayer_State_Land;
 }
 
 
@@ -267,8 +267,8 @@ HRESULT landState::init(player * p)
 	HRESULT hr = playerState::init(p);
 	assert(S_OK == hr);
 
-	_state = ePlayer_State_Land;
-	setAnimation(ePlayer_Ani_Land);
+	_state = player::ePlayer_State_Land;
+	setAnimation(player::ePlayer_Ani_Land);
 
 	return S_OK;
 }
@@ -305,5 +305,5 @@ void landState::start()
 
 void landState::end()
 {
-	_nextState = ePlayer_State_Idle;
+	_nextState = player::ePlayer_State_Idle;
 }

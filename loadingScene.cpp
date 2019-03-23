@@ -215,6 +215,7 @@ void loadingScene::loadImageData()
 	IMGDATABASE->insertImage(eImage_Enemy_All, IMAGEMANAGER->findImage("enemy"));
 	IMGDATABASE->insertImage(eImage_Enemy_Gruzzer, IMAGEMANAGER->findImage("gruzzer_move"));
 	IMGDATABASE->insertImage(eImage_Enemy_TikTik, IMAGEMANAGER->findImage("tiktik_move"));
+	IMGDATABASE->insertImage(eImage_Enemy_PrimalAspid, IMAGEMANAGER->findImage("primalAspid_move"));
 }
 
 void loadingScene::loadSoundData()

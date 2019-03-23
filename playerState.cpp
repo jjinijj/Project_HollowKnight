@@ -8,9 +8,9 @@ playerState::playerState()
 : _player(nullptr)
 , _img(nullptr)
 , _ani(nullptr)
-, _nextState(ePlayer_State_None)
-, _state(ePlayer_State_None)
-, _aniKey(ePlayer_Ani_None)
+, _nextState(player::ePlayer_State_None)
+, _state(player::ePlayer_State_None)
+, _aniKey(player::ePlayer_Ani_None)
 , _isEnd(false)
 , _isDoEvent(false)
 {
@@ -46,19 +46,19 @@ void playerState::update()
 void playerState::render()
 {
 	if(_isRight)
-		_img->aniRender( _player->getPosX() - PLAYER_SIZE_WIDE_HALF
-						,_player->getPosY() - PLAYER_SIZE_HEIGHT
+		_img->aniRender( _player->getPosX() - player::PLAYER_SIZE_WIDE_HALF
+						,_player->getPosY() - player::PLAYER_SIZE_HEIGHT
 						, _ani, false);
 	else
-		_img->aniRenderReverseX( _player->getPosX() - PLAYER_SIZE_WIDE_HALF
-								,_player->getPosY() - PLAYER_SIZE_HEIGHT
+		_img->aniRenderReverseX( _player->getPosX() - player::PLAYER_SIZE_WIDE_HALF
+								,_player->getPosY() - player::PLAYER_SIZE_HEIGHT
 								,_ani, false);
 }
 
 void playerState::start()
 {
-	_nextState = ePlayer_State_None;
-	_isRight = _player->checkDirection(eDirection_Right);
+	_nextState = player::ePlayer_State_None;
+	_isRight = _player->checkDirection(player::eDirection_Right);
 	_isEnd = false;
 	_isDoEvent = false;
 }
@@ -124,8 +124,8 @@ HRESULT idleState::init(player* p)
 	HRESULT hr = playerState::init(p);
 	assert(S_OK == hr);
 	
-	_state = ePlayer_State_Idle;
-	setAnimation(ePlayer_Ani_Idle);
+	_state = player::ePlayer_State_Idle;
+	setAnimation(player::ePlayer_Ani_Idle);
 
 	return S_OK;
 }
@@ -141,13 +141,13 @@ void idleState::update()
 
 	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
 	{
-		_nextState = ePlayer_State_Walk;
+		_nextState = player::ePlayer_State_Walk;
 		_player->setDirectionLeft();
 	}
 	
 	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
 	{
-		_nextState = ePlayer_State_Walk;
+		_nextState = player::ePlayer_State_Walk;
 		_player->setDirectionRight();
 	}
 
@@ -159,19 +159,19 @@ void idleState::update()
 		_player->setDirectionIdle();
 
 	if (KEYMANAGER->isOnceKeyDown('Z'))
-		_nextState = ePlayer_State_Flying;
+		_nextState = player::ePlayer_State_Flying;
 	else if (KEYMANAGER->isOnceKeyDown('X'))
 		_player->attack();
 	else if (KEYMANAGER->isOnceKeyDown('A'))
 	{
 		_player->standOff();
-		_nextState = ePlayer_State_StandOff;
+		_nextState = player::ePlayer_State_StandOff;
 	}
-	else if (_player->checkDirection(eDirection_Up) || _player->checkDirection(eDirection_Down))
-		_nextState = ePlayer_State_Look;
+	else if (_player->checkDirection(player::eDirection_Up) || _player->checkDirection(player::eDirection_Down))
+		_nextState = player::ePlayer_State_Look;
 
 	if (_player->isStateFloating())
-		_nextState = ePlayer_State_Falling;
+		_nextState = player::ePlayer_State_Falling;
 }
 
 void idleState::render()
@@ -212,8 +212,8 @@ HRESULT walkState::init(player* p)
 	HRESULT hr = playerState::init(p);
 	assert(S_OK == hr);
 	
-	_state = ePlayer_State_Walk;
-	setAnimation(ePlayer_Ani_Walk);
+	_state = player::ePlayer_State_Walk;
+	setAnimation(player::ePlayer_Ani_Walk);
 
 	return S_OK;
 }
@@ -241,17 +241,17 @@ void walkState::update()
 
 
 	if (KEYMANAGER->isOnceKeyDown('Z'))
-		_nextState = ePlayer_State_Flying;
+		_nextState = player::ePlayer_State_Flying;
 	else if (KEYMANAGER->isOnceKeyDown('X'))
 		_player->attack();
 	else if (KEYMANAGER->isOnceKeyDown('A'))
 	{
 		_player->standOff();
-		_nextState = ePlayer_State_StandOff;
+		_nextState = player::ePlayer_State_StandOff;
 	}
 
-	if (_player->isStateFloating() && ePlayer_State_None == _nextState)
-		_nextState = ePlayer_State_Falling;
+	if (_player->isStateFloating() && player::ePlayer_State_None == _nextState)
+		_nextState = player::ePlayer_State_Falling;
 }
 
 void walkState::render()
@@ -267,7 +267,7 @@ void walkState::start()
 
 void walkState::end()
 {
-	_nextState = ePlayer_State_Idle;
+	_nextState = player::ePlayer_State_Idle;
 }
 
 UINT walkState::nextState()
