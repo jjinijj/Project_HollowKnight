@@ -26,15 +26,15 @@ public:
 	virtual void update() = 0;
 	virtual void render() = 0;
 
+	virtual void updateCollision();
+	virtual void setPosition(float x, float y);
+	
 	UINT getUID()			{ return _uid; }
 	RECTD2D getCollision()	{ return _collision; }
 	RECTD2D getRect()		{ return _rc;}
 
-	void setPosX(float x) { _x = x; }
-	void setPosY(float y) { _y = y; }
-	virtual void setPosition(float x, float y);
-
 	float getPosX() { return _x; }
 	float getPosY() { return _y; }
+
 };
 

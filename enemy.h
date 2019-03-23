@@ -42,6 +42,5 @@ public:
 	eEnemy_Type getEnemyType() { return (eEnemy_Type)_subType; }
 
 protected:
-	virtual void updateCollision();
 	virtual void fixPosition();
 };

@@ -82,12 +82,6 @@ void enemy::takeDamage(int damage)
 		_isAlive = false;
 }
 
-void enemy::updateCollision()
-{
-	_collision = {   _x - _colWidth / 2.f, _y - _colHeight
-					,_x + _colWidth / 2.f, _y};
-}
-
 void enemy::fixPosition()
 {
 	updateCollision();

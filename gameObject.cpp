@@ -31,6 +31,15 @@ HRESULT gameObject::init(const UID uid, const float x, const float y)
 	return S_OK;
 }
 
+void gameObject::updateCollision()
+{
+	_collision = {   _x - _colWidth / 2.f, _y - _colHeight
+					,_x + _colWidth / 2.f, _y};
+
+	_rc = {  _x - _width / 2.f, _y - _height
+			,_x + _width / 2.f, _y};
+}
+
 void gameObject::setPosition(float x, float y)
 {
 	_x = x;
