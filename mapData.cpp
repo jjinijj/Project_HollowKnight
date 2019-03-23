@@ -335,24 +335,20 @@ enemy* mapData::addEnemy(float destX, float destY, eImageUID imgUid)
 		image* img = IMGDATABASE->getImage(imgUid);
 		assert(nullptr != img);
 
+		width = img->GetFrameWidth();
+		height = img->GetFrameHeight();
+
 		switch (value)
 		{
 			case eEnemy_Gruzzer:
 			{
 				actor = new gruzzer;
-
-				width = img->GetFrameWidth();
-				height = img->GetFrameHeight();
-
 				break;
 			}
 			case eEnemy_Tiktik: 
 			{
 				tiktik* tik = new tiktik;
-
-				width = img->GetFrameWidth();
-				height = img->GetFrameHeight();
-
+				
 				float x = destX + width / 2.f;
 				float y = destY + height;
 
@@ -375,9 +371,7 @@ enemy* mapData::addEnemy(float destX, float destY, eImageUID imgUid)
 
 			case eEnemy_Primalaspid:
 			{
-				primalAspid* pri = new primalAspid;
-				
-
+				actor = new primalAspid;
 				break;
 			}
 		}
@@ -852,9 +846,9 @@ void mapData::loadActorData(string fileName, int actorCnt)
 
 			switch (pack->subType)
 			{
-				case eEnemy_Gruzzer:		{ actor = new gruzzer; break; }
-				case eEnemy_Tiktik:			{ actor = new tiktik;  break; }
-				case eEnemy_Primalaspid:	{ break; }
+				case eEnemy_Gruzzer:		{ actor = new gruzzer;		break; }
+				case eEnemy_Tiktik:			{ actor = new tiktik;		break; }
+				case eEnemy_Primalaspid:	{ actor = new primalAspid;	break; }
 				case eEnemy_Mawlek:			{ break; }
 			}
 

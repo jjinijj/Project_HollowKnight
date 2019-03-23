@@ -37,6 +37,7 @@ void primalState::release()
 void primalState::update()
 {
 	actorState::update();
+	_isRight = (_actor->getDirectionLR() == actorBase::eRIGHT);
 }
 
 void primalState::render()

@@ -5,8 +5,8 @@
 
 
 baseInGameScene::baseInGameScene()
-: _player(nullptr)
-, _mapData(nullptr)
+: //_player(nullptr)
+ _mapData(nullptr)
 , _actorM(nullptr)
 {
 }
@@ -29,10 +29,11 @@ HRESULT baseInGameScene::init()
 	_actorM->init();
 	_actorM->mapDataLink(_mapData);
 
-	_player = new player;
-	_player->init(WINSIZEX / 2.f, WINSIZEY / 2.f);
+	PLAYER->init(WINSIZEX / 2.f, WINSIZEY / 2.f);
+	//_player = new player;
+	//_player->init(WINSIZEX / 2.f, WINSIZEY / 2.f);
 
-	_player->mapDataLink(_mapData);
+	PLAYER->mapDataLink(_mapData);
 
 	DEVTOOL->setDebugMode(DEBUG_SHOW_TEXT);
 	DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
@@ -52,17 +53,17 @@ void baseInGameScene::release()
 
 	SAFE_RELEASE(_mapData);
 	SAFE_RELEASE(_actorM);
-	SAFE_RELEASE(_player);
+	//SAFE_RELEASE(_player);
 
 	SAFE_DELETE(_mapData);
 	SAFE_DELETE(_actorM);
-	SAFE_DELETE(_player);
+	//SAFE_DELETE(_player);
 }
 
 void baseInGameScene::update()
 {
 	baseScene::update();
-	_player->update();
+	PLAYER->update();
 	_actorM->update();
 }
 
@@ -72,7 +73,7 @@ void baseInGameScene::render()
 
 	_mapData->renderBack();
 	_actorM->render();
-	_player->render();
+	PLAYER->render();
 	_mapData->renderFront();
 }
 

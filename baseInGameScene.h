@@ -7,7 +7,7 @@
 class baseInGameScene: public baseScene
 {
 protected:
-	player*			_player;
+	//player*			_player;
 	mapData*		_mapData;
 	actorManager*	_actorM;
 

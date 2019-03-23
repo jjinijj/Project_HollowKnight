@@ -2,7 +2,7 @@
 #include "primalAspid.h"
 #include "mapData.h"
 #include "terrain.h"
-#include "player.h"
+#include "primalAspidState.h"
 
 HRESULT primalAspid::init(UINT uid, float x, float y)
 {
@@ -11,9 +11,8 @@ HRESULT primalAspid::init(UINT uid, float x, float y)
 	
 	_width = PRIMALASPID_WIDTH;
 	_height = PRIMALASPID_HEIGHT;
-	_colWidth = PRIMALASPID_WIDTH;
-	_colHeight = PRIMALASPID_HEIGHT;
-
+	_colWidth = PRIMALASPID_WIDTH / 1.5f;
+	_colHeight = PRIMALASPID_HEIGHT / 1.5f;
 
 	{
 		image* img = IMAGEMANAGER->findImage("primalAspid_move");
@@ -49,14 +48,23 @@ HRESULT primalAspid::init(UINT uid, float x, float y)
 
 	_dir	= (eDirection)RND->getInt(eUP);
 	_dirUD	= eDirection_None;
+	_speed = static_cast<float>(PRIMALASPID_MOVE_SPEED);
 
+	_target = PLAYER;
+
+	primalState* state = new primalIdle;
+	state->init(this);
+	_state = state;
+	_state->start();
+
+	updateCollision();
+	
 	return S_OK;
 }
 
 void primalAspid::release()
 {
 	enemy::release();
-	_target = nullptr;
 }
 
 void primalAspid::update()
@@ -95,16 +103,16 @@ bool primalAspid::checkTargetInAttackRange()
 void primalAspid::moveToTarget()
 {
 	_angle = atan2f(_target->getPosX() - _y, _target->getPosX() - _x);
-	_x += cosf(_angle) * _speed;
-	_y += sinf(_angle) * _speed;
+	_x += cosf(_angle) * (_speed * TIMEMANAGER->getElapsedTime());
+	_y += sinf(_angle) * (_speed * TIMEMANAGER->getElapsedTime());
 	fixPosition();
 }
 
 void primalAspid::moveFromTarget()
 {
 	_angle = atan2f(_target->getPosX() - _y, _target->getPosX() - _x);
-	_x -= cosf(_angle) * _speed;
-	_y -= sinf(_angle) * _speed;
+	_x -= cosf(_angle) * (_speed * TIMEMANAGER->getElapsedTime());
+	_y -= sinf(_angle) * (_speed * TIMEMANAGER->getElapsedTime());
 	fixPosition();
 }
 

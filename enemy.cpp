@@ -33,6 +33,8 @@ void enemy::update()
 void enemy::release()
 {
 	actorBase::release();
+	_target = nullptr;
+	_mapData = nullptr;
 }
 
 void enemy::render()

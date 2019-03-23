@@ -10,8 +10,8 @@ HRESULT tiktik::init(UINT uid, float x, float y)
 	_subType = eEnemy_Tiktik;
 	_width = TIKTIK_WIDTH;
 	_height = TIKTIK_HIEGHT;
-	_colWidth = TIKTIK_WIDTH;
-	_colHeight = TIKTIK_WIDTH;
+	_colWidth = TIKTIK_WIDTH / 1.5f;
+	_colHeight = TIKTIK_WIDTH / 1.5f;
 
 
 	{
@@ -80,14 +80,13 @@ HRESULT tiktik::init(UINT uid, float x, float y)
 	_speed = static_cast<float>(TIKTIK_MOVE_SPEED);
 
 
-	_collision = {   _x - TIKTIK_WIDTH / 2.f, _y - TIKTIK_HIEGHT
-					,_x + TIKTIK_WIDTH / 2.f, _y};
-
 	tiktikMove* state = new tiktikMoveOn;
 	state->init(this);
 
 	_state = state;
 	_state->start();
+
+	updateCollision();
 
 	return S_OK;
 }

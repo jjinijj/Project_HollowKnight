@@ -15,10 +15,12 @@ public:
 		// 플레이어와 최대 인접하는 거리. 이 거리 안에서 공격을 하고 도망갈거임
 		CLOSEST_RANGE = 200,
 
-		PRIMALASPID_WIDTH = 100,
-		PRIMALASPID_HEIGHT = 100,
+		PRIMALASPID_WIDTH = 171,
+		PRIMALASPID_HEIGHT = 126,
 
-		PRIMALASPID_ANI_SPEED = 5,
+		PRIMALASPID_ANI_SPEED = 13,
+
+		PRIMALASPID_MOVE_SPEED = 250,
 
 		BULLET_SIZE = 50,
 	};
@@ -35,7 +37,6 @@ public:
 		eSTATE_COUNT = eSTATE_NONE,
 	};
 
-	player* _target;
 	float _angle;
 
 	bool _isFire;
@@ -58,8 +59,6 @@ public:
 	void bulletFire();
 	POINTF getBulletFirePoint();
 
-	void setPlayerLink(player* target) { _target = target; }
-	
 	bool isFire()						{ return _isFire; }
 
 private:

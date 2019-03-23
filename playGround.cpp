@@ -28,6 +28,8 @@ HRESULT playGround::init()
 void playGround::release()
 {
 	gameNode::release();
+	PLAYER->release();
+	PLAYER->releaseSingleton();
 	
 }
 

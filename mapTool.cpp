@@ -1430,7 +1430,7 @@ void mapTool::initEnemyImgLinks()
 	{
 		IMGLNK* lnk = new IMGLNK;
 		lnk->makeImageLnk(eImage_Enemy_All, true);
-		for (int ii = eImage_Enemy_Gruzzer; ii <= eImage_Enemy_TikTik; ++ii)
+		for (int ii = eImage_Enemy_StartId; ii <= eImage_Enemy_EndId; ++ii)
 			lnk->pushBack((eImageUID)ii);
 		_imgLnksEnemy.push_back(lnk);
 	}

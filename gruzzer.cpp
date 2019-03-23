@@ -10,8 +10,8 @@ HRESULT gruzzer::init(UINT uid, float x, float y)
 	_subType = eEnemy_Gruzzer;
 	_width = GRUZZER_WIDTH;
 	_height = GRUZZER_HEIGHT;
-	_colWidth = GRUZZER_WIDTH;
-	_colHeight = GRUZZER_HEIGHT;
+	_colWidth = GRUZZER_WIDTH * 0.9f;
+	_colHeight = GRUZZER_HEIGHT * 0.9f;
 
 	{
 		image* img = IMAGEMANAGER->findImage("gruzzer_move");
@@ -36,10 +36,9 @@ HRESULT gruzzer::init(UINT uid, float x, float y)
 
 	_dir = (eDirection)RND->getInt(eUP);
 	_dirUD = (eDirection)RND->getFromIntTo(eUP, eDirection_None);
-	_collision = {   _x - GRUZZER_WIDTH/ 2.f, _y - GRUZZER_HEIGHT
-					,_x + GRUZZER_WIDTH/ 2.f, _y};
-
 	_isAlive = true;
+
+	updateCollision();
 
 	return S_OK;
 }
