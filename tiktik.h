@@ -6,6 +6,7 @@
 class terrain;
 class tiktik : public enemy
 {
+public:
 	enum
 	{
 		TIKTIK_ANI_SPEED = 10,
@@ -13,11 +14,10 @@ class tiktik : public enemy
 		TIKTIK_MOVE_SPEED = 1,
 		TIKTIK_MAX_HP = 2,
 
-		TIKTIK_WIDTH = 50,
-		TIKTIK_HIEGHT = 50,
+		TIKTIK_WIDTH = 90,
+		TIKTIK_HIEGHT = 90,
 	};
 
-private:
 	enum eSTATE
 	{
 		eMOVE_ON,
@@ -34,9 +34,11 @@ private:
 		eSTATE_COUNT = eSTATE_NONE,
 	};
 
-
 private:
+	UINT _areaUid;
+
 	terrain* _area;
+	RECTD2D	 _areaCol;
 
 public:
 
@@ -45,12 +47,27 @@ public:
 	void release();
 	void render();
 
-	void move();
+	ACTORPACK* makePack();
+	void loadPack(ACTORPACK* pack);
+
+	void mapDataLink(mapData* data);
+
+	void moveOn();
+	void moveUnder();
+	void moveSideUp();
+	void moveSiedDown();
+	void climbSideToOn();
+	void climbSideToDown();
+	void climbOnToSide();
+	void climbUnderToSide();
 
 	// 활동구역
-	void terrainLink(terrain* ter) { _area = ter; }
+	void terrainLink(terrain* ter)	{ _area = ter; }
+	void terrainLink(UINT terUid)	{ _areaUid = terUid;}
+
+	UINT getActiveAreaUid()	{ return _areaUid; }
 
 private:
-	void setActiveArea();
+	void changeState(eSTATE state);
 
 };

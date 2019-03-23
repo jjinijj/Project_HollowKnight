@@ -21,6 +21,8 @@ HRESULT actorState::init(actorBase* actor)
 
 void actorState::release()
 {
+	_actor = nullptr;
+	_next = nullptr;
 }
 
 void actorState::update()

@@ -1,12 +1,11 @@
 #include "stdafx.h"
 #include "actorManager.h"
-#include "npc.h"
-#include "enemy.h"
-#include "gruzzer.h"
-#include "elderbug.h"
+#include "enemyHeaders.h"
+#include "npcHeaders.h"
 
 
 actorManager::actorManager()
+: _uidCount(0)
 {
 }
 
@@ -104,7 +103,7 @@ enemy* actorManager::createEnemy(float x, float y, WORD type)
 	switch (type)
 	{
 		case eEnemy_Gruzzer:	{ em = new gruzzer; break;}
-		//case eEnemy_Tiktik:		{ em = new gruzzer; break;}
+		case eEnemy_Tiktik:		{ em = new tiktik; break;}
 		//case eEnemy_Primalaspid:{ em = new gruzzer; break;}
 		//case eEnemy_Mawlek:		{ em = new gruzzer; break;}
 
@@ -120,6 +119,23 @@ enemy* actorManager::createEnemy(float x, float y, WORD type)
 
 		_actorMap.insert(make_pair(em->getUID(), em));
 		_enemyMap.insert(make_pair(em->getUID(), em));
+	}
+
+	switch (type)
+	{
+		case eEnemy_Gruzzer:	{ break; }
+		case eEnemy_Tiktik:		
+		{
+
+
+
+			break;
+		}
+		//case eEnemy_Primalaspid:{ em = new gruzzer; break;}
+		//case eEnemy_Mawlek:		{ em = new gruzzer; break;}
+
+		default:
+			break;
 	}
 
 	return em;

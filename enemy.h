@@ -26,8 +26,8 @@ public:
 	void release();
 	void render();
 	
-	void setTarget(player* target)  { _target = target; }
-	void mapDataLink(mapData* data) { _mapData = data;  }
+	virtual void setTarget(player* target)  { _target = target; }
+	virtual void mapDataLink(mapData* data) { _mapData = data;  }
 
 	ACTORPACK* makePack();
 	void loadPack(ACTORPACK* pack);

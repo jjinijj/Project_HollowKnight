@@ -23,7 +23,7 @@
     <ProjectGuid>{BE5C2545-DA5C-402F-8068-3E1EDF185C1C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>windowsAPI</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -171,6 +171,7 @@
     <ClInclude Include="playerState.h" />
     <ClInclude Include="jumpState.h" />
     <ClInclude Include="tiktik.h" />
+    <ClInclude Include="tiktikState.h" />
     <ClInclude Include="uiButton.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="d2dManager.h" />
@@ -240,6 +241,7 @@
     <ClCompile Include="playerState.cpp" />
     <ClCompile Include="jumpState.cpp" />
     <ClCompile Include="tiktik.cpp" />
+    <ClCompile Include="tiktikState.cpp" />
     <ClCompile Include="uiButton.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="d2dManager.cpp" />

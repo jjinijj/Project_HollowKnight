@@ -1,10 +1,17 @@
 #include "stdafx.h"
 #include "tiktik.h"
+#include "mapData.h"
 #include "terrain.h"
+#include "tiktikState.h"
 
 HRESULT tiktik::init(UINT uid, float x, float y)
 {
 	enemy::init(uid, x, y);
+	_subType = eEnemy_Tiktik;
+	_width = TIKTIK_WIDTH;
+	_height = TIKTIK_HIEGHT;
+
+
 	{
 		image* img = IMAGEMANAGER->findImage("tiktik_move");
 		ANIMANAGER->addArrayFrameAnimation( _uid, eMOVE_ON, "tiktik_move"
@@ -70,10 +77,15 @@ HRESULT tiktik::init(UINT uid, float x, float y)
 	_hp = TIKTIK_MAX_HP;
 	_speed = TIKTIK_MOVE_SPEED;
 
-	_subType = eEnemy_Tiktik;
+
 	_collision = {   _x - TIKTIK_WIDTH / 2, _y - TIKTIK_HIEGHT
 					,_x + TIKTIK_WIDTH / 2, _y};
-	setActiveArea();
+
+	tiktikMove* state = new tiktikMoveOn;
+	state->init(this);
+
+	_state = state;
+	_state->start();
 
 	return S_OK;
 }
@@ -83,162 +95,169 @@ void tiktik::update()
 	enemy::update();
 }
 
-void tiktik::move()
+void tiktik::release()
 {
-	if(nullptr == _area)
-		return;
+	enemy::release();
+	_area = nullptr;
+}
 
-	switch ( _state->getState() )
+void tiktik::render()
+{
+	enemy::render();
+}
+
+ACTORPACK* tiktik::makePack()
+{
+	ACTORPACK* pack = enemy::makePack();
+	if(pack)
 	{
-		case eMOVE_ON:
-		{
-			bool isChange = false;
-			if ( eRIGHT == _dir )
-			{
-				_x += _speed;
-				isChange =  ( _area->getCollision().right < _x );
-			}
-			else
-			{
-				_x -= _speed;
-				isChange =  ( _x < _area->getCollision().left );
-			}
+		pack->value = _areaUid;
+	}
 
-			if(isChange)
-			{
-				//changeState(eCLIME_ON_TO_SIDE);
-				_dirUD = eDOWN;
-			}
+	return pack;
+}
 
-			break;
-		}
-
-		case eMOVE_UNDER:
-		{
-			bool isChange = false;
-			if ( eRIGHT == _dir )
-			{
-				_x += _speed;
-				isChange = _area->getCollision().right < _x;
-			}
-			else
-			{
-				_x -= _speed;
-				isChange = _x < _area->getCollision().left;
-			}
-
-			if ( isChange )
-			{
-				//changeState(eCLIME_UNDER_TO_SIDE);
-				_dirUD = eUP;
-			}
-
-			break;
-		}
-
-
-		case eMOVE_SIDE_UP:
-		{
-			bool isChange = false;
-
-			_y -= _speed;
-			isChange =  _y < _area->getCollision().top + (_colHeight / 2);
-
-			if ( isChange )
-			{
-				if ( eRIGHT == _dir )
-					_dir = eLEFT;
-				else
-					_dir = eRIGHT;
-
-				//changeState(eCLIMB_SIDE_TO_ON);
-			}
-
-			break;
-		}
-
-		case eMOVE_SIDE_DOWN:
-		{
-			bool isChange = false;
-			_y += _speed;
-			isChange = _area->getCollision().bottom + (_colHeight / 2) < _y;
-
-			if ( isChange )
-			{
-				if ( eRIGHT == _dir )
-					_dir = eLEFT;
-				else
-					_dir = eRIGHT;
-
-				//changeState(eCLIMB_SIDE_TO_UNDER);
-			}
-
-			break;
-		}
-
-		case eCLIMB_SIDE_TO_ON:
-		{
-			if(eRIGHT == _dir)
-				_x += _speed;
-			else
-				_x -= _speed;
-
-			_y -= _speed;
-
-
-			//if ( _anim )
-				//if ( !_anim->IsPlayingAnimation() )
-					//changeState(eMOVE_ON);
-			break;
-		}
-
-		case eCLIMB_SIDE_TO_UNDER:
-		{
-			if(eRIGHT == _dir)
-				_x += _speed;
-			else
-				_x -= _speed;
-
-			_y += _speed;
-
-			//if( _anim )
-			//	if(!_anim->IsPlayingAnimation())
-			//		changeState(eMOVE_UNDER);
-			break;
-		}
-
-		case eCLIME_ON_TO_SIDE:
-		{
-			if(eRIGHT == _dir)
-				_x += _speed;
-			else
-				_x -= _speed;
-
-			_y += _speed;
-
-			//if ( _anim )
-			//	if ( !_anim->IsPlayingAnimation() )
-			//		changeState(eMOVE_SIDE_DOWN);
-
-			break;
-		}
-
-		case eCLIME_UNDER_TO_SIDE:
-		{
-			if(eRIGHT == _dir)
-				_x += _speed;
-			else
-				_x -= _speed;
-
-			_y -= _speed;
-
-			//if( _anim )
-			//	if(!_anim->IsPlayingAnimation())
-			//		changeState(eMOVE_SIDE_UP);
-			break;
-		}
+void tiktik::loadPack(ACTORPACK* pack)
+{
+	if(pack)
+	{
+		enemy::loadPack(pack);
+		_areaUid = pack->uid;
 	}
 }
+
+void tiktik::mapDataLink(mapData* data)
+{
+	enemy::mapDataLink(data);
+
+	if(NULL == _areaUid)
+		return;
+
+	terrain* ter = _mapData->getTerrain(_areaUid);
+	if(ter)
+	{
+		_area = ter;
+		_areaCol = _area->getCollision();
+	}
+}
+
+void tiktik::moveOn()
+{
+	bool isChange = false;
+	if ( eRIGHT == _dir )
+	{
+		_x += _speed;
+		isChange =  ( _area->getCollision().right < _x );
+	}
+	else
+	{
+		_x -= _speed;
+		isChange =  ( _x < _area->getCollision().left );
+	}
+
+	if(isChange)
+	{
+		changeState(eCLIME_ON_TO_SIDE);
+		_dirUD = eDOWN;
+	}
+}
+
+void tiktik::moveUnder()
+{
+	bool isChange = false;
+	if ( eRIGHT == _dir )
+	{
+		_x += _speed;
+		isChange = _area->getCollision().right < _x;
+	}
+	else
+	{
+		_x -= _speed;
+		isChange = _x < _area->getCollision().left;
+	}
+
+	if ( isChange )
+	{
+		changeState(eCLIME_UNDER_TO_SIDE);
+		_dirUD = eUP;
+	}
+}
+
+void tiktik::moveSideUp()
+{
+	bool isChange = false;
+
+	_y -= _speed;
+	isChange =  _y < _area->getCollision().top + (_colHeight / 2);
+
+	if ( isChange )
+	{
+		if ( eRIGHT == _dir )
+			_dir = eLEFT;
+		else
+			_dir = eRIGHT;
+
+		changeState(eCLIMB_SIDE_TO_ON);
+	}
+}
+
+void tiktik::moveSiedDown()
+{
+	bool isChange = false;
+	_y += _speed;
+	isChange = _area->getCollision().bottom + (_colHeight / 2) < _y;
+
+	if ( isChange )
+	{
+		if ( eRIGHT == _dir )
+			_dir = eLEFT;
+		else
+			_dir = eRIGHT;
+
+		changeState(eCLIMB_SIDE_TO_UNDER);
+	}
+}
+
+void tiktik::climbSideToOn()
+{
+	if(eRIGHT == _dir)
+		_x += _speed;
+	else
+		_x -= _speed;
+
+	_y -= _speed;
+}
+
+void tiktik::climbSideToDown()
+{
+	if(eRIGHT == _dir)
+		_x += _speed;
+	else
+		_x -= _speed;
+
+	_y += _speed;
+}
+
+void tiktik::climbOnToSide()
+{
+	if(eRIGHT == _dir)
+		_x += _speed;
+	else
+		_x -= _speed;
+
+	_y += _speed;
+}
+
+void tiktik::climbUnderToSide()
+{
+	if(eRIGHT == _dir)
+		_x += _speed;
+	else
+		_x -= _speed;
+
+	_y -= _speed;
+}
+
 
 //void tiktik::dead()
 //{
@@ -246,37 +265,26 @@ void tiktik::move()
 //	changeState(eDEAD);
 //}
 
-void tiktik::setActiveArea()
+void tiktik::changeState(eSTATE state)
 {
-	//if(nullptr == _objM )
-	//	return;
-	//
-	//lObject* objList = _objM->getObjectList(eOBJECT_GROUND);
-	//
-	//if(objList->size() == 0)
-	//	return;
-	//
-	//bool isFloating = true;
-	//int offsetX = 0;
-	//int offsetY = 0;
-	//
-	//gameObject* obj = nullptr;
-	//RECT objCol = {};
-	//ilObject end = objList->end();
-	//
-	//for ( ilObject iter = objList->begin(); end != iter; ++iter )
-	//{
-	//	obj		= (*iter);
-	//	objCol	= ( obj->getCollision() );
-	//
-	//	if( !CheckIntersectRect(_collision, objCol) )
-	//		continue;
-	//
-	//	int offsetY = _collision.bottom - objCol.top;
-	//	_y -= offsetY;
-	//
-	//	_area = obj;
-	//
-	//	break;
-	//}
+	if (_state)
+	{
+		SAFE_RELEASE(_state);
+		SAFE_DELETE(_state);
+	}
+
+	tiktikMove* tiktikState = nullptr;
+
+	switch (state)
+	{
+		case eCLIMB_SIDE_TO_ON:		{ tiktikState = new tiktikClimbSideToOn;	tiktikState->init(this); break; }
+		case eCLIMB_SIDE_TO_UNDER:	{ tiktikState = new tiktikClimbSideToDown;	tiktikState->init(this); break; }
+		case eCLIME_ON_TO_SIDE:		{ tiktikState = new tiktikClimbOnToSide;	tiktikState->init(this); break; }
+		case eCLIME_UNDER_TO_SIDE:	{ tiktikState = new tiktikClimbUnderToSide;	tiktikState->init(this); break; }
+		case eDEAD:
+			break;
+	}
+
+	if(tiktikState)
+		tiktikState->start();
 }

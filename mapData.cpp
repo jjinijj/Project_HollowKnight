@@ -346,7 +346,32 @@ enemy* mapData::addEnemy(float destX, float destY, eImageUID imgUid)
 
 				break;
 			}
-			case eEnemy_Tiktik: { break; }
+			case eEnemy_Tiktik: 
+			{
+				tiktik* tik = new tiktik;
+
+				width = img->GetFrameWidth();
+				height = img->GetFrameHeight();
+
+				float x = destX + width / 2.f;
+				float y = destY + height;
+
+				RECTD2D rc = {x, y, x + width, y + height};
+
+				iterVTerrain iter = _colTerrains.begin();
+				iterVTerrain end = _colTerrains.end();
+				for(iter; end != iter; ++iter)
+				{
+					if (CheckIntersectRect(rc, (*iter)->getCollision()))
+					{
+						tik->terrainLink((*iter)->getUID());
+						break;
+					}
+				}
+
+				actor = tik;
+				break; 
+			}
 		}
 
 		if (actor)
@@ -411,11 +436,11 @@ void mapData::deleteTerrain(UINT layer, UID uid)
 
 void mapData::deleteActor(UINT uid)
 {
-	actorBase* actor = nullptr;
 	bool isFind = false;
 
 	// npc
 	{
+		actorBase* actor = nullptr;
 		iterMNpc iter = _npcs.begin();
 		iterMNpc end = _npcs.end();
 
@@ -434,6 +459,7 @@ void mapData::deleteActor(UINT uid)
 	// enemy
 	if (!isFind)
 	{
+		actorBase* actor = nullptr;
 		iterEnemy iter = _enemys.begin();
 		iterEnemy end = _enemys.end();
 
@@ -449,10 +475,23 @@ void mapData::deleteActor(UINT uid)
 		}
 	}
 
-	if (isFind)
 	{
-		SAFE_RELEASE(actor);
-		SAFE_DELETE(actor);
+		actorBase* actor = nullptr;
+		itervActor iter = _actors.begin();
+		itervActor end = _actors.end();
+		for(iter; end != iter; ++iter)
+		{
+			actor = (*iter);
+			if (actor->getUID() == uid)
+			{
+				_actors.erase(iter);
+
+				SAFE_RELEASE(actor);
+				SAFE_DELETE(actor);
+
+				break;
+			}
+		}
 	}
 }
 
@@ -806,7 +845,7 @@ void mapData::loadActorData(string fileName, int actorCnt)
 			switch (pack->subType)
 			{
 				case eEnemy_Gruzzer:		{ actor = new gruzzer; break; }
-				case eEnemy_Tiktik:			{ break; }
+				case eEnemy_Tiktik:			{ actor = new tiktik;  break; }
 				case eEnemy_Primalaspid:	{ break; }
 				case eEnemy_Mawlek:			{ break; }
 			}

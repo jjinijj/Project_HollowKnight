@@ -336,6 +336,9 @@
     <ClInclude Include="enemyHeaders.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="tiktikState.h">
+      <Filter>PlayGround\actor\enemyState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -520,6 +523,9 @@
     </ClCompile>
     <ClCompile Include="gameObject.cpp">
       <Filter>2DFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="tiktikState.cpp">
+      <Filter>PlayGround\actor\enemyState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
