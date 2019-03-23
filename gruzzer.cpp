@@ -10,6 +10,8 @@ HRESULT gruzzer::init(UINT uid, float x, float y)
 	_subType = eEnemy_Gruzzer;
 	_width = GRUZZER_WIDTH;
 	_height = GRUZZER_HEIGHT;
+	_colWidth = GRUZZER_WIDTH;
+	_colHeight = GRUZZER_HEIGHT;
 
 	{
 		image* img = IMAGEMANAGER->findImage("gruzzer_move");
@@ -69,9 +71,7 @@ void gruzzer::move()
 	else
 		_y += _speed;
 
-	_collision = {	 _x - GRUZZER_WIDTH / 2.f, _y - GRUZZER_HEIGHT
-					,_x + GRUZZER_WIDTH / 2.f, _y };
-
+	updateCollision();
 	
 	vector<terrain*>* vCol = _mapData->getColliderTerrains();
 	vector<terrain*>::iterator iter = vCol->begin();

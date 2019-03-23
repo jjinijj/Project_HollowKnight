@@ -35,7 +35,7 @@ HRESULT baseInGameScene::init()
 	_player->mapDataLink(_mapData);
 
 	DEVTOOL->setDebugMode(DEBUG_SHOW_TEXT);
-	//DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
+	DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
 
 	setActors();
 

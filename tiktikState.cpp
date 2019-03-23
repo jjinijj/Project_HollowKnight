@@ -39,6 +39,7 @@ void tiktikMove::render()
 
 void tiktikMove::start()
 {
+	actorState::start();
 	_ani->start();
 }
 
@@ -51,6 +52,8 @@ void tiktikMove::end()
 HRESULT tiktikMoveOn::init(tiktik* actor)
 {
 	tiktikMove::init(actor);
+	_state = tiktik::eMOVE_ON;
+
 	setAnimaion(actor->getUID(), tiktik::eMOVE_ON);
 	return S_OK;
 }
@@ -64,6 +67,7 @@ void tiktikMoveOn::update()
 HRESULT tiktikMoveUnder::init(tiktik* actor)
 {
 	tiktikMove::init(actor);
+	_state = tiktik::eMOVE_UNDER;
 	setAnimaion(actor->getUID(), tiktik::eMOVE_UNDER);
 	return S_OK;
 }
@@ -77,6 +81,7 @@ void tiktikMoveUnder::update()
 HRESULT tiktikMoveSideUp::init(tiktik* actor)
 {
 	tiktikMove::init(actor);
+	_state = tiktik::eMOVE_SIDE_UP;
 	setAnimaion(actor->getUID(), tiktik::eMOVE_SIDE_UP);
 	return S_OK;
 }
@@ -90,6 +95,7 @@ void tiktikMoveSideUp::update()
 HRESULT tiktikMoveSiedDown::init(tiktik* actor)
 {
 	tiktikMove::init(actor);
+	_state = tiktik::eMOVE_SIDE_DOWN;
 	setAnimaion(actor->getUID(), tiktik::eMOVE_SIDE_DOWN);
 	return S_OK;
 }
@@ -103,6 +109,7 @@ void tiktikMoveSiedDown::update()
 HRESULT tiktikClimbSideToOn::init(tiktik* actor)
 {
 	tiktikMove::init(actor);
+	_state = tiktik::eCLIMB_SIDE_TO_ON;
 	setAnimaion(actor->getUID(), tiktik::eCLIMB_SIDE_TO_ON);
 	return S_OK;
 }
@@ -110,7 +117,8 @@ HRESULT tiktikClimbSideToOn::init(tiktik* actor)
 void tiktikClimbSideToOn::update()
 {
 	tiktikMove::update();
-	if(_ani->isPlay())
+	_tiktik->climbSideToOn();
+	if(!_ani->isPlay())
 		end();
 }
 
@@ -118,21 +126,25 @@ void tiktikClimbSideToOn::end()
 {
 	if (!_next)
 	{
-		_next = new tiktikMoveOn;
-		_next->init(_actor);
+		tiktikMove* tikMove = new tiktikMoveOn;
+		tikMove->init(_tiktik);
+		_next = tikMove;
 	}
 }
 
 HRESULT tiktikClimbSideToDown::init(tiktik* actor)
 {
 	tiktikMove::init(actor);
+	_state = tiktik::eCLIMB_SIDE_TO_UNDER;
 	setAnimaion(actor->getUID(), tiktik::eCLIMB_SIDE_TO_UNDER);
 	return S_OK;
 }
 
 void tiktikClimbSideToDown::update()
 {
-	if(_ani->isPlay())
+	tiktikMove::update();
+	_tiktik->climbSideToDown();
+	if(!_ani->isPlay())
 		end();
 }
 
@@ -140,21 +152,25 @@ void tiktikClimbSideToDown::end()
 {
 	if (!_next)
 	{
-		_next = new tiktikMoveUnder;
-		_next->init(_actor);
+		tiktikMove* tikMove = new tiktikMoveUnder;
+		tikMove->init(_tiktik);
+		_next = tikMove;
 	}
 }
 
 HRESULT tiktikClimbOnToSide::init(tiktik* actor)
 {
 	tiktikMove::init(actor);
+	_state = tiktik::eCLIME_ON_TO_SIDE;
 	setAnimaion(actor->getUID(), tiktik::eCLIME_ON_TO_SIDE);
 	return S_OK;
 }
 
 void tiktikClimbOnToSide::update()
 {
-	if(_ani->isPlay())
+	tiktikMove::update();
+	_tiktik->climbOnToSide();
+	if(!_ani->isPlay())
 		end();
 }
 
@@ -162,21 +178,25 @@ void tiktikClimbOnToSide::end()
 {
 	if (!_next)
 	{
-		_next = new tiktikMoveSiedDown;
-		_next->init(_actor);
+		tiktikMove* tikMove = new tiktikMoveSiedDown;
+		tikMove->init(_tiktik);
+		_next = tikMove;
 	}
 }
 
 HRESULT tiktikClimbUnderToSide::init(tiktik* actor)
 {
 	tiktikMove::init(actor);
+	_state = tiktik::eCLIME_UNDER_TO_SIDE;
 	setAnimaion(actor->getUID(), tiktik::eCLIME_UNDER_TO_SIDE);
 	return S_OK;
 }
 
 void tiktikClimbUnderToSide::update()
 {
-	if(_ani->isPlay())
+	tiktikMove::update();
+	_tiktik->climbUnderToSide();
+	if(!_ani->isPlay())
 		end();
 }
 
@@ -184,7 +204,8 @@ void tiktikClimbUnderToSide::end()
 {
 	if (!_next)
 	{
-		_next = new tiktikMoveSideUp;
-		_next->init(_actor);
+		tiktikMove* tikMove = new tiktikMoveSideUp;
+		tikMove->init(_tiktik);
+		_next = tikMove;
 	}
 }

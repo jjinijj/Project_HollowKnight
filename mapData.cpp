@@ -358,8 +358,8 @@ enemy* mapData::addEnemy(float destX, float destY, eImageUID imgUid)
 
 				RECTD2D rc = {x, y, x + width, y + height};
 
-				iterVTerrain iter = _colTerrains.begin();
-				iterVTerrain end = _colTerrains.end();
+				iterVTerrain iter = _terrains.begin();
+				iterVTerrain end = _terrains.end();
 				for(iter; end != iter; ++iter)
 				{
 					if (CheckIntersectRect(rc, (*iter)->getCollision()))

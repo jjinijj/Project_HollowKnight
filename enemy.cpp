@@ -25,6 +25,7 @@ HRESULT enemy::init(UINT uid, float x, float y)
 void enemy::update()
 {
 	actorBase::update();
+	updateCollision();
 }
 
 void enemy::release()
@@ -75,4 +76,10 @@ void enemy::takeDamage(int damage)
 	_hp -= damage;
 	if(_hp < 0)
 		_isAlive = false;
+}
+
+void enemy::updateCollision()
+{
+	_collision = {   _x - _colWidth / 2.f, _y - _colHeight
+					,_x + _colWidth / 2.f, _y};
 }

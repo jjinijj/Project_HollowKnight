@@ -63,6 +63,7 @@ actorState* actorState::nextState()
 
 void actorState::setAnimaion(UINT uid, UINT aniKey)
 {
+	_aniKey = aniKey;
 	_ani = ANIMANAGER->findAnimation(uid, aniKey);
 	assert(nullptr != _ani);
 

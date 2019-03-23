@@ -10,6 +10,8 @@ HRESULT tiktik::init(UINT uid, float x, float y)
 	_subType = eEnemy_Tiktik;
 	_width = TIKTIK_WIDTH;
 	_height = TIKTIK_HIEGHT;
+	_colWidth = TIKTIK_WIDTH;
+	_colHeight = TIKTIK_WIDTH;
 
 
 	{
@@ -43,35 +45,35 @@ HRESULT tiktik::init(UINT uid, float x, float y)
 		image* img = IMAGEMANAGER->findImage("tiktik_climbup_stu");
 		ANIMANAGER->addArrayFrameAnimation(_uid, eCLIMB_SIDE_TO_ON, "tiktik_climbup_stu"
 										   , 0, img->GetMaxFrameX()
-										   , TIKTIK_ANI_SPEED, true);
+										   , TIKTIK_ANI_SPEED, false);
 	}
 
 	{
 		image* img = IMAGEMANAGER->findImage("tiktik_climbup_uts");
 		ANIMANAGER->addArrayFrameAnimation(_uid, eCLIME_UNDER_TO_SIDE, "tiktik_climbup_uts"
 										   , 0, img->GetMaxFrameX()
-										   , TIKTIK_ANI_SPEED, true);
+										   , TIKTIK_ANI_SPEED, false);
 	}
 
 	{
 		image* img = IMAGEMANAGER->findImage("tiktik_climbdown_stu");
-		ANIMANAGER->addArrayFrameAnimation(_uid, eCLIMB_SIDE_TO_UNDER, "tiktik_climbup_uts"
+		ANIMANAGER->addArrayFrameAnimation(_uid, eCLIMB_SIDE_TO_UNDER, "tiktik_climbdown_stu"
 										   , 0, img->GetMaxFrameX()
-										   , TIKTIK_ANI_SPEED, true);
+										   , TIKTIK_ANI_SPEED, false);
 	}
 
 	{
 		image* img = IMAGEMANAGER->findImage("tiktik_climbdown_ots");
 		ANIMANAGER->addArrayFrameAnimation(_uid, eCLIME_ON_TO_SIDE, "tiktik_climbdown_ots"
 										   , 0, img->GetMaxFrameX()
-										   , TIKTIK_ANI_SPEED, true);
+										   , TIKTIK_ANI_SPEED, false);
 	}
 
 	{
 		image* img = IMAGEMANAGER->findImage("tiktik_dead");
 		ANIMANAGER->addArrayFrameAnimation(_uid, eDEAD, "tiktik_dead"
 										   , 0, img->GetMaxFrameX()
-										   , TIKTIK_ANI_SPEED, true);
+										   , TIKTIK_ANI_SPEED, false);
 	}
 
 	_hp = TIKTIK_MAX_HP;
@@ -122,7 +124,7 @@ void tiktik::loadPack(ACTORPACK* pack)
 	if(pack)
 	{
 		enemy::loadPack(pack);
-		_areaUid = pack->uid;
+		_areaUid = pack->value;
 	}
 }
 
@@ -221,41 +223,41 @@ void tiktik::moveSiedDown()
 void tiktik::climbSideToOn()
 {
 	if(eRIGHT == _dir)
-		_x += _speed;
+		_x += 2;
 	else
-		_x -= _speed;
+		_x -= 2;
 
-	_y -= _speed;
+	_y -= 2;
 }
 
 void tiktik::climbSideToDown()
 {
 	if(eRIGHT == _dir)
-		_x += _speed;
+		_x += 2;
 	else
-		_x -= _speed;
+		_x -= 2;
 
-	_y += _speed;
+	_y += 2;
 }
 
 void tiktik::climbOnToSide()
 {
 	if(eRIGHT == _dir)
-		_x += _speed;
+		_x += 2;
 	else
-		_x -= _speed;
+		_x -= 2;
 
-	_y += _speed;
+	_y += 2;
 }
 
 void tiktik::climbUnderToSide()
 {
 	if(eRIGHT == _dir)
-		_x += _speed;
+		_x += 2;
 	else
-		_x -= _speed;
+		_x -= 2;
 
-	_y -= _speed;
+	_y -= 2;
 }
 
 
@@ -267,12 +269,6 @@ void tiktik::climbUnderToSide()
 
 void tiktik::changeState(eSTATE state)
 {
-	if (_state)
-	{
-		SAFE_RELEASE(_state);
-		SAFE_DELETE(_state);
-	}
-
 	tiktikMove* tiktikState = nullptr;
 
 	switch (state)
@@ -285,6 +281,13 @@ void tiktik::changeState(eSTATE state)
 			break;
 	}
 
-	if(tiktikState)
+
+	if (tiktikState)
+	{
+		SAFE_RELEASE(_state);
+		SAFE_DELETE(_state);
+
+		_state = tiktikState;
 		tiktikState->start();
+	}
 }

@@ -40,4 +40,7 @@ public:
 
 	bool isAlive() { return _isAlive; }
 	eEnemy_Type getEnemyType() { return (eEnemy_Type)_subType; }
+
+protected:
+	void updateCollision();
 };
