@@ -59,7 +59,7 @@ public:
 	void bulletFire();
 	POINTF getBulletFirePoint();
 
-	bool isFire()						{ return _isFire; }
+	bool isFireState()						{ return _isFire; }
 
 private:
 	void fixPosition();

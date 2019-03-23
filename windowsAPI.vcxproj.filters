@@ -127,6 +127,9 @@
     <Filter Include="PlayGround\actor\enemy">
       <UniqueIdentifier>{743da22f-4e4f-4ef0-9caa-7000e92a805d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\bullet">
+      <UniqueIdentifier>{dd95e416-cb29-4f08-8d3c-e0cb4d407c4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
