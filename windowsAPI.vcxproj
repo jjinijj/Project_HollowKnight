@@ -170,6 +170,8 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="playerState.h" />
     <ClInclude Include="jumpState.h" />
+    <ClInclude Include="primalAspid.h" />
+    <ClInclude Include="primalAspidState.h" />
     <ClInclude Include="tiktik.h" />
     <ClInclude Include="tiktikState.h" />
     <ClInclude Include="uiButton.h" />
@@ -240,6 +242,8 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playerState.cpp" />
     <ClCompile Include="jumpState.cpp" />
+    <ClCompile Include="primalAspid.cpp" />
+    <ClCompile Include="primalAspidState.cpp" />
     <ClCompile Include="tiktik.cpp" />
     <ClCompile Include="tiktikState.cpp" />
     <ClCompile Include="uiButton.cpp" />

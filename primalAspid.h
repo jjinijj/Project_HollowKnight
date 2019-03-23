@@ -5,7 +5,7 @@ class player;
 class bulletManager;
 class primalAspid : public enemy
 {
-private:
+public:
 
 	enum 
 	{
@@ -14,6 +14,11 @@ private:
 
 		// 플레이어와 최대 인접하는 거리. 이 거리 안에서 공격을 하고 도망갈거임
 		CLOSEST_RANGE = 200,
+
+		PRIMALASPID_WIDTH = 100,
+		PRIMALASPID_HEIGHT = 100,
+
+		PRIMALASPID_ANI_SPEED = 5,
 
 		BULLET_SIZE = 50,
 	};
@@ -31,22 +36,32 @@ private:
 	};
 
 	player* _target;
-	bulletManager* _bulletM;
 	float _angle;
 
-	const char* _bulletImgName;
-	const char* _bulletPangImgName;
+	bool _isFire;
 
 public:
-	HRESULT init(POINTF position, unsigned int uid);
+	HRESULT init(UINT uid, float x, float y);
+	void release();
 	void update();
-	void move();
+	void render();
+
+	void attack();
+
+	bool checkTargetInViewRange();
+	bool checkTargetInAttackRange();
+
+	void moveToTarget();
+	void moveFromTarget();
 	void dead();
-	bool isFire();
+
 	void bulletFire();
 	POINTF getBulletFirePoint();
 
-	void setBulletImgNames(const char* fireImgName, const char* pangImgName) {_bulletImgName = fireImgName; _bulletPangImgName = pangImgName;}
-	void setPlayerLink(player* target) {_target = target;}
-	void setBulletMLink(bulletManager* bulletM) {_bulletM = bulletM;}
+	void setPlayerLink(player* target) { _target = target; }
+	
+	bool isFire()						{ return _isFire; }
+
+private:
+	void fixPosition();
 };

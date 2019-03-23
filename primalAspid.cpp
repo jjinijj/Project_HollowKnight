@@ -1,202 +1,132 @@
 #include "stdafx.h"
 #include "primalAspid.h"
+#include "mapData.h"
+#include "terrain.h"
 #include "player.h"
-#include "ObjectManager.h"
-#include "bulletManager.h"
 
-HRESULT primalAspid::init(POINTF position, unsigned int uid)
+HRESULT primalAspid::init(UINT uid, float x, float y)
 {
-	enemy::init(position, uid);
+	enemy::init(uid, x, y);
+	_subType = eEnemy_Primalaspid;
+	
+	_width = PRIMALASPID_WIDTH;
+	_height = PRIMALASPID_HEIGHT;
+	_colWidth = PRIMALASPID_WIDTH;
+	_colHeight = PRIMALASPID_HEIGHT;
+
+
 	{
-		animation* anim = new animation;
 		image* img = IMAGEMANAGER->findImage("primalAspid_move");
-		anim->init(img, true, 0, img->GetMaxFrameX(), 5, _dir);
-		_animMap.insert(make_pair(eIDLE, anim));
-
-		_imgSize.x = img->GetFrameWidth();
-		_imgSize.y = img->GetFrameWidth();
-		_imgSizeHalf.x = img->GetFrameWidth() / 2;
-		_imgSizeHalf.y = img->GetFrameWidth() / 2;
+		ANIMANAGER->addArrayFrameAnimation(_uid, eIDLE, "primalAspid_move"
+										   ,0, img->GetMaxFrameX(), PRIMALASPID_ANI_SPEED, true);
 	}
 
 	{
-		animation* anim = new animation;
+		image* img = IMAGEMANAGER->findImage("primalAspid_move");
+		ANIMANAGER->addArrayFrameAnimation(_uid, eMOVE_APPROACH, "primalAspid_move"
+										   ,0, img->GetMaxFrameX(), PRIMALASPID_ANI_SPEED, true);
+	}
+
+	{
+		image* img = IMAGEMANAGER->findImage("primalAspid_move");
+		ANIMANAGER->addArrayFrameAnimation(_uid, eMOVE_FARWAY, "primalAspid_move"
+										   ,0, img->GetMaxFrameX(), PRIMALASPID_ANI_SPEED, true);
+	}
+
+	{
 		image* img = IMAGEMANAGER->findImage("primalAspid_attack");
-		anim->init(img, false, 0, img->GetMaxFrameX(), 5, _dir);
-		anim->SetEventFrameX(img->GetMaxFrameX());
-		_animMap.insert(make_pair(eATTACK, anim));
+		ANIMANAGER->addArrayFrameAnimation(_uid, eATTACK, "primalAspid_attack"
+										   ,0, img->GetMaxFrameX(), img->GetMaxFrameX(), PRIMALASPID_ANI_SPEED, false);
 	}
 
 	{
-		animation* anim = new animation;
+
 		image* img = IMAGEMANAGER->findImage("primalAspid_dead");
-		anim->init(img, false, 0, img->GetMaxFrameX(), 10, _dir);
-		_animMap.insert(make_pair(eDEAD, anim));
+		ANIMANAGER->addArrayFrameAnimation(_uid, eDEAD, "primalAspid_dead"
+										   ,0, img->GetMaxFrameX(), PRIMALASPID_ANI_SPEED, true);
 	}
 
-	_colSize.x = _imgSize.x - 50;
-	_colSize.y = _imgSize.y - 50;
-	_anim = _animMap[eIDLE];
-	_anim->start();
-	_hp = 3;
-	_speed = 3;
 
-	_type = eENEMY_PRIMALASPID;
-	_dirUD = eDIRECTION_NONE;
-
-	_collision = {   (int)_position.x - _colSize.x / 2, (int)_position.y - _colSize.y
-					,(int)_position.x + _colSize.x / 2, (int)_position.y};
-
+	_dir	= (eDirection)RND->getInt(eUP);
+	_dirUD	= eDirection_None;
 
 	return S_OK;
+}
+
+void primalAspid::release()
+{
+	enemy::release();
+	_target = nullptr;
 }
 
 void primalAspid::update()
 {
 	enemy::update();
-	move();
 }
 
-void primalAspid::move()
+void primalAspid::render()
 {
-	if(nullptr == _target )
-		return;
+	enemy::render();
+}
 
+void primalAspid::attack()
+{
+	_isFire = true;
+}
 
-	// 따라가기
-	if ( eMOVE_APPROACH == _state )
-	{
-		if ( CheckInRange(MakePointF(_target->getPositionX(), _target->getPositionY()), MakePointF(_position.x, _position.y), CLOSEST_RANGE) )
-		{
-			changeState(eATTACK);
-		}
-		else
-		{
-			_angle = atan2f(_target->getPositionY() - _position.y, _target->getPositionX() - _position.x);
-			_position.x += cosf(_angle) * _speed;
-			_position.y += sinf(_angle) * _speed;
-		}
-	}
-	// 도망
-	else if ( eMOVE_FARWAY == _state )
-	{
-		if ( !CheckInRange(MakePointF(_target->getPositionX(), _target->getPositionY()), MakePointF(_position.x, _position.y), SIGHT_RANGE) )
-		{
-			_state = eIDLE;
-		}
-		else
-		{
-			_angle = atan2f(_target->getPositionY() - _position.y, _target->getPositionX() - _position.x);
-			_position.x -= cosf(_angle) * _speed;
-			_position.y -= sinf(_angle) * _speed;
-		}
-	}
-	// 대기
-	else if(eIDLE == _state )
-	{
-		if ( CheckInRange(MakePointF(_target->getPositionX(), _target->getPositionY()), MakePointF(_position.x, _position.y), SIGHT_RANGE) )
-		{
-			_angle = atan2f(_target->getPositionY() - _position.y, _target->getPositionX() - _position.x);
+bool primalAspid::checkTargetInViewRange()
+{
+	if (CheckInRange( MakePointF(_target->getPosX(), _target->getPosY())
+					 , MakePointF(_x, _y), SIGHT_RANGE) )
+		return true;
+	else
+		return false;
+}
 
-			_position.x += cosf(_angle) * _speed;
-			_position.y += sinf(_angle) * _speed;
+bool primalAspid::checkTargetInAttackRange()
+{
+	if (CheckInRange( MakePointF(_target->getPosX(), _target->getPosY())
+					, MakePointF(_x, _y), CLOSEST_RANGE) )
+		return true;
+	else
+		return false;
+}
 
-			_state = eMOVE_APPROACH;
-		}
-	}
-	// 공격
-	else if ( eATTACK == _state )
-	{
-		if ( !_anim->IsPlayingAnimation() )
-		{
-			changeState(eIDLE);
-			_state = eMOVE_FARWAY;
-		}
-	}
+void primalAspid::moveToTarget()
+{
+	_angle = atan2f(_target->getPosX() - _y, _target->getPosX() - _x);
+	_x += cosf(_angle) * _speed;
+	_y += sinf(_angle) * _speed;
+	fixPosition();
+}
 
-	_collision = {   (int)_position.x - _colSize.x / 2, (int)_position.y - _colSize.y
-					,(int)_position.x + _colSize.x / 2, (int)_position.y};
+void primalAspid::moveFromTarget()
+{
+	_angle = atan2f(_target->getPosX() - _y, _target->getPosX() - _x);
+	_x -= cosf(_angle) * _speed;
+	_y -= sinf(_angle) * _speed;
+	fixPosition();
+}
 
-	if(nullptr == _objM)
-		return;
+void primalAspid::fixPosition()
+{
+	enemy::fixPosition();
 
-	lObject* objList = _objM->getObjectList(eOBJECT_GROUND);
-
-	if(objList->size() == 0)
-		return;
-
-	int offsetX = 0;
-	int offsetY = 0;
-	gameObject* obj = nullptr;
-	RECT objCol = {};
-	ilObject end = objList->end();
-
-	for ( ilObject iter = objList->begin(); end != iter; ++iter )
-	{
-		obj		= (*iter);
-		objCol	= ( obj->getCollision() );
-
-		if( !CheckIntersectRect(_collision, objCol) )
-			continue;
-
-		offsetX = GetIntersectOffsetX_doNotBoard(_collision, objCol);
-		offsetY = GetIntersectOffsetY_doNotBoard(_collision, objCol);
-
-		// 상하
-		if ( objCol.left <= _collision.left && _collision.right < objCol.right )
-		{
-			_position.y += offsetY;
-		} 
-		// 좌우
-		else if ( objCol.top <= _collision.top && _collision.bottom <= objCol.bottom )
-		{
-			_position.x += offsetX;
-		}
-		// 모서리
-		else if ( abs(offsetX) < abs(offsetY) )
-		{
-			_position.x += offsetX;
-		}
-		// 모서리
-		else
-		{
-			_position.y += offsetY;
-		}
-	}
-
-	if(_target->getPositionX() < _position.x )
-		_anim->SetFrameY(eLEFT);
-	else 
-		_anim->SetFrameY(eRIGHT);
+	if(_target->getPosX() < _x )
+		_dir = eLEFT;
+	else
+		_dir = eRIGHT;
 }
 
 void primalAspid::dead()
 {
-	enemy::dead();
-	changeState(eDEAD);
-}
-
-bool primalAspid::isFire()
-{
-	if (eATTACK == _state)
-	{
-		if (_anim->IsEventFrame() && !_anim->isDoEvent())
-		{
-			return true;
-		}
-	}
-	return false;
+	//enemy::dead();
+	//changeState(eDEAD);
 }
 
 void primalAspid::bulletFire()
 {
-	if (eATTACK == _state)
-	{
-		if (_anim->IsEventFrame() && !_anim->isDoEvent())
-		{
-			_anim->SetEventFlag(true);
-		}
-	}
+	_isFire = false;
 }
 
 POINTF primalAspid::getBulletFirePoint()
@@ -204,11 +134,11 @@ POINTF primalAspid::getBulletFirePoint()
 	POINTF pof;
 
 	if (eRIGHT == _dir)
-		pof.x = _position.x + _colSize.x / 2;
+		pof.x = _x + _colWidth / 2.f;
 	else
-		pof.x = _position.x - _colSize.x / 2;
+		pof.x = _x - _colWidth / 2.f;
 
-	pof.y = _position.y - _colSize.y / 2;
+	pof.y = _y - _colHeight / 2.f;
 
 	return pof;
 }

@@ -77,11 +77,11 @@ HRESULT tiktik::init(UINT uid, float x, float y)
 	}
 
 	_hp = TIKTIK_MAX_HP;
-	_speed = TIKTIK_MOVE_SPEED;
+	_speed = static_cast<float>(TIKTIK_MOVE_SPEED);
 
 
-	_collision = {   _x - TIKTIK_WIDTH / 2, _y - TIKTIK_HIEGHT
-					,_x + TIKTIK_WIDTH / 2, _y};
+	_collision = {   _x - TIKTIK_WIDTH / 2.f, _y - TIKTIK_HIEGHT
+					,_x + TIKTIK_WIDTH / 2.f, _y};
 
 	tiktikMove* state = new tiktikMoveOn;
 	state->init(this);
@@ -140,6 +140,7 @@ void tiktik::mapDataLink(mapData* data)
 	{
 		_area = ter;
 		_areaCol = _area->getCollision();
+		fixPosition();
 	}
 }
 
@@ -223,41 +224,41 @@ void tiktik::moveSiedDown()
 void tiktik::climbSideToOn()
 {
 	if(eRIGHT == _dir)
-		_x += 2;
+		_x += _speed;
 	else
-		_x -= 2;
+		_x -= _speed;
 
-	_y -= 2;
+	_y -= _speed;
 }
 
 void tiktik::climbSideToDown()
 {
 	if(eRIGHT == _dir)
-		_x += 2;
+		_x += _speed;
 	else
-		_x -= 2;
+		_x -= _speed;
 
-	_y += 2;
+	_y += _speed;
 }
 
 void tiktik::climbOnToSide()
 {
 	if(eRIGHT == _dir)
-		_x += 2;
+		_x += _speed;
 	else
-		_x -= 2;
+		_x -= _speed;
 
-	_y += 2;
+	_y += _speed;
 }
 
 void tiktik::climbUnderToSide()
 {
 	if(eRIGHT == _dir)
-		_x += 2;
+		_x += TIKTIK_MOVE_SPEED;
 	else
-		_x -= 2;
+		_x -= TIKTIK_MOVE_SPEED;
 
-	_y -= 2;
+	_y -= TIKTIK_MOVE_SPEED;
 }
 
 
@@ -290,4 +291,30 @@ void tiktik::changeState(eSTATE state)
 		_state = tiktikState;
 		tiktikState->start();
 	}
+}
+
+void tiktik::fixPosition()
+{
+	if (!CheckIntersectRect(_collision, _areaCol))
+	{
+		_y = _areaCol.top;
+	}
+	else
+	{
+		float offsetX = GetIntersectOffsetX_doNotBoard(_collision, _areaCol);
+		float offsetY = GetIntersectOffsetY_doNotBoard(_collision, _areaCol);
+
+		// ªÛ«œ
+		if (_areaCol.left <= _collision.left && _collision.right < _areaCol.right )
+		{
+			_y += offsetY;
+		} 
+		// ¡¬øÏ
+		else if ( _areaCol.top <= _collision.top && _collision.bottom <= _areaCol.bottom )
+		{
+			_x += offsetX;
+		}
+	}
+
+	updateCollision();
 }

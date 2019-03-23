@@ -9,7 +9,8 @@ class tiktik : public enemy
 public:
 	enum
 	{
-		TIKTIK_ANI_SPEED = 10,
+		TIKTIK_ANI_SPEED = 5,
+		TIKTIK_ANI__CORNER_SPEED = 1,
 		
 		TIKTIK_MOVE_SPEED = 1,
 		TIKTIK_MAX_HP = 2,
@@ -69,5 +70,6 @@ public:
 
 private:
 	void changeState(eSTATE state);
+	void fixPosition();
 
 };

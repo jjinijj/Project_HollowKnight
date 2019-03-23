@@ -339,6 +339,12 @@
     <ClInclude Include="tiktikState.h">
       <Filter>PlayGround\actor\enemyState</Filter>
     </ClInclude>
+    <ClInclude Include="primalAspid.h">
+      <Filter>PlayGround\actor\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="primalAspidState.h">
+      <Filter>PlayGround\actor\enemyState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -525,6 +531,12 @@
       <Filter>2DFramework</Filter>
     </ClCompile>
     <ClCompile Include="tiktikState.cpp">
+      <Filter>PlayGround\actor\enemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="primalAspid.cpp">
+      <Filter>PlayGround\actor\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="primalAspidState.cpp">
       <Filter>PlayGround\actor\enemyState</Filter>
     </ClCompile>
   </ItemGroup>
