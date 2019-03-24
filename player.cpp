@@ -3,10 +3,12 @@
 #include "playerState.h"
 #include "jumpState.h"
 #include "attackState.h"
+#include "gestureState.h"
 #include "mapData.h"
 #include "terrain.h"
 #include "animation.h"
 #include "enemy.h"
+#include "npc.h"
 #include "actorManager.h"
 
 player::player()
@@ -184,6 +186,30 @@ void player::regen()
 {
 }
 
+void player::lookUp()
+{
+}
+
+void player::lookDown()
+{
+}
+
+void player::talkStart()
+{
+}
+
+void player::nextTalk()
+{
+}
+
+void player::endTalk()
+{
+}
+
+void player::enterPortal()
+{
+}
+
 //===================================================================================================
 
 bool player::checkDirection(eDirection dir)
@@ -191,6 +217,38 @@ bool player::checkDirection(eDirection dir)
 	bool result = (_dir & dir) == dir;
 
 	return result;
+}
+
+bool player::checkPossibleTalk()
+{
+	bool check = false;
+
+	map<UINT, npc*> npcs = _actorM->getNPCs();
+
+	map<UINT, npc*>::iterator iter = npcs.begin();
+	map<UINT, npc*>::iterator end = npcs.end();
+	for(iter; end != iter; ++iter)
+	{
+		npc* n = iter->second;
+		if (CheckInRange(MakePointF(_x, _y), MakePointF(n->getPosX(), n->getPosY()), PLAYER_SIZE_WIDE_HALF))
+		{
+			_talkTarget = n;
+			check = true;
+			break;
+		}
+	}
+
+	return check;
+}
+
+bool player::checkPortal()
+{
+	return false;
+}
+
+bool player::checkPossibleSit()
+{
+	return false;
 }
 
 //===================================================================================================
@@ -287,6 +345,30 @@ void player::initState()
 		st->init(this);
 		_stateMap.insert(make_pair(ePlayer_State_Dead, st));
 	}
+	// look up
+	{
+		playerState* st = new lookUpState;
+		st->init(this);
+		_stateMap.insert(make_pair(ePlayer_State_Look_Up, st));
+	}
+	// look up stay
+	{
+		playerState* st = new lookUpStayState;
+		st->init(this);
+		_stateMap.insert(make_pair(ePlayer_State_Look_Stay, st));
+	}
+	// look down
+	{
+		playerState* st = new lookDownState;
+		st->init(this);
+		_stateMap.insert(make_pair(ePlayer_State_Look_Down, st));
+	}
+	// talk
+	{
+		playerState* st = new talkState;
+		st->init(this);
+		_stateMap.insert(make_pair(ePlayer_State_Talk, st));
+	}
 
 	// set idle
 	_state = _stateMap[ePlayer_State_Idle];
@@ -376,14 +458,21 @@ void player::initAnimaion()
 	{
 		image* img = IMAGEMANAGER->findImage("knight_lookup");
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Look_Up, "knight_lookup"
-										   , 0, img->GetMaxFrameX(), PLAYER_ANI_SPEED, true);
+										   , 0, img->GetMaxFrameX() - 1, PLAYER_ANI_SPEED, false);
+	}
+
+	// animation look up stay
+	{
+		image* img = IMAGEMANAGER->findImage("knight_lookup");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, eplayer_Ani_Look_Up_Loop, "knight_lookup"
+										   , 1, img->GetMaxFrameX() - 1, PLAYER_ANI_SPEED, true);
 	}
 
 	// animation look down
 	{
 		image* img = IMAGEMANAGER->findImage("knight_lookdown");
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Look_Down, "knight_lookdown"
-										   , 0, img->GetMaxFrameX(), PLAYER_ANI_SPEED, true);
+										   , 0, img->GetMaxFrameX(), 7, true);
 	}
 
 	// animation dead

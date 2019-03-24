@@ -64,6 +64,16 @@ void npc::changeState()
 {
 }
 
+bool npc::isTalkEnd()
+{
+	return false;
+}
+
 void npc::talkStart()
 {
+}
+
+wstring npc::getNextDialog()
+{
+	return wstring();
 }

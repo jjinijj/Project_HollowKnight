@@ -4,22 +4,25 @@ class npc :	public actorBase
 {
 protected:
 	UINT _dialogIdx;
+	map<UINT, vector<wstring>> _dialogMap;
 
 public:
 	npc();
 	~npc();
 
-	HRESULT init();
-	HRESULT init(UINT uid, float x, float y);
-	void release();
-	void update();
-	void render();
+	virtual HRESULT init();
+	virtual HRESULT init(UINT uid, float x, float y);
+	virtual void release();
+	virtual void update();
+	virtual void render();
 
-	ACTORPACK* makePack();
-	void loadPack(ACTORPACK* pack);
+	virtual ACTORPACK* makePack();
+	virtual void loadPack(ACTORPACK* pack);
 
-	void changeState();
+	virtual void changeState();
 
-	void talkStart();
+	virtual bool isTalkEnd();
+	virtual void talkStart();
+	virtual wstring getNextDialog();
 };
 

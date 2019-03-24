@@ -4,6 +4,7 @@
 class playerState;
 class gameObject;
 class mapData;
+class npc;
 class player : public singletonBase<player>
 {
 public:
@@ -62,7 +63,11 @@ public:
 		ePlayer_State_Attack,		// 근거리 공격
 		ePlayer_State_StandOff,		// 원거리 공격
 
-		ePlayer_State_Look,			// (위로or아래로)보기
+		ePlayer_State_Look_Up,		// 위로 보기
+		ePlayer_State_Look_Down,	// 아래로 보기
+		ePlayer_State_Look_Stay,	// 계속 보기
+		
+		ePlayer_State_Talk,			// 대화
 
 		ePlayer_State_None,			// 상태없음
 		ePlayer_State_Count = ePlayer_State_None,
@@ -90,6 +95,7 @@ public:
 
 		ePlayer_Ani_Look_Up,	// 위로 보기
 		ePlayer_Ani_Look_Down,	// 아래로 보기
+		eplayer_Ani_Look_Up_Loop,// 위로 보기 반복
 
 		ePlayer_Ani_None,
 		ePlayer_Ani_Count = ePlayer_Ani_None,
@@ -132,6 +138,7 @@ private:
 	WORD _dir_atk;				// 공격 방향
 
 	actorManager* _actorM;
+	npc*		  _talkTarget;
 
 	map<UINT, playerState*> _stateMap;	// 상태 맵
 
@@ -193,6 +200,18 @@ public:
 	void dead();
 	// 리젠
 	void regen();
+	
+	// 보기
+	void lookUp();
+	void lookDown();
+
+	// 대화
+	void talkStart();
+	void nextTalk();
+	void endTalk();
+
+	// 씬 이동
+	void enterPortal();
 
 	//=====================================================
 	// check
@@ -202,6 +221,12 @@ public:
 	bool isStateFloating() { return  _isFloating; }
 	// 방향 확인
 	bool checkDirection(eDirection dir);
+	// 대화 가능한지 확인
+	bool checkPossibleTalk();
+	// 씬 이동 구역인지 확인
+	bool checkPortal();
+	// 앉을 수 있는지 확인
+	bool checkPossibleSit();
 
 	//=====================================================
 	// set

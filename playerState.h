@@ -104,6 +104,7 @@ public:
 	void end();
 };
 
+// Á×À½
 class deadState : public playerState
 {
 public:
@@ -112,3 +113,4 @@ public:
 	void start();
 	void end();
 };
+

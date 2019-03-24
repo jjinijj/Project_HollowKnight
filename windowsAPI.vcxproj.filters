@@ -357,6 +357,9 @@
     <ClInclude Include="bulletState.h">
       <Filter>PlayGround\actor\bulletState</Filter>
     </ClInclude>
+    <ClInclude Include="gestureState.h">
+      <Filter>PlayGround\player\state</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -556,6 +559,9 @@
     </ClCompile>
     <ClCompile Include="bulletState.cpp">
       <Filter>PlayGround\actor\bulletState</Filter>
+    </ClCompile>
+    <ClCompile Include="gestureState.cpp">
+      <Filter>PlayGround\player\state</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -153,12 +153,7 @@ void idleState::update()
 		_player->setDirectionRight();
 	}
 
-	if (KEYMANAGER->isStayKeyDown(VK_UP))
-		_player->setDirectionUp();
-	else if (KEYMANAGER->isStayKeyDown(VK_DOWN))
-		_player->setDirectionDown();
-	else
-		_player->setDirectionIdle();
+	setUpAndDownDirection();
 
 	if (KEYMANAGER->isOnceKeyDown('Z'))
 		_nextState = player::ePlayer_State_Flying;
@@ -169,8 +164,19 @@ void idleState::update()
 		_player->standOff();
 		_nextState = player::ePlayer_State_StandOff;
 	}
-	else if (_player->checkDirection(player::eDirection_Up) || _player->checkDirection(player::eDirection_Down))
-		_nextState = player::ePlayer_State_Look;
+	else if (_player->checkDirection(player::eDirection_Up))
+	{
+		if (_player->checkPossibleTalk())
+			_nextState = player::ePlayer_State_Talk;
+		else if (_player->checkPossibleSit())
+			_nextState = player::ePlayer_State_Sit;
+		else if (_player->checkPortal())
+			_player->enterPortal();
+		else
+			_nextState = player::ePlayer_State_Look_Up;
+	}
+	else if (_player->checkDirection(player::eDirection_Down))
+		_nextState = player::ePlayer_State_Look_Down;
 
 	if (_player->isStateFloating())
 		_nextState = player::ePlayer_State_Falling;
@@ -234,13 +240,7 @@ void walkState::update()
 	else
 		leftMove();
 
-	if (KEYMANAGER->isStayKeyDown(VK_UP))
-		_player->setDirectionUp();
-	else if (KEYMANAGER->isStayKeyDown(VK_DOWN))
-		_player->setDirectionDown();
-	else
-		_player->setDirectionIdle();
-
+	setUpAndDownDirection();
 
 	if (KEYMANAGER->isOnceKeyDown('Z'))
 		_nextState = player::ePlayer_State_Flying;
@@ -250,6 +250,16 @@ void walkState::update()
 	{
 		_player->standOff();
 		_nextState = player::ePlayer_State_StandOff;
+	}
+
+	if (_player->checkDirection(player::eDirection_Up))
+	{
+		if (_player->checkPossibleTalk())
+			_nextState = player::ePlayer_State_Talk;
+		else if (_player->checkPossibleSit())
+			_nextState = player::ePlayer_State_Sit;
+		else if (_player->checkPortal())
+			_player->enterPortal();
 	}
 
 	if (_player->isStateFloating() && player::ePlayer_State_None == _nextState)
@@ -351,3 +361,4 @@ void deadState::end()
 {
 	_player->regen();
 }
+
