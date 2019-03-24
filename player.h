@@ -1,5 +1,6 @@
 #pragma once
 #include "singletonBase.h"
+#include <functional>
 
 class playerState;
 class gameObject;
@@ -17,6 +18,9 @@ public:
 		PLAYER_ANI_SPEED_FAST = 13,
 		PLAYER_ATTACK_SPEED = 3,
 		PLAYER_MOVE_SPEED = 250,
+
+		// 시선
+		PLAYER_LOOK_SIGHT = 300,
 
 		// 플레이어 한 프레임 이미지 크기
 		PLAYER_SIZE_WIDE = 142,
@@ -66,6 +70,7 @@ public:
 		ePlayer_State_Look_Up,		// 위로 보기
 		ePlayer_State_Look_Down,	// 아래로 보기
 		ePlayer_State_Look_Stay,	// 계속 보기
+		ePlayer_State_Look_Down_Stay,// 계속 보기
 		
 		ePlayer_State_Talk,			// 대화
 
@@ -96,6 +101,7 @@ public:
 		ePlayer_Ani_Look_Up,	// 위로 보기
 		ePlayer_Ani_Look_Down,	// 아래로 보기
 		eplayer_Ani_Look_Up_Loop,// 위로 보기 반복
+		eplayer_Ani_Look_Down_Loop,// 아래로 보기 반복
 
 		ePlayer_Ani_None,
 		ePlayer_Ani_Count = ePlayer_Ani_None,
@@ -123,6 +129,8 @@ private:
 	float _x;					// 위치 : center
 	float _y;					// 위치 : bottom
 
+	float _sight;				// 위/아래 카매라 이동
+
 	mapData* _mapData;			// 맵 정보
 
 	playerState* _state;		// 현재 상태
@@ -140,6 +148,7 @@ private:
 	actorManager* _actorM;
 	npc*		  _talkTarget;
 
+	function<void(void)> _function;
 	map<UINT, playerState*> _stateMap;	// 상태 맵
 
 public:
@@ -214,6 +223,9 @@ public:
 	// 씬 이동
 	void enterPortal();
 
+	void sightResetUp();
+	void sightResetDown();
+
 	//=====================================================
 	// check
 	//=====================================================
@@ -276,5 +288,9 @@ private:
 	void fixPosition();
 	// 상태 찾기
 	playerState* findState(ePlayer_State state);
+	
+	// 시야 리셋
+	void sightDown();
+	void sightUp();
 };
 

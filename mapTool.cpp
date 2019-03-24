@@ -1714,7 +1714,12 @@ void mapTool::clickBtnInspector(eAttribute attr, uiButton* btn)
 	if (_select.obj)
 	{
 		if (eLayer_Actor != _select.layer)
+		{
 			_mapData->addTerrainAttribute(_select.layer, _select.obj->getUID(), attr);
+			terrain* ter = _mapData->getTerrain(_curLayer, _select.obj->getUID());
+			if (ter)
+				_select.infoSet(ter, ter->getAtrribute(), _curLayer);
+		}
 		else
 			btn->setState(eButton_Up);
 	}
@@ -1733,6 +1738,9 @@ void mapTool::clickUpBtnInspector(eAttribute attr)
 		if (eLayer_Actor != _select.layer)
 		{
 			_mapData->removeTerrainAttribute(_select.layer, _select.obj->getUID(), attr);
+			terrain* ter = _mapData->getTerrain(_curLayer, _select.obj->getUID());
+			if (ter)
+				_select.infoSet(ter, ter->getAtrribute(), _curLayer);
 			refreshDetailText();
 		}
 	}

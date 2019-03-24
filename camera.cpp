@@ -169,8 +169,8 @@ void camera::moveTraceTarget()
 	if (!_targetX || !_targetY)
 		return;
 
-	_x = *_targetX - (_scopeWidth / 2);
-	_y = *_targetY - (_scopeHeight / 2);
+	_x = *_targetX - (_scopeWidth / 2.f);
+	_y = *_targetY - (_scopeHeight * 0.9f);
 
 	fixCameroPos();
 }

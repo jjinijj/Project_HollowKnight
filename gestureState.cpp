@@ -54,10 +54,17 @@ void lookUpStayState::update()
 	// 위,아래
 	setUpAndDownDirection();
 
-	if(_player->checkDirection(player::eDirection_Up))
+	if(KEYMANAGER->isOnceKeyDown('X'))
+		_nextState = player::ePlayer_State_Attack;
+	else if (KEYMANAGER->isOnceKeyDown('Z'))
+		_nextState = player::ePlayer_State_Flying;
+	else if(_player->checkDirection(player::eDirection_Up))
 		_player->lookUp();
 	else
 		end();
+
+	if(player::ePlayer_State_None != _nextState)
+		_player->sightResetDown();
 }
 
 void lookUpStayState::start()
@@ -89,13 +96,8 @@ HRESULT lookDownState::init(player* p)
 void lookDownState::update()
 {
 	playerState::update();
-	
-	// 위,아래
-	setUpAndDownDirection();
 
-	if(_player->checkDirection(player::eDirection_Down))
-		_player->lookDown();
-	else
+	if(!_ani->isPlay())
 		end();
 }
 
@@ -106,6 +108,49 @@ void lookDownState::start()
 }
 
 void lookDownState::end()
+{
+	_nextState = player::ePlayer_State_Look_Down_Stay;
+}
+
+
+HRESULT lookDownStayState::init(player * p)
+{
+	HRESULT hr = playerState::init(p);
+	assert(S_OK == hr);
+
+	_state = player::ePlayer_State_Look_Down_Stay;
+	setAnimation(player::eplayer_Ani_Look_Down_Loop);
+
+	return S_OK;
+}
+
+void lookDownStayState::update()
+{
+	playerState::update();
+
+	// 위,아래
+	setUpAndDownDirection();
+
+	if(KEYMANAGER->isOnceKeyDown('X'))
+		_nextState = player::ePlayer_State_Attack;
+	else if (KEYMANAGER->isOnceKeyDown('Z'))
+		_nextState = player::ePlayer_State_Flying;
+	else if(_player->checkDirection(player::eDirection_Down))
+		_player->lookDown();
+	else
+		end();
+
+	if(player::ePlayer_State_None != _nextState)
+		_player->sightResetUp();
+}
+
+void lookDownStayState::start()
+{
+	playerState::start();
+	_ani->start();
+}
+
+void lookDownStayState::end()
 {
 	_nextState = player::ePlayer_State_Idle;
 }

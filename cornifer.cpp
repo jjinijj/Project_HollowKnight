@@ -18,6 +18,7 @@ HRESULT cornifer::init()
 	_height = CORNIFER_HEIGHT;
 	_colWidth = CORNIFER_WIDTH;
 	_colHeight = CORNIFER_HEIGHT;
+	_dir = eRIGHT;
 
 	return S_OK;
 }
@@ -46,7 +47,7 @@ HRESULT cornifer::init(UINT uid, float x, float y)
 	_state = state;
 	_state->start();
 
-	_dir = eRIGHT;
+	
 
 	_dialogIdx = NULL;
 	updateCollision();

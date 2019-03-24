@@ -45,6 +45,20 @@ public:
 	void end();
 };
 
+// 아래 보기
+class lookDownStayState : public playerState
+{
+public:
+	lookDownStayState() {}
+	~lookDownStayState(){}
+
+	HRESULT init(player* p);
+	void update();
+
+	void start();
+	void end();
+};
+
 // 대화중
 class talkState : public playerState
 {

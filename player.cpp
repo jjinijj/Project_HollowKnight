@@ -40,6 +40,9 @@ HRESULT player::init(float x, float y)
 	_power = 1;
 	_hp = 5;
 
+	_sight = 0.f;
+	_function = NULL;
+
 	return S_OK;
 }
 
@@ -81,6 +84,9 @@ void player::update()
 
 	fixPosition();
 	updateCollision();
+
+	if(_function)
+		_function();
 
 	DEVTOOL->pushBackDebugText(format(L"state : %d", _state->getState()));
 }
@@ -189,10 +195,18 @@ void player::regen()
 
 void player::lookUp()
 {
+	CAMERA->setPosY(CAMERA->getPosY() - _sight);
+	_sight += 10.f;
+	if(PLAYER_LOOK_SIGHT < _sight)
+		_sight = static_cast<float>(PLAYER_LOOK_SIGHT);
 }
 
 void player::lookDown()
 {
+	CAMERA->setPosY(CAMERA->getPosY() + _sight);
+	_sight += 10.f;
+	if(PLAYER_LOOK_SIGHT < _sight)
+		_sight = static_cast<float>(PLAYER_LOOK_SIGHT);
 }
 
 void player::talkStart()
@@ -228,6 +242,16 @@ bool player::isTalkEnd()
 
 void player::enterPortal()
 {
+}
+
+void player::sightResetUp()
+{
+	_function = std::move(std::bind(&player::sightUp, this));
+}
+
+void player::sightResetDown()
+{
+	_function = std::move(std::bind(&player::sightDown, this));
 }
 
 //===================================================================================================
@@ -383,6 +407,12 @@ void player::initState()
 		st->init(this);
 		_stateMap.insert(make_pair(ePlayer_State_Look_Down, st));
 	}
+	// look down stay
+	{
+		playerState* st = new lookDownStayState;
+		st->init(this);
+		_stateMap.insert(make_pair(ePlayer_State_Look_Down_Stay, st));
+	}
 	// talk
 	{
 		playerState* st = new talkState;
@@ -492,7 +522,14 @@ void player::initAnimaion()
 	{
 		image* img = IMAGEMANAGER->findImage("knight_lookdown");
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Look_Down, "knight_lookdown"
-										   , 0, img->GetMaxFrameX(), 7, true);
+										   , 0, img->GetMaxFrameX(), 7, false);
+	}
+
+	// animation look down stay
+	{
+		image* img = IMAGEMANAGER->findImage("knight_lookdown");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, eplayer_Ani_Look_Down_Loop, "knight_lookdown"
+										   , 0, img->GetMaxFrameX(), 7, false);
 	}
 
 	// animation dead
@@ -513,6 +550,7 @@ void player::changeState(ePlayer_State state)
 	{
 		_state = _stateMap[state];
 		_state->start();
+		//_sight = 0.f;
 	}
 }
 
@@ -625,4 +663,26 @@ playerState* player::findState(ePlayer_State state)
 		pState = _stateMap[state];
 
 	return pState;
+}
+
+void player::sightDown()
+{
+	CAMERA->setPosY(CAMERA->getPosY() - _sight);
+	_sight -= 10.f;
+	if (_sight < 0.f)
+	{
+		_sight = 0.f;
+		_function = NULL;
+	}
+}
+
+void player::sightUp()
+{
+	CAMERA->setPosY(CAMERA->getPosY() + _sight);
+	_sight -= 10.f;
+	if (_sight < 0.f)
+	{
+		_sight = 0.f;
+		_function = NULL;
+	}
 }
