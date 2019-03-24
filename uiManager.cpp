@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "uiManager.h"
+#include "windowDialog.h"
 
 
 uiManager::uiManager()
@@ -56,7 +57,7 @@ void uiManager::insertUI(eUIType uid, uiBase* ui)
 
 uiBase* uiManager::getUI(eUIType uid)
 {
-	if( _uiMap.find(uid) != _uiMap.end() )
+	if( _uiMap.find(uid) == _uiMap.end() )
 		return nullptr;
 
 	return _uiMap[uid];

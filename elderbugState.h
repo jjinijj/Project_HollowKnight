@@ -2,21 +2,39 @@
 #include "actorState.h"
 
 class elderbug;
-class elderbugIdle: public actorState
+class elderbugState : public actorState
 {
-private:
+protected:
 	elderbug* _elderbug;
 
 public:
-	elderbugIdle();
-	~elderbugIdle();
+	elderbugState();
+	~elderbugState();
 
-	HRESULT init(elderbug* actor);
-	void release();
-	void update();
-	void render();
+	virtual HRESULT init(elderbug* actor);
+	virtual void release();
+	virtual void update();
+	virtual void render();
 
-	void start();
-	void end();
+	virtual void start();
+	virtual void end();
 };
 
+
+class elderbugIdle: public elderbugState
+{
+public:
+	elderbugIdle() {}
+	~elderbugIdle(){}
+
+	HRESULT init(elderbug* actor);
+};
+
+class elderbugTalk : public elderbugState
+{
+public:
+	elderbugTalk() {}
+	~elderbugTalk(){}
+
+	HRESULT init(elderbug* actor);
+};

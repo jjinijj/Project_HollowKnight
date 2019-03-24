@@ -22,6 +22,8 @@ HRESULT npc::init(UINT uid, float x, float y)
 	actorBase::init(uid, x, y);
 	_type = eActor_Npc;
 
+	initSetDialog();
+
 	return S_OK;
 }
 
@@ -60,9 +62,7 @@ void npc::loadPack(ACTORPACK* pack)
 	}
 }
 
-void npc::changeState()
-{
-}
+
 
 bool npc::isTalkEnd()
 {
@@ -70,6 +70,10 @@ bool npc::isTalkEnd()
 }
 
 void npc::talkStart()
+{
+}
+
+void npc::talkEnd()
 {
 }
 

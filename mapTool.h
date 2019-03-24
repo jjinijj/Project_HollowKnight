@@ -22,9 +22,6 @@ class uiText;
 class terrain;
 class gameObject;
 
-
-
-
 enum eToolMode
 {
 	eToolMode_DrawTerrain,

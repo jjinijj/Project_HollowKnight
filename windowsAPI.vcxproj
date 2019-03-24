@@ -222,6 +222,7 @@
     <ClInclude Include="uiScroll.h" />
     <ClInclude Include="uiText.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="windowDialog.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="action.cpp" />
@@ -295,6 +296,7 @@
     <ClCompile Include="uiScroll.cpp" />
     <ClCompile Include="uiText.cpp" />
     <ClCompile Include="utils.cpp" />
+    <ClCompile Include="windowDialog.cpp" />
     <ClCompile Include="windowsAPI.cpp" />
   </ItemGroup>
   <ItemGroup>

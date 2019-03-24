@@ -3,20 +3,20 @@
 #include "elderbug.h"
 #include "animation.h"
 
-elderbugIdle::elderbugIdle()
+
+elderbugState::elderbugState()
 : _elderbug(nullptr)
 {
 }
 
-elderbugIdle::~elderbugIdle()
+elderbugState::~elderbugState()
 {
 }
 
-HRESULT elderbugIdle::init(elderbug* actor)
+HRESULT elderbugState::init(elderbug* actor)
 {
 	actorState::init(actor);
-	_aniKey = elderbug::eIdle;
-	setAnimaion(actor->getUID(), _aniKey);
+	_elderbug = actor;
 
 	_width = elderbug::ELDERBUG_WIDTH;
 	_height = elderbug::ELDERBUG_HEIGHT;
@@ -24,28 +24,58 @@ HRESULT elderbugIdle::init(elderbug* actor)
 	return S_OK;
 }
 
-void elderbugIdle::release()
+void elderbugState::release()
 {
 	actorState::release();
+	_elderbug = nullptr;
 }
 
-void elderbugIdle::update()
+void elderbugState::update()
 {
 	actorState::update();
 }
 
-void elderbugIdle::render()
+void elderbugState::render()
 {
 	actorState::render();
 }
 
-void elderbugIdle::start()
+void elderbugState::start()
 {
 	actorState::start();
 	_ani->start();
 }
 
-void elderbugIdle::end()
+void elderbugState::end()
 {
 	actorState::end();
+}
+
+
+//=============================================
+// idle
+//=============================================
+HRESULT elderbugIdle::init(elderbug* actor)
+{
+	elderbugState::init(actor);
+
+	_state = elderbug::eIdle;
+	_aniKey = elderbug::eIdle;
+	setAnimaion(actor->getUID(), _aniKey);
+
+	return S_OK;
+}
+
+//=============================================
+// idle
+//=============================================
+HRESULT elderbugTalk::init(elderbug* actor)
+{
+	elderbugState::init(actor);
+
+	_state = elderbug::eTalk;
+	_aniKey = elderbug::eTalk;
+	setAnimaion(actor->getUID(), _aniKey);
+
+	return S_OK;
 }

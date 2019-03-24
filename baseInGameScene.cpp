@@ -2,6 +2,7 @@
 #include "baseInGameScene.h"
 #include "mapData.h"
 #include "actorManager.h"
+#include "windowDialog.h"
 
 
 baseInGameScene::baseInGameScene()
@@ -40,6 +41,13 @@ HRESULT baseInGameScene::init()
 	DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
 
 	setActors();
+
+	windowDialog* dialogUi = new windowDialog;
+	dialogUi->init();
+	dialogUi->setActive(true);
+	dialogUi->uiClose();
+	UIMANAGER->insertUI(eUI_Dialog, dialogUi);
+	UIMANAGER->setDialogUI(dialogUi);
 
 	//_actorM->createEnemy(WINSIZEX / 2.f, WINSIZEY / 2.f + 100.f, eEnemy_Gruzzer);
 	//_actorM->createNPC(WINSIZEX / 2.f, WINSIZEY / 2.f, eNpc_Elderbug);

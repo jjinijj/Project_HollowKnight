@@ -4,6 +4,8 @@ class npc :	public actorBase
 {
 protected:
 	UINT _dialogIdx;
+	int _idx;
+
 	map<UINT, vector<wstring>> _dialogMap;
 
 public:
@@ -19,10 +21,14 @@ public:
 	virtual ACTORPACK* makePack();
 	virtual void loadPack(ACTORPACK* pack);
 
-	virtual void changeState();
+	
 
 	virtual bool isTalkEnd();
 	virtual void talkStart();
+	virtual void talkEnd();
 	virtual wstring getNextDialog();
+
+protected:
+	virtual void initSetDialog() = 0;
 };
 

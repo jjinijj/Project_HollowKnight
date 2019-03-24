@@ -30,5 +30,13 @@ public:
 	void release();
 	void update();
 	void render();
+
+	bool isTalkEnd();
+	void talkStart() override;
+	void talkEnd() override;
+	wstring getNextDialog() override;
+
+private:
+	void initSetDialog();
 };
 

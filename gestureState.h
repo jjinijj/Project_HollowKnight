@@ -56,4 +56,5 @@ public:
 	void update();
 
 	void start();
+	void end();
 };

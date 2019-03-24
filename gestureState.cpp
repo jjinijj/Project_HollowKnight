@@ -133,13 +133,25 @@ void talkState::update()
 		setAnimation(player::eplayer_Ani_Look_Up_Loop);
 	}
 
-	if(KEYMANAGER->isOnceKeyDown('X'))
-		_player->nextTalk();
+	if (KEYMANAGER->isOnceKeyDown('X'))
+	{
+		if(_player->isTalkEnd())
+			end();
+		else
+			_player->nextTalk();
+	}
 }
 
 void talkState::start()
 {
 	playerState::start();
 	_ani->start();
+	_player->talkStart();
+}
+
+void talkState::end()
+{
+	_nextState = player::ePlayer_State_Idle;
+	_player->endTalk();
 }
 

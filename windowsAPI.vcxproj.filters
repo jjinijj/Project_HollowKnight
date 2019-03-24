@@ -360,6 +360,9 @@
     <ClInclude Include="gestureState.h">
       <Filter>PlayGround\player\state</Filter>
     </ClInclude>
+    <ClInclude Include="windowDialog.h">
+      <Filter>PlayGround\ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -562,6 +565,9 @@
     </ClCompile>
     <ClCompile Include="gestureState.cpp">
       <Filter>PlayGround\player\state</Filter>
+    </ClCompile>
+    <ClCompile Include="windowDialog.cpp">
+      <Filter>PlayGround\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

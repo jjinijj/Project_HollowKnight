@@ -15,6 +15,7 @@ uiText::~uiText()
 
 HRESULT uiText::init(float x, float y)
 {
+	uiObject::init();
 	_x = x;
 	_y = y;
 
@@ -28,9 +29,12 @@ void uiText::release()
 
 void uiText::update()
 {
+	uiObject::update();
 }
 
 void uiText::render()
 {
-	D2DMANAGER->drawText(_text.c_str(), _x, _y, _fontSize, _fontColor, true);
+	D2DMANAGER->drawText(_text.c_str()
+						 , getWorldPosition().x, getWorldPosition().y
+						 , _fontSize, _fontColor, true);
 }

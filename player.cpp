@@ -10,6 +10,7 @@
 #include "enemy.h"
 #include "npc.h"
 #include "actorManager.h"
+#include "windowDialog.h"
 
 player::player()
 {
@@ -196,14 +197,33 @@ void player::lookDown()
 
 void player::talkStart()
 {
+	if(_talkTarget)
+	{
+		_talkTarget->talkStart();
+		UIMANAGER->getUI(eUI_Dialog)->uiOpen();
+		UIMANAGER->getDialogUI()->setText(_talkTarget->getNextDialog());
+	}
 }
 
 void player::nextTalk()
 {
+	if(!_talkTarget->isTalkEnd())
+		UIMANAGER->getDialogUI()->setText(_talkTarget->getNextDialog());
 }
 
 void player::endTalk()
 {
+	_talkTarget->talkEnd();
+	_talkTarget = nullptr;
+	UIMANAGER->getUI(eUI_Dialog)->uiClose();
+}
+
+bool player::isTalkEnd()
+{
+	if (_talkTarget)
+		return _talkTarget->isTalkEnd();
+	else
+		return true;
 }
 
 void player::enterPortal()

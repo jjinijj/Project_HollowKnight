@@ -209,6 +209,7 @@ public:
 	void talkStart();
 	void nextTalk();
 	void endTalk();
+	bool isTalkEnd();
 
 	// æ¿ ¿Ãµø
 	void enterPortal();
