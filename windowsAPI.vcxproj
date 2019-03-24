@@ -158,6 +158,8 @@
     <ClInclude Include="baseScene.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="bulletState.h" />
+    <ClInclude Include="cornifer.h" />
+    <ClInclude Include="corniferState.h" />
     <ClInclude Include="dirtMouthScene.h" />
     <ClInclude Include="elderbug.h" />
     <ClInclude Include="elderbugState.h" />
@@ -236,6 +238,8 @@
     <ClCompile Include="baseScene.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="bulletState.cpp" />
+    <ClCompile Include="cornifer.cpp" />
+    <ClCompile Include="corniferState.cpp" />
     <ClCompile Include="dirtMouthScene.cpp" />
     <ClCompile Include="elderbug.cpp" />
     <ClCompile Include="elderbugState.cpp" />

@@ -250,7 +250,7 @@ bool player::checkPossibleTalk()
 	for(iter; end != iter; ++iter)
 	{
 		npc* n = iter->second;
-		if (CheckInRange(MakePointF(_x, _y), MakePointF(n->getPosX(), n->getPosY()), PLAYER_SIZE_WIDE_HALF))
+		if (CheckIntersectRect(_collision, n->getCollision()))
 		{
 			_talkTarget = n;
 			check = true;

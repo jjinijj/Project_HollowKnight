@@ -300,7 +300,7 @@ void mapTool::pickSampleEnd()
 				idx = 2;
 			else if(0 <= frameX && frameX <= 1 && 2 <= frameY && frameY < 4)
 				idx = 3;
-			else if(0 <= frameX && frameX <= 4 &&  4 <= frameY && frameY < 6)
+			else if(0 <= frameX && frameX <= 4 &&  6 <= frameY && frameY < 8)
 				idx = 4;
 			else if(3 < frameX && frameX <= 7 && 0 <= frameY && frameY < 4)
 				idx = 5;

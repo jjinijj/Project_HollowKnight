@@ -363,6 +363,12 @@
     <ClInclude Include="windowDialog.h">
       <Filter>PlayGround\ui</Filter>
     </ClInclude>
+    <ClInclude Include="cornifer.h">
+      <Filter>PlayGround\actor\npc</Filter>
+    </ClInclude>
+    <ClInclude Include="corniferState.h">
+      <Filter>PlayGround\actor\npcState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -568,6 +574,12 @@
     </ClCompile>
     <ClCompile Include="windowDialog.cpp">
       <Filter>PlayGround\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="cornifer.cpp">
+      <Filter>PlayGround\actor\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="corniferState.cpp">
+      <Filter>PlayGround\actor\npcState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

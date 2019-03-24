@@ -67,7 +67,7 @@ HRESULT elderbugIdle::init(elderbug* actor)
 }
 
 //=============================================
-// idle
+// talk
 //=============================================
 HRESULT elderbugTalk::init(elderbug* actor)
 {

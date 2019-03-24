@@ -303,7 +303,13 @@ npc* mapData::addNpc(float destX, float destY, eImageUID imgUid)
 			case eNpc_Sly:			{ break; }
 			case eNpc_Quirrel:		{ break; }
 			case eNpc_Iselda:		{ break; }
-			case eNpc_Cornifer:		{ break; }
+			case eNpc_Cornifer:	
+			{
+				actor = new cornifer;
+				width = cornifer::CORNIFER_WIDTH;
+				height = cornifer::CORNIFER_HEIGHT;
+				break;
+			}
 			case eNpc_TheLastStag:	{ break; }
 		}
 
@@ -827,7 +833,7 @@ void mapData::loadActorData(string fileName, int actorCnt)
 				case eNpc_Sly:				{ break; }
 				case eNpc_Quirrel:			{ break; }
 				case eNpc_Iselda:			{ break; }
-				case eNpc_Cornifer:			{ break; }
+				case eNpc_Cornifer:			{ actor = new cornifer; break; }
 				case eNpc_TheLastStag:		{ break; }
 			}
 

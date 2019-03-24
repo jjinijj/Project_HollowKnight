@@ -143,7 +143,7 @@ void loadingScene::loadImageData()
 
 	// npc
 	IMAGEMANAGER->addFrameImage("npc", L"image/npc.png", 800, 800, 10, 10);
-	IMAGEMANAGER->addFrameImage("cornifer", L"image/cornifer.png", 2219, 376, 7, 2);
+	IMAGEMANAGER->addFrameImage("cornifer", L"image/cornifer.png", 2219, 564, 7, 3);
 	IMAGEMANAGER->addFrameImage("elderbug", L"image/elderbug.png", 660, 320, 6, 2);
 
 	// item
