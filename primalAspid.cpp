@@ -42,7 +42,7 @@ HRESULT primalAspid::init(UINT uid, float x, float y)
 
 		image* img = IMAGEMANAGER->findImage("primalAspid_dead");
 		ANIMANAGER->addArrayFrameAnimation(_uid, eDEAD, "primalAspid_dead"
-										   ,0, img->GetMaxFrameX(), PRIMALASPID_ANI_SPEED, true);
+										   ,0, img->GetMaxFrameX(), 5, false);
 	}
 
 
@@ -128,8 +128,12 @@ void primalAspid::fixPosition()
 
 void primalAspid::dead()
 {
-	//enemy::dead();
-	//changeState(eDEAD);
+	enemy::dead();
+
+	primalState* ps = new primalDead;
+	ps->init(this);
+
+	changeState(ps);
 }
 
 void primalAspid::bulletFire()

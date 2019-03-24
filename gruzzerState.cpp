@@ -71,3 +71,47 @@ gruzzerDead::gruzzerDead()
 gruzzerDead::~gruzzerDead()
 {
 }
+
+HRESULT gruzzerDead::init(gruzzer* actor)
+{
+	actorState::init(actor);
+
+	_width = actor->getWidth();
+	_height = actor->getHeight();
+	
+	_gruzzer = actor;
+
+	_state = eDEAD;
+	
+	setAnimaion(_gruzzer->getUID(), eDEAD);
+	return S_OK;
+}
+
+void gruzzerDead::release()
+{
+	actorState::release();
+	_gruzzer = nullptr;
+}
+
+void gruzzerDead::update()
+{
+	actorState::update();
+	if(!_ani->isPlay())
+		end();
+}
+
+void gruzzerDead::render()
+{
+	actorState::render();
+}
+
+void gruzzerDead::start()
+{
+	actorState::start();
+	_ani->start();
+}
+
+void gruzzerDead::end()
+{
+	_gruzzer->setDisappear();
+}

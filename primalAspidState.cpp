@@ -176,14 +176,6 @@ void primalFarway::end()
 //=============================================
 // 
 //=============================================
-primalDead::primalDead()
-{
-}
-
-primalDead::~primalDead()
-{
-}
-
 HRESULT primalDead::init(primalAspid * actor)
 {
 	_state = primalAspid::eDEAD;
@@ -193,18 +185,14 @@ HRESULT primalDead::init(primalAspid * actor)
 	return S_OK;
 }
 
-void primalDead::release()
-{
-}
-
 void primalDead::update()
 {
-}
-
-void primalDead::start()
-{
+	primalState::update();
+	if(!_ani->isPlay())
+		end();
 }
 
 void primalDead::end()
 {
+	_primal->setDisappear();
 }

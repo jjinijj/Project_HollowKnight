@@ -107,6 +107,12 @@ void tiktik::render()
 	enemy::render();
 }
 
+void tiktik::dead()
+{
+	enemy::dead();
+	changeState(eDEAD);
+}
+
 ACTORPACK* tiktik::makePack()
 {
 	ACTORPACK* pack = enemy::makePack();
@@ -277,19 +283,12 @@ void tiktik::changeState(eSTATE state)
 		case eCLIMB_SIDE_TO_UNDER:	{ tiktikState = new tiktikClimbSideToDown;	tiktikState->init(this); break; }
 		case eCLIME_ON_TO_SIDE:		{ tiktikState = new tiktikClimbOnToSide;	tiktikState->init(this); break; }
 		case eCLIME_UNDER_TO_SIDE:	{ tiktikState = new tiktikClimbUnderToSide;	tiktikState->init(this); break; }
-		case eDEAD:
+		case eDEAD:					{ tiktikState = new tiktikDead;				tiktikState->init(this); break; }			
 			break;
 	}
 
 
-	if (tiktikState)
-	{
-		SAFE_RELEASE(_state);
-		SAFE_DELETE(_state);
-
-		_state = tiktikState;
-		tiktikState->start();
-	}
+	enemy::changeState(tiktikState);
 }
 
 void tiktik::fixPosition()

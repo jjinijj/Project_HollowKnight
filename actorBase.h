@@ -6,6 +6,7 @@ enum eActorType
 {
 	eActor_Enemy,
 	eActor_Npc,
+	eActor_Bullet,
 
 	eActor_None,
 	eActor_Count = eActor_None,
@@ -83,6 +84,6 @@ public:
 	float getHeight()	{ return _height;}
 
 protected:
-	void chansgeState(actorState* state);
+	void changeState(actorState* state);
 	virtual void updateRect();
 };

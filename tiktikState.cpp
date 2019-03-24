@@ -209,3 +209,23 @@ void tiktikClimbUnderToSide::end()
 		_next = tikMove;
 	}
 }
+
+HRESULT tiktikDead::init(tiktik* actor)
+{
+	tiktikMove::init(actor);
+	_state = tiktik::eDEAD;
+	setAnimaion(actor->getUID(), tiktik::eDEAD);
+	return S_OK;
+}
+
+void tiktikDead::update()
+{
+	tiktikMove::update();
+	if(!_ani->isPlay())
+		end();
+}
+
+void tiktikDead::end()
+{
+	_tiktik->setDisappear();
+}

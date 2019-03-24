@@ -1,18 +1,19 @@
 #pragma once
-#include "gameNode.h"
+#include "actorBase.h"
 
-enum eBULLET_TYPE
+
+class bullet : public actorBase
 {
-	eLINEARBULLET,
-	eARCBULLET,
+public:
+	enum eBULLET_TYPE
+	{
+		eLINEARBULLET,
+		eARCBULLET,
 
-	eBULLET_NONE,
-	eBULLET_TYPE_COUNT = eBULLET_NONE,
-};
+		eBULLET_NONE,
+		eBULLET_TYPE_COUNT = eBULLET_NONE,
+	};
 
-class bullet : public gameNode
-{
-protected:
 	enum eSTATE
 	{
 		eMOVE,
@@ -22,52 +23,55 @@ protected:
 		eCOUNT = eNONE,
 	};
 
-	animation* _anim_move;
-	animation* _anim_pang;
+protected:
 
-	animation* _anim;
-
-	POINTF _position;
 	float _angle;
 	float _speed;
 	float _radius;
 
-	bool _islongBullet;
-
 	POINTF _colPos;
-
-	eSTATE _state;
-	eBULLET_TYPE _type;
 	bool _isAppear;
 
 public:
 
 	HRESULT init();
-	virtual HRESULT init(POINTF pos, float angle, float speed, float radius, const char* moveimgName, const char* pangimgName);
+	virtual HRESULT init( UINT uid
+						 ,float x, float y
+						 ,float angle, float speed, float radius
+						 ,const char* moveimgName, const char* pangimgName);
 	void release();
 	void update();
 	void render();
 
+	ACTORPACK* makePack();
+	void loadPack(ACTORPACK* pack);
+
 	virtual void move();
 	virtual void clear();
 	void hitSomething();
+	void setDisappear()			{ _isAppear = false; }
 
 	void setColPos(POINTF pos) {_colPos = pos;}
 	POINTF getColPos() {return _colPos;}
 
-	POINTF getPosition()		{ return _position;}
+	bool isPang();
 	float getRadius()			{ return _radius;}
 	bool isAppear()				{ return _isAppear;}
-	bool isPang()				{ return ePANG == _state;}
-	eBULLET_TYPE getBulletType(){ return _type;}
+	eBULLET_TYPE getBulletType(){ return (eBULLET_TYPE)_subType;}
+
+	void updateCollision() override;
 };
 
 class linearBullet : public bullet
 {
 public:
-	HRESULT init(POINTF pos, float angle, float speed, float radius, const char* moveimgName, const char* pangimgName);
+	HRESULT init( UINT uid
+				 ,float x, float y
+				 ,float angle, float speed, float radius
+				 ,const char* moveimgName, const char* pangimgName);
 	void update();
 	void move();
+
 };
 
 class arcBullet : public bullet
@@ -78,8 +82,10 @@ private:
 	float _gravity;
 
 public:
-	HRESULT init(POINTF pos, float angle, float speed, float radius, const char* moveimgName, const char* pangimgName);
-	void setGravity(float gravity) {_gravity = gravity;}
+	HRESULT init( UINT uid
+				 ,float x, float y
+				 ,float angle, float speed, float radius
+				 ,const char* moveimgName, const char* pangimgName);
 	void update();
 	void move();
 	void clear();

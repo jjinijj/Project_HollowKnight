@@ -127,8 +127,11 @@
     <Filter Include="PlayGround\actor\enemy">
       <UniqueIdentifier>{743da22f-4e4f-4ef0-9caa-7000e92a805d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PlayGround\bullet">
+    <Filter Include="PlayGround\actor\bullet">
       <UniqueIdentifier>{dd95e416-cb29-4f08-8d3c-e0cb4d407c4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\actor\bulletState">
+      <UniqueIdentifier>{03dc635b-1a95-476d-be6c-759f1764a38c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -348,6 +351,12 @@
     <ClInclude Include="primalAspidState.h">
       <Filter>PlayGround\actor\enemyState</Filter>
     </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>PlayGround\actor\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="bulletState.h">
+      <Filter>PlayGround\actor\bulletState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -541,6 +550,12 @@
     </ClCompile>
     <ClCompile Include="primalAspidState.cpp">
       <Filter>PlayGround\actor\enemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="bullet.cpp">
+      <Filter>PlayGround\actor\bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="bulletState.cpp">
+      <Filter>PlayGround\actor\bulletState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

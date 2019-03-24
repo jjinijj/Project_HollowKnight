@@ -23,8 +23,19 @@ public:
 
 class gruzzerDead: public actorState
 {
+private:
+	gruzzer* _gruzzer;
+
 public:
 	gruzzerDead();
 	~gruzzerDead();
+
+	HRESULT init(gruzzer* actor);
+	void release();
+	void update();
+	void render();
+
+	void start();
+	void end();
 };
 

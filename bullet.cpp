@@ -1,88 +1,83 @@
 #include "stdafx.h"
 #include "bullet.h"
+#include "bulletState.h"
 
 HRESULT bullet::init()
 {
 	return S_OK;
 }
 
-HRESULT bullet::init(POINTF pos, float angle, float speed, float radius, const char* moveimgName, const char* pangimgName)
+HRESULT bullet::init( UINT uid
+					 ,float x, float y
+					 ,float angle, float speed, float radius
+					 ,const char* moveimgName, const char* pangimgName)
 {
-	{
-		if ( nullptr != moveimgName )
-		{
-			animation* anim = new animation;
-			image* img = IMAGEMANAGER->findImage(moveimgName);
-			anim->init(img, true, 0, img->GetMaxFrameX(), 5, 0);
+	actorBase::init(uid, x, y);
+	_width = radius;
+	_height = radius;
+	_colWidth = radius;
+	_colHeight = radius;
 
-			_anim_move = anim;
-		}
+	_type = eActor_Bullet;
+
+	{
+		image* img = IMAGEMANAGER->findImage(moveimgName);
+		ANIMANAGER->addArrayFrameAnimation( _uid, eMOVE, moveimgName
+										   , 0, img->GetMaxFrameX(), 5, true);
 	}
 
 	{
-		if ( nullptr != pangimgName )
-		{
-			animation* anim = new animation;
-			image* img = IMAGEMANAGER->findImage(pangimgName);
-			anim->init(img, false, 0, img->GetMaxFrameX(), 5, 0);
-
-			_anim_pang = anim;
-		}
+		image* img = IMAGEMANAGER->findImage(pangimgName);
+		ANIMANAGER->addArrayFrameAnimation( _uid, ePANG, pangimgName
+										   , 0, img->GetMaxFrameX(), 5, false);
 	}
 
-	_position = pos;
 	_isAppear = true;
 	_speed = speed;
 	_radius = radius;
 	_angle = angle;
 
-	_anim = _anim_move;
-	_anim->start();
-
-	_state = eMOVE;
-	_type = eBULLET_NONE;
+	_colPos = {_x, _y};
 
 	return S_OK;
 }
 
 void bullet::release()
 {
+	actorBase::release();
 	clear();
 }
 
 void bullet::update()
 {
-	if( ePANG == _state )
-	{
-		if ( _anim )
-		{
-			if ( !_anim->IsPlayingAnimation() )
-				_isAppear = false;
-		}
-		else 
-			_isAppear = false;
-	}
-
-	if(_anim )
-		_anim->update();
+	actorBase::update();
+	updateCollision();
 }
 
 void bullet::render()
 {
-	if (_isDebugMode)
-	{
-		RECT collision = {	  (int)(_colPos.x - _radius)
-							, (int)(_colPos.y - _radius)
-							, (int)(_colPos.x + _radius)
-							, (int)(_colPos.y + _radius) };
+	actorBase::render();
 
-		D2DMANAGER->drawRectangle(D2DMANAGER->_defaultBrush
-								  , (float)collision.left, (float)collision.top
-								  , (float)collision.right, (float)collision.bottom);
-	}
+	//if (_isDebugMode)
+	//{
+	//	RECT collision = {	  (int)(_colPos.x - _radius)
+	//						, (int)(_colPos.y - _radius)
+	//						, (int)(_colPos.x + _radius)
+	//						, (int)(_colPos.y + _radius) };
+	//
+	//	D2DMANAGER->drawRectangle(D2DMANAGER->_defaultBrush
+	//							  , (float)collision.left, (float)collision.top
+	//							  , (float)collision.right, (float)collision.bottom);
+	//}
+}
 
-	if(_anim )
-		_anim->render(_position.x, _position.y);
+ACTORPACK* bullet::makePack()
+{
+	return nullptr;
+}
+
+void bullet::loadPack(ACTORPACK * pack)
+{
 }
 
 void bullet::move()
@@ -91,54 +86,59 @@ void bullet::move()
 
 void bullet::clear()
 {
-	if ( _anim_move )
-	{
-		SAFE_RELEASE(_anim_move);
-		SAFE_DELETE(_anim_move);
-	}
-
-	if ( _anim_pang )
-	{
-		SAFE_RELEASE(_anim_pang);
-		SAFE_DELETE(_anim_pang);
-	}
-
-	if ( _anim != nullptr )
-	{
-		SAFE_RELEASE(_anim);
-		SAFE_DELETE(_anim);
-	}
-
-	_position = {};
+	_x = 0.f;
+	_y = 0.f;
 	_angle = 0.f;
 	_speed = 0.f;
 	_radius = 0.f;
-	_type = eBULLET_NONE;
-	_state = eNONE;
 	_isAppear = false;
+
+	SAFE_RELEASE(_state);
+	SAFE_RELEASE(_nextState);
+
+	SAFE_DELETE(_state);
+	SAFE_DELETE(_nextState);
 }
 
 void bullet::hitSomething()
 {
-	if ( _anim_pang )
-	{
-		_anim->end();
-		_anim = _anim_pang;
-		_anim->start();
+	bulletState* bs = new bulletPang;
+	bs->init(this);
+	
+	changeState(bs);
+}
 
-		_state = ePANG;
-	}
+bool bullet::isPang()
+{
+	return (_state->getState() == ePANG);
+}
+
+void bullet::updateCollision()
+{
+	_collision = {_colPos.x - _colWidth, _colPos.y - _colHeight
+				 ,_colPos.x + _colWidth, _colPos.y + _colHeight};
+	
+	_rc =	{_x - _width, _y - _height
+			,_x + _width, _y + _height};
 }
 
 
 
 
 
-
-HRESULT linearBullet::init(POINTF pos, float angle, float speed, float radius, const char* moveimgName, const char* pangimgName)
+HRESULT linearBullet::init( UINT uid
+						   ,float x, float y
+						   ,float angle, float speed, float radius
+						   ,const char* moveimgName, const char* pangimgName)
 {
-	bullet::init(pos, angle, speed, radius, moveimgName, pangimgName);
-	_type = eLINEARBULLET;
+	bullet::init(uid, x, y, angle, speed, radius, moveimgName, pangimgName);
+	_subType = eLINEARBULLET;
+
+	bulletState* bs = new bulletMove;
+	bs->init(this);
+
+	_state = bs;
+	_state->start();
 
 	return S_OK;
 }
@@ -146,19 +146,15 @@ HRESULT linearBullet::init(POINTF pos, float angle, float speed, float radius, c
 void linearBullet::update()
 {
 	bullet::update();
-	move();
 }
 
 void linearBullet::move()
 {
-	if(eMOVE != _state )
-		return;
-
 	float x = cosf(_angle) * _speed;
 	float y = sinf(_angle) * _speed;
 
-	_position.x += x;
-	_position.y += y;
+	_x += x;
+	_y += y;
 
 	_colPos.x += x;
 	_colPos.y += y;
@@ -171,13 +167,24 @@ void linearBullet::move()
 
 
 
-HRESULT arcBullet::init(POINTF pos, float angle, float speed, float radius, const char* moveimgName, const char* pangimgName)
-{
-	bullet::init(pos, angle, speed, radius, moveimgName, pangimgName);
-	_type = eARCBULLET;
 
-	_startPos = pos;
+HRESULT arcBullet::init( UINT uid
+						,float x, float y
+						,float angle, float speed, float radius
+						,const char* moveimgName, const char* pangimgName)
+{
+	bullet::init(uid, x, y, angle, speed, radius, moveimgName, pangimgName);
+	_subType = eARCBULLET;
+
+	_startPos = {x, y};
 	_gravity = 0.5f;
+
+	bulletState* bs = new bulletMove;
+	bs->init(this);
+
+	_state = bs;
+	_state->start();
+
 	return S_OK;
 }
 
@@ -191,11 +198,8 @@ void arcBullet::update()
 
 void arcBullet::move()
 {
-	if(eMOVE != _state )
-		return;
-
-	_position.x = _startPos.x +  -cosf(_angle) * _time * _speed * 2;
-	_position.y = _startPos.y - (sinf(_angle) * _time *( _speed * 2 ) - (float)(_gravity * pow(_time, 2)));
+	_x = _startPos.x +  -cosf(_angle) * _time * _speed * 2;
+	_y = _startPos.y - (sinf(_angle) * _time *( _speed * 2 ) - (float)(_gravity * pow(_time, 2)));
 }
 
 void arcBullet::clear()

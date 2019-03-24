@@ -6,6 +6,7 @@
 
 enemy::enemy()
 : _isAlive(false)
+, _isAppear(false)
 , _hp(0)
 , _speed(0)
 , _target(nullptr)
@@ -20,6 +21,9 @@ HRESULT enemy::init(UINT uid, float x, float y)
 {
 	actorBase::init(uid, x, y);
 	_type = eActor_Enemy;
+
+	_isAlive = true;
+	_isAppear = true;
 
 	return S_OK;
 }
@@ -75,11 +79,16 @@ POINTF enemy::getBulletFirePoint()
 	return POINTF();
 }
 
+void enemy::dead()
+{
+	_isAlive = false;
+}
+
 void enemy::takeDamage(int damage)
 {
 	_hp -= damage;
-	if(_hp < 0)
-		_isAlive = false;
+	if (_hp <= 0)
+		dead();
 }
 
 void enemy::fixPosition()

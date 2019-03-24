@@ -23,7 +23,7 @@
     <ProjectGuid>{BE5C2545-DA5C-402F-8068-3E1EDF185C1C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>windowsAPI</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -156,6 +156,8 @@
     <ClInclude Include="attackState.h" />
     <ClInclude Include="baseInGameScene.h" />
     <ClInclude Include="baseScene.h" />
+    <ClInclude Include="bullet.h" />
+    <ClInclude Include="bulletState.h" />
     <ClInclude Include="dirtMouthScene.h" />
     <ClInclude Include="elderbug.h" />
     <ClInclude Include="elderbugState.h" />
@@ -230,6 +232,8 @@
     <ClCompile Include="attackState.cpp" />
     <ClCompile Include="baseInGameScene.cpp" />
     <ClCompile Include="baseScene.cpp" />
+    <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="bulletState.cpp" />
     <ClCompile Include="dirtMouthScene.cpp" />
     <ClCompile Include="elderbug.cpp" />
     <ClCompile Include="elderbugState.cpp" />

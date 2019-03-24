@@ -38,7 +38,7 @@ void actorBase::release()
 	SAFE_RELEASE(_nextState);
 
 	SAFE_DELETE(_state);
-	SAFE_RELEASE(_nextState);
+	SAFE_DELETE(_nextState);
 }
 
 void actorBase::update()
@@ -46,7 +46,7 @@ void actorBase::update()
 	_state->update();
 	_nextState = _state->nextState();
 	if (_nextState)
-		chansgeState(_nextState);
+		changeState(_nextState);
 }
 
 void actorBase::render()
@@ -99,7 +99,7 @@ void actorBase::setPosition(float x, float y)
 	updateRect();
 }
 
-void actorBase::chansgeState(actorState* state)
+void actorBase::changeState(actorState* state)
 {
 	assert(nullptr != state);
 
@@ -113,6 +113,7 @@ void actorBase::chansgeState(actorState* state)
 	state = nullptr;
 	
 	_state->start();
+	_nextState = nullptr;
 }
 
 void actorBase::updateRect()

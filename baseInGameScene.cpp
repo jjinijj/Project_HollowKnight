@@ -34,6 +34,7 @@ HRESULT baseInGameScene::init()
 	//_player->init(WINSIZEX / 2.f, WINSIZEY / 2.f);
 
 	PLAYER->mapDataLink(_mapData);
+	PLAYER->actorManagerLink(_actorM);
 
 	DEVTOOL->setDebugMode(DEBUG_SHOW_TEXT);
 	DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);

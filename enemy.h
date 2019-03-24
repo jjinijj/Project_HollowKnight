@@ -10,6 +10,7 @@ public:
 
 protected:
 	bool _isAlive;
+	bool _isAppear;
 
 	int _hp;
 	int _speed;
@@ -36,9 +37,13 @@ public:
 	virtual void bulletFire();
 	virtual POINTF getBulletFirePoint();
 
-	void takeDamage(int damage);
+	virtual void dead();
 
-	bool isAlive() { return _isAlive; }
+	void takeDamage(int damage);
+	void setDisappear() {_isAppear = false;}
+
+	bool isAlive()  { return _isAlive; }
+	bool isAppear() { return _isAppear;}
 	eEnemy_Type getEnemyType() { return (eEnemy_Type)_subType; }
 
 protected:

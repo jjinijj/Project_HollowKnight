@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "bulletManager.h"
 #include "enemyManager.h"
-#include "ObjectManager.h"
 #include "player.h"
 
 void bulletManager::init()
@@ -123,7 +122,7 @@ void bulletManager::release()
 	SAFE_DELETE(_playerBullet);
 }
 
-bullet* bulletManager::createBullet(eBULLET_TYPE type)
+bullet* bulletManager::createBullet(bullet::eBULLET_TYPE type)
 {
 	bullet* newBullet = nullptr;
 	switch ( type )
@@ -182,8 +181,10 @@ bool bulletManager::checkPlayerBullet()
 
 bool bulletManager::checkHitSomething(bullet* bt)
 {
-	RECT collision = { (int)(bt->getPosition().x), (int)(bt->getPosition().y)
-					  ,(int)(bt->getPosition().x + bt->getRadius()), (int)(bt->getPosition().y + bt->getRadius())};
+	//RECT collision = { (int)(bt->getPosition().x), (int)(bt->getPosition().y)
+	//				  ,(int)(bt->getPosition().x + bt->getRadius()), (int)(bt->getPosition().y + bt->getRadius())};
+
+	RECTD2D rc = bt->getCollision();
 
 	if ( nullptr != _objM )
 	{

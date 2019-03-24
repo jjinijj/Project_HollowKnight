@@ -6,8 +6,6 @@
 
 
 class player;
-class enemyManager;
-class objectManager;
 class bulletManager : public singletonBase<bulletManager>
 {
 private:
@@ -35,7 +33,7 @@ public:
 	void release();
 
 	// bullet »ý¼º : q¿¡¼­ bulletÀ» ²¨³¿
-	bullet* createBullet(eBULLET_TYPE type);
+	bullet* createBullet(bullet::eBULLET_TYPE type);
 	void firePlayerBullet(POINTF pos, float angle);
 	bool checkPlayerBullet();
 	void setLink(player* p, enemyManager* emM, objectManager* objM) {_player = p, _enemyM = emM; _objM = objM;}

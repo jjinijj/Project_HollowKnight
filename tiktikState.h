@@ -12,12 +12,12 @@ public:
 	~tiktikMove();
 
 	virtual HRESULT init(tiktik* actor);
-	void release();
-	void update();
-	void render();
+	virtual void release();
+	virtual void update();
+	virtual void render();
 
-	void start();
-	void end();
+	virtual void start();
+	virtual void end();
 
 };
 
@@ -110,5 +110,14 @@ public:
 	~tiktikClimbUnderToSide() {}
 	HRESULT init(tiktik* actor);
 	void update();
+	void end();
+};
+
+class tiktikDead : public tiktikMove
+{
+public:
+	HRESULT init(tiktik* actor);
+	void update();
+	
 	void end();
 };

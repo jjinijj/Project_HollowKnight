@@ -47,6 +47,7 @@ public:
 	void update();
 	void release();
 	void render();
+	void dead();
 
 	ACTORPACK* makePack();
 	void loadPack(ACTORPACK* pack);

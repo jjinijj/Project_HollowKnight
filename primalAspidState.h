@@ -81,13 +81,11 @@ class primalDead : public primalState
 private:
 
 public:
-	primalDead();
-	~primalDead();
+	primalDead() {}
+	~primalDead(){}
 
 	HRESULT init(primalAspid* actor);
-	void release();
 	void update();
 
-	void start();
 	void end();
 };

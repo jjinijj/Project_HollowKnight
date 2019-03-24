@@ -21,7 +21,7 @@ HRESULT gruzzer::init(UINT uid, float x, float y)
 	{
 		image* img = IMAGEMANAGER->findImage("gruzzer_dead");
 		ANIMANAGER->addArrayFrameAnimation(uid, eDEAD, "gruzzer_dead"
-										   , 0, img->GetMaxFrameX(), GRUZZER_ANI_SPEED, true);
+										   , 0, img->GetMaxFrameX(), GRUZZER_ANI_SPEED, false);
 	}
 
 
@@ -75,4 +75,10 @@ void gruzzer::move()
 
 void gruzzer::dead()
 {
+	enemy::dead();
+	
+	gruzzerDead* deadState = new gruzzerDead;
+	deadState->init(this);
+
+	changeState(deadState);
 }

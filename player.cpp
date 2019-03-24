@@ -6,6 +6,8 @@
 #include "mapData.h"
 #include "terrain.h"
 #include "animation.h"
+#include "enemy.h"
+#include "actorManager.h"
 
 player::player()
 {
@@ -31,6 +33,8 @@ HRESULT player::init(float x, float y)
 
 	initAnimaion();
 	initState();
+
+	_power = 1;
 
 	return S_OK;
 }
@@ -137,7 +141,17 @@ void player::attack()
 
 void player::attackDamage()
 {
-	// enemy check
+	map<UINT, enemy*> ems = _actorM->getEnemys();
+
+	map<UINT, enemy*>::iterator iter  = ems.begin();
+	map<UINT, enemy*>::iterator end = ems.end();
+	for (iter; end != iter; ++iter)
+	{
+		enemy* em = iter->second;
+
+		if(CheckIntersectRect(_collisionAtk, em->getCollision()))
+			_actorM->hitEnemy(em->getUID(), _power);
+	}
 }
 
 void player::standOff()
@@ -149,6 +163,10 @@ void player::standOff()
 void player::standOffDamage()
 {
 	// fire bullet
+}
+
+void player::takeDamage()
+{
 }
 
 //===================================================================================================

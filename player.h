@@ -111,6 +111,8 @@ private:
 	
 	bool _isFloating;			// 공중에 떠있는가
 
+	UINT _power;
+
 	float _x;					// 위치 : center
 	float _y;					// 위치 : bottom
 
@@ -128,6 +130,8 @@ private:
 	WORD _dir;					// 키가 눌린 방향
 	WORD _dir_atk;				// 공격 방향
 
+	actorManager* _actorM;
+
 	map<UINT, playerState*> _stateMap;	// 상태 맵
 
 public:
@@ -140,6 +144,7 @@ public:
 	void render();
 
 	void mapDataLink(mapData* data) { _mapData = data; }
+	void actorManagerLink(actorManager* actorM) {_actorM = actorM;}
 
 	//void resetPlayer();
 	//void move();
@@ -181,6 +186,8 @@ public:
 	void standOff();
 	// 원거리 공격 데미지 적용
 	void standOffDamage();
+	// 데미지 입음
+	void takeDamage();
 
 	//=====================================================
 	// check
@@ -219,8 +226,11 @@ public:
 	// 위치 y : bottom   
 	float getPosY() { return _y; }
 	// 방향			   
-	WORD getDirection()	 { return _dir;}
-
+	WORD getDirection()	 { return _dir; }
+	// 힘
+	UINT getPower()		{ return _power; }
+	// 충돌체
+	RECTD2D getCollision() { return _collision; }
 
 private:
 	// 상태 초기화
