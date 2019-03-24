@@ -13,6 +13,7 @@ playerState::playerState()
 , _aniKey(player::ePlayer_Ani_None)
 , _isEnd(false)
 , _isDoEvent(false)
+, _alpha(0.f)
 {
 }
 
@@ -25,6 +26,7 @@ HRESULT playerState::init(player* p)
 	_player = p;
 	assert(nullptr != _player);
 
+	_alpha = 1.0f;
 	return S_OK;
 }
 
@@ -48,11 +50,11 @@ void playerState::render()
 	if(_isRight)
 		_img->aniRender( _player->getPosX() - player::PLAYER_SIZE_WIDE_HALF
 						,_player->getPosY() - player::PLAYER_SIZE_HEIGHT
-						, _ani, 1.0f, false);
+						, _ani, _alpha, false);
 	else
 		_img->aniRenderReverseX( _player->getPosX() - player::PLAYER_SIZE_WIDE_HALF
 								,_player->getPosY() - player::PLAYER_SIZE_HEIGHT
-								,_ani, 1.0f, false);
+								,_ani, _alpha, false);
 }
 
 void playerState::start()
@@ -289,4 +291,63 @@ void walkState::leftMove()
 		_player->moveLeft();
 	else
 		end();
+}
+
+
+//=============================================
+// take damage
+//=============================================
+HRESULT takeDamage::init(player* p)
+{
+	HRESULT hr = playerState::init(p);
+	assert(S_OK == hr);
+
+	_state = player::ePlayer_State_Dead;
+	setAnimation(player::ePlayer_Ani_Dead);
+
+	return S_OK;
+}
+
+void takeDamage::update()
+{
+	playerState::update();
+	if(!_ani->isPlay())
+		end();
+}
+
+void takeDamage::end()
+{
+	_player->regen();
+}
+
+//=============================================
+// dead
+//=============================================
+HRESULT deadState::init(player * p)
+{
+	HRESULT hr = playerState::init(p);
+	assert(S_OK == hr);
+
+	_state = player::ePlayer_State_Dead;
+	setAnimation(player::ePlayer_Ani_Dead);
+
+	return S_OK;
+}
+
+void deadState::update()
+{
+	playerState::update();
+	if(!_ani->isPlay())
+		end();
+}
+
+void deadState::start()
+{
+	playerState::start();
+	_ani->start();
+}
+
+void deadState::end()
+{
+	_player->regen();
 }

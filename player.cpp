@@ -47,7 +47,7 @@ void player::release()
 	_act = nullptr;
 
 	map<UINT, playerState*>::iterator iter = _stateMap.begin();
-	for (iter; _stateMap.end() != iter; ++iter)
+	for (iter; _stateMap.end() != iter;)
 	{
 		playerState* st = iter->second;
 		iter = _stateMap.erase(iter);
@@ -177,6 +177,11 @@ void player::takeDamage()
 
 void player::dead()
 {
+	changeState(ePlayer_State_Dead);
+}
+
+void player::regen()
+{
 }
 
 //===================================================================================================
@@ -276,7 +281,12 @@ void player::initState()
 		st->init(this);
 		_stateMap.insert(make_pair(ePlayer_State_StandOff, st));
 	}
-
+	// dead
+	{
+		playerState* st = new deadState;
+		st->init(this);
+		_stateMap.insert(make_pair(ePlayer_State_Dead, st));
+	}
 
 	// set idle
 	_state = _stateMap[ePlayer_State_Idle];
@@ -373,6 +383,13 @@ void player::initAnimaion()
 	{
 		image* img = IMAGEMANAGER->findImage("knight_lookdown");
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Look_Down, "knight_lookdown"
+										   , 0, img->GetMaxFrameX(), PLAYER_ANI_SPEED, true);
+	}
+
+	// animation dead
+	{
+		image* img = IMAGEMANAGER->findImage("knight_dead");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Dead, "knight_dead"
 										   , 0, img->GetMaxFrameX(), PLAYER_ANI_SPEED, true);
 	}
 }

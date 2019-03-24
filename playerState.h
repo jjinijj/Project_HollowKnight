@@ -22,6 +22,8 @@ protected:
 	bool _isEnd;			// 애니메이션이 끝났는가
 	bool _isDoEvent;		// 애니메이션 이벤트를 행했는가
 	
+	float _alpha;			// 이미지 알파 렌더값
+
 	playerState();			// 상속을 통한 접근만 가능
 public:
 	~playerState();			// 해제는 public
@@ -94,10 +96,19 @@ private:
 class takeDamage : public playerState
 {
 private:
-
+	float _time;
 
 public:
 	HRESULT init(player* p);
 	void update();
-	void render();
+	void end();
+};
+
+class deadState : public playerState
+{
+public:
+	HRESULT init(player* p);
+	void update();
+	void start();
+	void end();
 };
