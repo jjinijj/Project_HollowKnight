@@ -125,6 +125,7 @@ void soundManager::play(string keyName, float volume)// 0.0 ~ 1.0f -> 0 ~ 255
 {
 	arrSoundsIter iter = _mTotalSounds.begin();
 
+
 	int count = 0;
 	for (iter; iter != _mTotalSounds.end(); ++iter, ++count)
 	{

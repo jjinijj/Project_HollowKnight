@@ -15,9 +15,15 @@ public:
 	void update()  override;
 	void render()  override;
 
+	bool _isSoundDataLoadFin;
 private:
 	void loadImageData();
 	void loadSoundData();
 	void loadData();
+
+
 };
+
+static DWORD CALLBACK ThreadFunction(LPVOID lpParameter);
+
 

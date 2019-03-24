@@ -136,6 +136,9 @@
     <Filter Include="2DFramework\ui\uiSprite">
       <UniqueIdentifier>{b76103e7-b890-45db-a2c8-63d2d7922ca3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\scene\title">
+      <UniqueIdentifier>{46794807-14ef-46ef-a03b-73dd2fcf8f1a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -378,6 +381,9 @@
     <ClInclude Include="playerStatusUI.h">
       <Filter>PlayGround\ui</Filter>
     </ClInclude>
+    <ClInclude Include="titleScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -595,6 +601,9 @@
     </ClCompile>
     <ClCompile Include="playerStatusUI.cpp">
       <Filter>PlayGround\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="titleScene.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

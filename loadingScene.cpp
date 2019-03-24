@@ -19,7 +19,18 @@ HRESULT loadingScene::init()
 	_sceneName = eSceneName_Loading;
 
 	_iaDataAllLoad = false;
+	_isSoundDataLoadFin = false;
 	loadData();
+
+	CreateThread
+	(
+		NULL,			//스레드의 보안속성(자식윈도우가 있을때) 핸들로 자식인지 부모인지 여부파악
+		NULL,			//스레드의 스택크기(NULL로 두면 메인쓰레드와 스택크기는 동일)
+		ThreadFunction,	//스레드 함수 명
+		this,			//스레드의 매개변수 (this로 하면 본 클래스)
+		NULL,			//스레드의 특성(NULL로 두면 바로 실행함)
+		0				//스레드의 생성 후 스레드의 ID를 넘겨준다 보통은 NULL로 둠.
+	);
 
 	return S_OK;
 }
@@ -30,11 +41,11 @@ void loadingScene::release()
 
 void loadingScene::update()
 {
-	if (_iaDataAllLoad)
+	if (_iaDataAllLoad && _isSoundDataLoadFin)
 	{
-		//SCENEMANAGER->changeScene(eSceneName_Title);
+		SCENEMANAGER->changeScene(eSceneName_Title);
 		//SCENEMANAGER->changeScene(eSceneName_MapTool);
-		SCENEMANAGER->changeScene(eSceneName_DirtMouth);
+		//SCENEMANAGER->changeScene(eSceneName_DirtMouth);
 		_iaDataAllLoad = false;
 	}
 }
@@ -220,6 +231,7 @@ void loadingScene::loadImageData()
 
 void loadingScene::loadSoundData()
 {
+
 }
 
 void loadingScene::loadData()
@@ -229,4 +241,48 @@ void loadingScene::loadData()
 
 	_iaDataAllLoad = true;
 
+}
+
+static DWORD CALLBACK ThreadFunction(LPVOID lpParameter)
+{
+	loadingScene* loadHelper = (loadingScene*)lpParameter;
+
+	SOUNDMANAGER->addSound("Dirtmouth","sound/Dirtmouth.wav", true, true); 
+	SOUNDMANAGER->addSound("Safety","sound/Dirtmouth.wav", true, true);
+	SOUNDMANAGER->addSound("Title","sound/Dirtmouth.wav", true, true);
+	
+	SOUNDMANAGER->addSound("Elderbug_01","sound/Elderbug_01.wav", false, false);
+	SOUNDMANAGER->addSound("Elderbug_02","sound/Elderbug_02.wav", false, false);
+	SOUNDMANAGER->addSound("Elderbug_03","sound/Elderbug_03.wav", false, false);
+	SOUNDMANAGER->addSound("Elderbug_04","sound/Elderbug_04.wav", false, false);
+	
+	SOUNDMANAGER->addSound("Cornifer_01","sound/Cornifer_01.wav", false, false);
+	SOUNDMANAGER->addSound("Cornifer_02","sound/Cornifer_02.wav", false, false);
+	SOUNDMANAGER->addSound("Cornifer_03","sound/Cornifer_03.wav", false, false);
+	
+	SOUNDMANAGER->addSound("sword_1","sound/sword_1.wav", false, false);
+	SOUNDMANAGER->addSound("sword_2","sound/sword_2.wav", false, false);
+	SOUNDMANAGER->addSound("sword_3","sound/sword_3.wav", false, false);
+	SOUNDMANAGER->addSound("sword_4","sound/sword_4.wav", false, false);
+	
+	SOUNDMANAGER->addSound("hero_jump","sound/hero_jump.wav", false, false);
+	SOUNDMANAGER->addSound("hero_land_hard","sound/hero_land_hard.wav", false, false);
+	SOUNDMANAGER->addSound("hero_land_soft","sound/hero_land_soft.wav", false, false);
+	SOUNDMANAGER->addSound("hero_run_footsteps_stone","sound/hero_run_footsteps_stone.wav", false, false);
+	SOUNDMANAGER->addSound("focus_health_heal","sound/focus_health_heal.wav", false, false);
+	
+	SOUNDMANAGER->addSound("enemy_damage","sound/enemy_damage.wav", false, false);
+	SOUNDMANAGER->addSound("enemy_death_sword","sound/enemy_death_sword.wav", false, false);
+	SOUNDMANAGER->addSound("buzzer_fly","sound/buzzer_fly.wav", false, false);
+	SOUNDMANAGER->addSound("crawler","sound/crawler.wav", false, false);
+	
+	SOUNDMANAGER->addSound("ui_save","sound/ui_save.wav", false, false);
+	SOUNDMANAGER->addSound("ui_option_click","sound/ui_option_click.wav", false, false);
+	SOUNDMANAGER->addSound("ui_change_selection","sound/ui_change_selection.wav", false, false);
+	SOUNDMANAGER->addSound("ui_button_confirm","sound/ui_button_confirm.wav", false, false);
+	SOUNDMANAGER->addSound("begin_button","sound/begin_button.wav", false, false);
+
+	loadHelper->_isSoundDataLoadFin = true;
+
+	return 0;
 }

@@ -20,6 +20,10 @@ HRESULT cornifer::init()
 	_colHeight = CORNIFER_HEIGHT;
 	_dir = eRIGHT;
 
+	_vSound.push_back("Cornifer_01");
+	_vSound.push_back("Cornifer_02");
+	_vSound.push_back("Cornifer_03");
+
 	return S_OK;
 }
 
@@ -96,6 +100,12 @@ void cornifer::talkStart()
 
 	_idx = 0;
 
+	string addr = "sound/";
+	addr.append(_vSound[_dialogIdx]);
+	addr.append(".wav");
+
+	//SOUNDMANAGER->addSound(_vSound[_dialogIdx], addr, false, false);
+	SOUNDMANAGER->play(_vSound[_dialogIdx]);
 	changeState(state);
 }
 

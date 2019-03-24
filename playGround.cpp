@@ -17,6 +17,7 @@ HRESULT playGround::init()
 	SCENEMANAGER->addScene(eSceneName_Loading, new loadingScene);
 	SCENEMANAGER->addScene(eSceneName_MapTool, new mapToolScene);
 	SCENEMANAGER->addScene(eSceneName_DirtMouth, new dirtMouthScene);
+	SCENEMANAGER->addScene(eSceneName_Title, new titleScene);
 
 
 
@@ -43,6 +44,7 @@ void playGround::update()
 	CAMERA->update();
 	UIMANAGER->update();
 	SCENEMANAGER->update();
+	SOUNDMANAGER->update();
 
 #ifdef _DEBUG
 	DEVTOOL->pushBackDebugText(format(L"cameraX : %.2f", CAMERA->getPosX()));

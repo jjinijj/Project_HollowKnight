@@ -51,12 +51,12 @@ void flyingState::update()
 	{
 		_jumpPower -= (_gravity * TIMEMANAGER->getElapsedTime());
 		if(_jumpPower < 0.f)
-			end();
+			_nextState = player::ePlayer_State_JumpFalling;
 
 		_player->moveJump(_jumpPower);
 	}
 	else
-		end();
+		_nextState = player::ePlayer_State_JumpFalling;
 }
 
 void flyingState::render()
@@ -71,11 +71,13 @@ void flyingState::start()
 	_gravity	= static_cast<float>(player::PLAYER_GRAVITY);
 
 	_ani->start();
+	//SOUNDMANAGER->addSound("hero_jump","sound/hero_jump.wav", false, false);
+	SOUNDMANAGER->play("hero_jump");
 }
 
 void flyingState::end()
 {
-	_nextState = player::ePlayer_State_JumpFalling;
+	
 }
 
 
@@ -139,7 +141,7 @@ void fallingState::update()
 	}
 	else
 	{
-		end();
+		_nextState = player::ePlayer_State_Land;
 	}
 }
 
@@ -155,11 +157,12 @@ void fallingState::start()
 	_gravity		= static_cast<float>(player::PLAYER_GRAVITY);
 
 	_ani->start();
+	
 }
 
 void fallingState::end()
 {
-	_nextState = player::ePlayer_State_Land;
+	
 }
 
 
@@ -227,7 +230,7 @@ void jumpFallingState::update()
 	}
 	else
 	{
-		end();
+		_nextState = player::ePlayer_State_Land;
 	}
 }
 
@@ -247,7 +250,7 @@ void jumpFallingState::start()
 
 void jumpFallingState::end()
 {
-	_nextState = player::ePlayer_State_Land;
+	
 }
 
 
@@ -289,7 +292,7 @@ void landState::update()
 		moveRight();
 	
 	if(_isEnd)
-		end();
+		_nextState = player::ePlayer_State_Idle;
 }
 
 void landState::render()
@@ -301,9 +304,11 @@ void landState::start()
 {
 	playerState::start();
 	_ani->start();
+	//SOUNDMANAGER->addSound("hero_land_soft","sound/hero_land_soft.wav", false, false);
+	SOUNDMANAGER->play("hero_land_soft");
 }
 
 void landState::end()
 {
-	_nextState = player::ePlayer_State_Idle;
+	
 }

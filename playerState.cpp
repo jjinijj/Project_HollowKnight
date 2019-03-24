@@ -231,6 +231,7 @@ HRESULT walkState::init(player* p)
 void walkState::release()
 {
 	playerState::release();
+	
 }
 
 void walkState::update()
@@ -277,11 +278,13 @@ void walkState::start()
 {
 	playerState::start();
 	_ani->start();
+	//SOUNDMANAGER->addSound("hero_run_footsteps_stone","sound/hero_run_footsteps_stone.wav", false, false);
+	SOUNDMANAGER->play("hero_run_footsteps_stone");
 }
 
 void walkState::end()
 {
-	_nextState = player::ePlayer_State_Idle;
+	SOUNDMANAGER->stop("hero_run_footsteps_stone");
 }
 
 UINT walkState::nextState()
@@ -294,7 +297,7 @@ void walkState::rightMove()
 	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
 		_player->moveRight();
 	else
-		end();
+		_nextState = player::ePlayer_State_Idle;
 }
 
 void walkState::leftMove()
@@ -302,7 +305,7 @@ void walkState::leftMove()
 	if(KEYMANAGER->isStayKeyDown(VK_LEFT))
 		_player->moveLeft();
 	else
-		end();
+		_nextState = player::ePlayer_State_Idle;
 }
 
 
@@ -324,12 +327,12 @@ void takeDamage::update()
 {
 	playerState::update();
 	if(!_ani->isPlay())
-		end();
+		_player->regen();
 }
 
 void takeDamage::end()
 {
-	_player->regen();
+	
 }
 
 //=============================================
@@ -350,7 +353,7 @@ void deadState::update()
 {
 	playerState::update();
 	if(!_ani->isPlay())
-		end();
+		_player->regen();
 }
 
 void deadState::start()
@@ -361,6 +364,5 @@ void deadState::start()
 
 void deadState::end()
 {
-	_player->regen();
 }
 

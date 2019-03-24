@@ -39,7 +39,7 @@ void attackState::update()
 		if (_player->isStateFloating())
 			_nextState = player::ePlayer_State_Falling;
 		else
-			end();
+			_nextState = player::ePlayer_State_Idle;
 	}
 	else if (_ani->isEventFrame())
 	{
@@ -96,7 +96,7 @@ void attackState::start()
 
 void attackState::end()
 {
-	_nextState = player::ePlayer_State_Idle;
+	
 }
 
 
@@ -138,7 +138,7 @@ void standOffState::update()
 		if (_player->isStateFloating())
 			_nextState = player::ePlayer_State_Falling;
 		else 
-			end();
+			_nextState = player::ePlayer_State_Idle;
 			
 	}
 	else if (_ani->isEventFrame())
@@ -164,5 +164,5 @@ void standOffState::start()
 
 void standOffState::end()
 {
-	_nextState = player::ePlayer_State_Idle;
+	
 }

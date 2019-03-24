@@ -15,6 +15,9 @@ HRESULT dirtMouthScene::init()
 	_sceneName = eSceneName_DirtMouth;
 	baseInGameScene::init();
 
+	//SOUNDMANAGER->addSound("Dirtmouth","sound/Dirtmouth.wav", true, true); 
+	SOUNDMANAGER->play("Dirtmouth");
+
 	return S_OK;
 }
 

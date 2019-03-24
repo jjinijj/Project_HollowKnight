@@ -180,6 +180,7 @@
     <ClInclude Include="primalAspidState.h" />
     <ClInclude Include="tiktik.h" />
     <ClInclude Include="tiktikState.h" />
+    <ClInclude Include="titleScene.h" />
     <ClInclude Include="uiButton.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="d2dManager.h" />
@@ -260,6 +261,7 @@
     <ClCompile Include="primalAspidState.cpp" />
     <ClCompile Include="tiktik.cpp" />
     <ClCompile Include="tiktikState.cpp" />
+    <ClCompile Include="titleScene.cpp" />
     <ClCompile Include="uiButton.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="d2dManager.cpp" />

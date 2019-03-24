@@ -157,6 +157,8 @@ private:
 	function<void(void)> _function;
 	map<UINT, playerState*> _stateMap;	// ╩Себ ╦й
 
+	vector<string> _vSwordSound;
+
 public:
 	player();
 	~player();

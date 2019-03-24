@@ -7,8 +7,8 @@
 
 using namespace FMOD;
 
-#define SOUNDBUFFER 100
-#define EXTRACHANNELBUFFER 50
+#define SOUNDBUFFER 30
+#define EXTRACHANNELBUFFER 5
 
 #define TOTALSOUNDBUFFER SOUNDBUFFER + EXTRACHANNELBUFFER
 
@@ -67,5 +67,8 @@ public:
 
 	soundManager();
 	~soundManager();
+
+private:
+	int findEmptyChannel();
 };
 

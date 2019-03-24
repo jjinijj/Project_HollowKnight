@@ -21,6 +21,11 @@ HRESULT elderbug::init()
 	_height = ELDERBUG_HEIGHT;
 	_colHeight = ELDERBUG_HEIGHT;
 
+	_vSound.push_back("Elderbug_01");
+	_vSound.push_back("Elderbug_02");
+	_vSound.push_back("Elderbug_03");
+	_vSound.push_back("Elderbug_04");
+
 	return S_OK;
 }
 
@@ -95,6 +100,12 @@ void elderbug::talkStart()
 
 	_idx = 0;
 
+	string addr = "sound/";
+	addr.append(_vSound[_dialogIdx]);
+	addr.append(".wav");
+
+	//SOUNDMANAGER->addSound(_vSound[_dialogIdx], addr, false, false);
+	SOUNDMANAGER->play(_vSound[_dialogIdx]);
 	changeState(state);
 }
 

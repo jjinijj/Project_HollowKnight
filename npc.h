@@ -7,6 +7,7 @@ protected:
 	int _idx;
 
 	map<UINT, vector<wstring>> _dialogMap;
+	vector<string> _vSound;
 
 public:
 	npc();

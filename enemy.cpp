@@ -84,6 +84,9 @@ void enemy::dead()
 	_isAlive = false;
 	_colWidth = 0.f;
 	_colHeight = 0.f;
+
+	//SOUNDMANAGER->addSound("enemy_death_sword","sound/enemy_death_sword.wav", false, false);
+	SOUNDMANAGER->play("enemy_death_sword");
 }
 
 void enemy::takeDamage(int damage)

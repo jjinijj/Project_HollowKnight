@@ -22,7 +22,7 @@ void lookUpState::update()
 	playerState::update();
 
 	if(!_ani->isPlay())
-		end();
+		_nextState = player::ePlayer_State_Look_Stay;
 }
 
 void lookUpState::start()
@@ -33,7 +33,7 @@ void lookUpState::start()
 
 void lookUpState::end()
 {
-	_nextState = player::ePlayer_State_Look_Stay;
+	
 }
 
 HRESULT lookUpStayState::init(player * p)
@@ -61,7 +61,7 @@ void lookUpStayState::update()
 	else if(_player->checkDirection(player::eDirection_Up))
 		_player->lookUp();
 	else
-		end();
+		_nextState = player::ePlayer_State_Idle;
 
 	if(player::ePlayer_State_None != _nextState)
 		_player->sightResetDown();
@@ -75,7 +75,7 @@ void lookUpStayState::start()
 
 void lookUpStayState::end()
 {
-	_nextState = player::ePlayer_State_Idle;
+	
 }
 
 
@@ -98,7 +98,7 @@ void lookDownState::update()
 	playerState::update();
 
 	if(!_ani->isPlay())
-		end();
+		_nextState = player::ePlayer_State_Look_Down_Stay;
 }
 
 void lookDownState::start()
@@ -109,7 +109,7 @@ void lookDownState::start()
 
 void lookDownState::end()
 {
-	_nextState = player::ePlayer_State_Look_Down_Stay;
+	
 }
 
 
@@ -138,7 +138,7 @@ void lookDownStayState::update()
 	else if(_player->checkDirection(player::eDirection_Down))
 		_player->lookDown();
 	else
-		end();
+		_nextState = player::ePlayer_State_Idle;
 
 	if(player::ePlayer_State_None != _nextState)
 		_player->sightResetUp();
@@ -152,7 +152,7 @@ void lookDownStayState::start()
 
 void lookDownStayState::end()
 {
-	_nextState = player::ePlayer_State_Idle;
+	
 }
 
 
@@ -180,8 +180,11 @@ void talkState::update()
 
 	if (KEYMANAGER->isOnceKeyDown('X'))
 	{
-		if(_player->isTalkEnd())
-			end();
+		if (_player->isTalkEnd())
+		{
+			_nextState = player::ePlayer_State_Idle;
+			_player->endTalk();
+		}
 		else
 			_player->nextTalk();
 	}
@@ -196,8 +199,7 @@ void talkState::start()
 
 void talkState::end()
 {
-	_nextState = player::ePlayer_State_Idle;
-	_player->endTalk();
+	
 }
 
 HRESULT sitState::init(player * p)
@@ -223,7 +225,7 @@ void sitState::update()
 	{
 		_sitTime += TIMEMANAGER->getElapsedTime();
 		if(3.f <= _sitTime)
-			end();
+			_nextState = player::ePlayer_State_Drowse;
 	}
 }
 
@@ -247,7 +249,7 @@ void sitState::start()
 void sitState::end()
 {
 	playerState::end();
-	_nextState = player::ePlayer_State_Drowse;
+	
 }
 
 HRESULT drowseState::init(player* p)
@@ -267,12 +269,12 @@ void drowseState::update()
 	if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
 	{
 		_player->setDirectionLeft();
-		end();
+		_nextState = player::ePlayer_State_Sit;
 	}
 	else if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
 	{
 		_player->setDirectionRight();
-		end();
+		_nextState = player::ePlayer_State_Sit;
 	}
 }
 
@@ -284,5 +286,5 @@ void drowseState::start()
 
 void drowseState::end()
 {
-	_nextState = player::ePlayer_State_Sit;
+	
 }

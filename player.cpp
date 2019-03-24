@@ -47,6 +47,11 @@ HRESULT player::init(float x, float y)
 	_sight = 0.f;
 	_function = NULL;
 
+	_vSwordSound.push_back("sword_1");
+	_vSwordSound.push_back("sword_2");
+	_vSwordSound.push_back("sword_3");
+	_vSwordSound.push_back("sword_4");
+
 	return S_OK;
 }
 
@@ -156,6 +161,15 @@ void player::attack()
 	_act = findState(ePlayer_State_Attack);
 	if (_act)
 		_act->start();
+
+	int idx = RND->getInt(_vSwordSound.size());
+
+	string addr = "sound/";
+	addr.append(_vSwordSound[idx]);
+	addr.append(".wav");
+
+	//SOUNDMANAGER->addSound(_vSwordSound[idx], addr, false, false);
+	SOUNDMANAGER->play(_vSwordSound[idx]);
 }
 
 void player::attackDamage()
@@ -189,6 +203,9 @@ void player::takeDamage()
 	if(0.f < _invincibleTime)
 		return;
 
+
+	//SOUNDMANAGER->addSound("enemy_damage","sound/enemy_damage.wav", false, false);
+	SOUNDMANAGER->play("enemy_damage");
 	_hp -= 1;
 	if(_hp <= 0)
 		dead();
@@ -618,6 +635,7 @@ void player::changeState(ePlayer_State state)
 	playerState* pState = findState(state);
 	if (pState)
 	{
+		_state->end();
  		_state = _stateMap[state];
 		_state->start();
 		//_sight = 0.f;
