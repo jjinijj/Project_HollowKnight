@@ -14,6 +14,7 @@ uiManager::~uiManager()
 
 HRESULT uiManager::init()
 {
+	_aniUID = 100000;
 	return S_OK;
 }
 

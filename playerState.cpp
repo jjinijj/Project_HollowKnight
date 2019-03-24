@@ -168,7 +168,7 @@ void idleState::update()
 	{
 		if (_player->checkPossibleTalk())
 			_nextState = player::ePlayer_State_Talk;
-		else if (_player->checkPossibleSit())
+		else if (_player->trySit())
 			_nextState = player::ePlayer_State_Sit;
 		else if (_player->checkPortal())
 			_player->enterPortal();
@@ -256,7 +256,7 @@ void walkState::update()
 	{
 		if (_player->checkPossibleTalk())
 			_nextState = player::ePlayer_State_Talk;
-		else if (_player->checkPossibleSit())
+		else if (_player->trySit())
 			_nextState = player::ePlayer_State_Sit;
 		else if (_player->checkPortal())
 			_player->enterPortal();

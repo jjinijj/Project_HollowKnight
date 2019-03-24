@@ -13,6 +13,8 @@ HRESULT gruzzer::init(UINT uid, float x, float y)
 	_colWidth = GRUZZER_WIDTH * 0.9f;
 	_colHeight = GRUZZER_HEIGHT * 0.9f;
 
+	_name = L"gruzzer";
+
 	{
 		image* img = IMAGEMANAGER->findImage("gruzzer_move");
 		ANIMANAGER->addArrayFrameAnimation(uid, eMOVE, "gruzzer_move"

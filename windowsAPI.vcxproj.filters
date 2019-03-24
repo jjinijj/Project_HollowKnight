@@ -133,6 +133,9 @@
     <Filter Include="PlayGround\actor\bulletState">
       <UniqueIdentifier>{03dc635b-1a95-476d-be6c-759f1764a38c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFramework\ui\uiSprite">
+      <UniqueIdentifier>{b76103e7-b890-45db-a2c8-63d2d7922ca3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -369,6 +372,12 @@
     <ClInclude Include="corniferState.h">
       <Filter>PlayGround\actor\npcState</Filter>
     </ClInclude>
+    <ClInclude Include="uiSprite.h">
+      <Filter>2DFramework\ui\uiSprite</Filter>
+    </ClInclude>
+    <ClInclude Include="playerStatusUI.h">
+      <Filter>PlayGround\ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -580,6 +589,12 @@
     </ClCompile>
     <ClCompile Include="corniferState.cpp">
       <Filter>PlayGround\actor\npcState</Filter>
+    </ClCompile>
+    <ClCompile Include="uiSprite.cpp">
+      <Filter>2DFramework\ui\uiSprite</Filter>
+    </ClCompile>
+    <ClCompile Include="playerStatusUI.cpp">
+      <Filter>PlayGround\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

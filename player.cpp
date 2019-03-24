@@ -11,6 +11,7 @@
 #include "npc.h"
 #include "actorManager.h"
 #include "windowDialog.h"
+#include "playerStatusUI.h";
 
 player::player()
 {
@@ -66,6 +67,9 @@ void player::release()
 
 void player::update()
 {
+	if(0.f < _invincibleTime)
+		_invincibleTime -= TIMEMANAGER->getElapsedTime();
+
 	// 상태 갱신
 	_state->update();
 	if (_act)
@@ -84,6 +88,8 @@ void player::update()
 
 	fixPosition();
 	updateCollision();
+	if(checkCollisionEnemy())
+		takeDamage();
 
 	if(_function)
 		_function();
@@ -177,11 +183,15 @@ void player::standOffDamage()
 
 void player::takeDamage()
 {
+	if(0.f < _invincibleTime)
+		return;
+
 	_hp -= 1;
-	if(_hp < 0)
-	{
+	if(_hp <= 0)
 		dead();
-	}
+	
+	UIMANAGER->getStatusUI()->setHpStatus(_hp);
+	_invincibleTime = 1.f;
 }
 
 void player::dead()
@@ -290,8 +300,19 @@ bool player::checkPortal()
 	return false;
 }
 
-bool player::checkPossibleSit()
+bool player::trySit()
 {
+	vector<terrain*>* vCol = _mapData->getColliderTerrains();
+	vector<terrain*>::iterator iter = vCol->begin();
+	vector<terrain*>::iterator end = vCol->end();
+	for (iter; end != iter; ++iter)
+	{
+		if (CheckIntersectRect(_collision, (*iter)->getCollision()))
+		{
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -454,7 +475,7 @@ void player::initAnimaion()
 	{
 		image* img = IMAGEMANAGER->findImage("knight_dead");
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Dead, "knight_dead"
-										   , 0, img->GetMaxFrameX(), PLAYER_ANI_SPEED, false);
+										   , 0, img->GetMaxFrameX(), 5, false);
 	}
 
 	// animation jump, flying, falling, land
@@ -663,6 +684,28 @@ playerState* player::findState(ePlayer_State state)
 		pState = _stateMap[state];
 
 	return pState;
+}
+
+bool player::checkCollisionEnemy()
+{
+	bool check = false;
+
+	map<UINT, enemy*> ems = _actorM->getEnemys();
+
+	map<UINT, enemy*>::iterator iter  = ems.begin();
+	map<UINT, enemy*>::iterator end = ems.end();
+	for (iter; end != iter; ++iter)
+	{
+		enemy* em = iter->second;
+
+		if (CheckIntersectRect(_collision, em->getCollision()))
+		{
+			check = true;
+			break;
+		}
+	}
+
+	return check;
 }
 
 void player::sightDown()

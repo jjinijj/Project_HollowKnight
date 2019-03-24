@@ -39,10 +39,6 @@ HRESULT uiObject::init(float x, float y, float width, float height)
 
 	_rc = { _x, _y, _x + width, _y + _height };
 
-	vector<pair<int, float>> v;
-
-	v.push_back(make_pair(0, 0.f));
-
 	return S_OK;
 }
 

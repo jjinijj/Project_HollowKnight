@@ -280,7 +280,7 @@ terrain* mapData::addTerrainClear(UINT layer, float destX, float destY, float wi
 npc* mapData::addNpc(float destX, float destY, eImageUID imgUid)
 {
 	npc* actor = nullptr;
-		int value = (imgUid - eImage_Npc_Elderbug);
+	int value = (imgUid - eImage_Npc_Elderbug);
 	if (eNpc_Elderbug <= value && value < eNpc_Count)
 	{
 		// npc는 하나씩만.
@@ -319,7 +319,7 @@ npc* mapData::addNpc(float destX, float destY, eImageUID imgUid)
 			float y = destY + height;
 
 			actor->init(_uidCount, x, y);
-			_npcs.insert(make_pair(imgUid, actor));
+			_npcs.insert(make_pair(value, actor));
 			_actors.push_back(actor);
 
 			++_uidCount;

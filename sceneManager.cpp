@@ -84,6 +84,7 @@ HRESULT sceneManager::changeScene(eSceneName sceneName)
 
 	// 이전씬의 ui 밀어주기
 	UIMANAGER->release();
+	UIMANAGER->init();
 
 	//성공적으로 씬이 변경이되면 init함수를 실행
 	if (SUCCEEDED(find->second->init()))

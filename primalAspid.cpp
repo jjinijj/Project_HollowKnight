@@ -14,6 +14,8 @@ HRESULT primalAspid::init(UINT uid, float x, float y)
 	_colWidth = PRIMALASPID_WIDTH / 1.5f;
 	_colHeight = PRIMALASPID_HEIGHT / 1.5f;
 
+	_name = L"primalAspid";
+
 	{
 		image* img = IMAGEMANAGER->findImage("primalAspid_move");
 		ANIMANAGER->addArrayFrameAnimation(_uid, eIDLE, "primalAspid_move"

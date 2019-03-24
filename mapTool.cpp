@@ -1249,7 +1249,8 @@ void mapTool::initUI()
 									,L"Usable"
 									,L"Trap"
 									,L"Portal"
-									,L"Dialog" };
+									,L"Dialog"
+									,L"Chair"};
 		for (int ii = 0; ii < eAttr_Count; ++ii)
 		{
 			_uiBtnInspectors[ii] = new uiButton;
@@ -1409,6 +1410,7 @@ void mapTool::initObjectImgLinks()
 	{
 		IMGLNK* lnk = new IMGLNK;
 		lnk->makeImageLnk(eImage_Object_Chair, false);
+		lnk->pushBack(eImage_Object_Chair);
 		_imgLnksObject.push_back(lnk);
 		lnk = nullptr;
 	}
@@ -2134,6 +2136,7 @@ void mapTool::refreshDetailText()
 					break; 
 				}
 				case eAttr_Dialog:			{ txt.append(L"Dialog");break; }
+				case eAttr_Chair:			{ txt.append(L"Chair");break; }
 
 				default:
 					break;

@@ -44,6 +44,7 @@ enum eAttribute
 	eAttr_Trap,			// 함정
 	eAttr_Portal,		// 씬 이동
 	eAttr_Dialog,		// 대화 가능
+	eAttr_Chair,		// 의자 속성
 
 	eAttr_None,
 	eAttr_Count = eAttr_None,

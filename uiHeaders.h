@@ -6,3 +6,4 @@
 #include "uiScroll.h"
 #include "uiText.h"
 #include "uiButtonDrop.h"
+#include "uiSprite.h"

@@ -13,6 +13,7 @@ HRESULT tiktik::init(UINT uid, float x, float y)
 	_colWidth = TIKTIK_WIDTH / 1.5f;
 	_colHeight = TIKTIK_WIDTH / 1.5f;
 
+	_name = L"tiktik";
 
 	{
 		image* img = IMAGEMANAGER->findImage("tiktik_move");

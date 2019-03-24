@@ -3,6 +3,7 @@
 #include "mapData.h"
 #include "actorManager.h"
 #include "windowDialog.h"
+#include "playerStatusUI.h"
 
 
 baseInGameScene::baseInGameScene()
@@ -31,9 +32,6 @@ HRESULT baseInGameScene::init()
 	_actorM->mapDataLink(_mapData);
 
 	PLAYER->init(WINSIZEX / 2.f, WINSIZEY / 2.f);
-	//_player = new player;
-	//_player->init(WINSIZEX / 2.f, WINSIZEY / 2.f);
-
 	PLAYER->mapDataLink(_mapData);
 	PLAYER->actorManagerLink(_actorM);
 
@@ -48,6 +46,13 @@ HRESULT baseInGameScene::init()
 	dialogUi->uiClose();
 	UIMANAGER->insertUI(eUI_Dialog, dialogUi);
 	UIMANAGER->setDialogUI(dialogUi);
+
+	playerStatusUI* statusUI = new playerStatusUI;
+	statusUI->init();
+	statusUI->setActive(true);
+	statusUI->uiOpen();
+	UIMANAGER->insertUI(eUI_Status, statusUI);
+	UIMANAGER->setStatusUI(statusUI);
 
 	//_actorM->createEnemy(WINSIZEX / 2.f, WINSIZEY / 2.f + 100.f, eEnemy_Gruzzer);
 	//_actorM->createNPC(WINSIZEX / 2.f, WINSIZEY / 2.f, eNpc_Elderbug);

@@ -130,6 +130,7 @@ private:
 	float _y;					// 위치 : bottom
 
 	float _sight;				// 위/아래 카매라 이동
+	float _invincibleTime;		// 무적
 
 	mapData* _mapData;			// 맵 정보
 
@@ -288,7 +289,9 @@ private:
 	void fixPosition();
 	// 상태 찾기
 	playerState* findState(ePlayer_State state);
-	
+	// 충돌 체크
+	bool checkCollisionEnemy();
+
 	// 시야 리셋
 	void sightDown();
 	void sightUp();
