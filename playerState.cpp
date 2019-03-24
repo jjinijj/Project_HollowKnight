@@ -63,6 +63,8 @@ void playerState::start()
 	_isRight = _player->checkDirection(player::eDirection_Right);
 	_isEnd = false;
 	_isDoEvent = false;
+	if(_ani)
+		_ani->stop();
 }
 
 void playerState::end()

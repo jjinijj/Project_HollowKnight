@@ -27,7 +27,8 @@ private:
 	mNpc	 _npcs;			// npc
 	vEnemy	 _enemys;		// enemy
 
-	vTerrain _colTerrains;	// 충돌체가 있는 지형들
+	vTerrain _colTerrains;			// 충돌체가 있는 지형들 : collide
+	vTerrain _collisionTerrains;	// 충돌체가 있는 지형들
 	vTerrain _terrainsByLayer[eLayer_Count];	// 레이어단위로 분류
 
 	UINT _uidCount;
@@ -96,8 +97,8 @@ public:
 	// 레이어에 있는 지형들
 	vTerrain* getLayerTerrains(UINT layer)	{ return &_terrainsByLayer[layer]; }
 	// 충돌체 있는 지형들
-	vTerrain* getColliderTerrains()			{ return &_colTerrains; }
-	vTerrain* getCollisionTerains()			{ return &_colTerrains; }
+	vTerrain* getColliderTerrains()			{ return &_colTerrains;			}
+	vTerrain* getCollisionTerains()			{ return &_collisionTerrains;	}
 
 	vTerrain* getTerrains() { return &_terrains;}
 	vActor*	getActors()		{ return &_actors;	}

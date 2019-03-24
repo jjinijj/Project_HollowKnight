@@ -72,3 +72,35 @@ public:
 	void start();
 	void end();
 };
+
+// ¾É±â
+class sitState : public playerState
+{
+private:
+	float _sitTime;
+
+public:
+	sitState() {}
+	~sitState(){}
+
+	HRESULT init(player* p);
+	void update();
+	void render();
+
+	void start();
+	void end();
+};
+
+// Á¹±â
+class drowseState : public playerState
+{
+public:
+	drowseState() {}
+	~drowseState(){}
+
+	HRESULT init(player* p);
+	void update();
+
+	void start();
+	void end();
+};

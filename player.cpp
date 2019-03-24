@@ -27,6 +27,9 @@ HRESULT player::init(float x, float y)
 	_x = x;
 	_y = y;
 
+	_startX = x;
+	_startY = y;
+
 	_collision = { x, y, x + 10.f, y + 10.f };
 	_atkRange = {100.f, 25.f};
 
@@ -201,6 +204,24 @@ void player::dead()
 
 void player::regen()
 {
+	if (_chair)
+	{
+		RECTD2D col = _chair->getCollision();
+		_x = col.left + (col.right - col.left) / 2.f;
+		_y = col.bottom - 20.f;
+
+		changeState(ePlayer_State_Sit);
+	}
+	else
+	{
+		_x = _startX;
+		_y = _startY;
+
+		changeState(ePlayer_State_Idle);
+	}
+
+	_hp = 5;
+	UIMANAGER->getStatusUI()->setHpStatus(_hp);
 }
 
 void player::lookUp()
@@ -302,14 +323,27 @@ bool player::checkPortal()
 
 bool player::trySit()
 {
-	vector<terrain*>* vCol = _mapData->getColliderTerrains();
+	vector<terrain*>* vCol = _mapData->getCollisionTerains();
 	vector<terrain*>::iterator iter = vCol->begin();
 	vector<terrain*>::iterator end = vCol->end();
 	for (iter; end != iter; ++iter)
 	{
-		if (CheckIntersectRect(_collision, (*iter)->getCollision()))
+		terrain* ter = (*iter);
+		if (ter->checkAttribute(eAttr_Chair))
 		{
-			return true;
+			RECTD2D col = ter->getCollision();
+			if (CheckIntersectRect(_collision, col))
+			{
+				_x = col.left + (col.right - col.left) / 2.f;
+				_y = col.bottom - 20.f;
+
+				_chair = ter;
+
+				_hp = 5;
+				UIMANAGER->getStatusUI()->setHpStatus(_hp);
+
+				return true;
+			}
 		}
 	}
 
@@ -440,6 +474,18 @@ void player::initState()
 		st->init(this);
 		_stateMap.insert(make_pair(ePlayer_State_Talk, st));
 	}
+	// sit
+	{
+		playerState* st = new sitState;
+		st->init(this);
+		_stateMap.insert(make_pair(ePlayer_State_Sit, st));
+	}
+	// drowse
+	{
+		playerState* st = new drowseState;
+		st->init(this);
+		_stateMap.insert(make_pair(ePlayer_State_Drowse, st));
+	}
 
 	// set idle
 	_state = _stateMap[ePlayer_State_Idle];
@@ -460,15 +506,6 @@ void player::initAnimaion()
 		image* img = IMAGEMANAGER->findImage("knight_walk");
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Walk, "knight_walk"
 										   , 0, img->GetMaxFrameX(), PLAYER_ANI_SPEED, true);
-	}
-
-	// animation sit, drowse
-	{
-		image* img = IMAGEMANAGER->findImage("knight_sitAnddrowse");
-		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Sit, "knight_sitAnddrowse"
-										   , 0, 2, 60, true);
-		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Drowse, "knight_sitAnddrowse"
-										   , 2, img->GetMaxFrameX(), PLAYER_ANI_SPEED, false);
 	}
 
 	// animation dead
@@ -559,6 +596,18 @@ void player::initAnimaion()
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Dead, "knight_dead"
 										   , 0, img->GetMaxFrameX(), PLAYER_ANI_SPEED, true);
 	}
+
+	// animation sit
+	{
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Sit, "knight_sitAnddrowse"
+										   , 0, 2, PLAYER_ANI_SPEED, false);
+	}
+
+	// animation drowse
+	{
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Drowse, "knight_sitAnddrowse"
+										   , 2, 3, 5, false);
+	}
 }
 
 void player::changeState(ePlayer_State state)
@@ -569,7 +618,7 @@ void player::changeState(ePlayer_State state)
 	playerState* pState = findState(state);
 	if (pState)
 	{
-		_state = _stateMap[state];
+ 		_state = _stateMap[state];
 		_state->start();
 		//_sight = 0.f;
 	}

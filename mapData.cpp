@@ -524,6 +524,7 @@ void mapData::addTerrainAttribute(UINT layer, UID uid, eAttribute attr)
 			case eAttr_Trap: { break; }
 			case eAttr_Portal: { break; }
 			case eAttr_Dialog: { break; }
+			case eAttr_Chair: { break; }
 		}
 
 		// 원래 속성이 아무것도 없었다면 충돌체 생성
@@ -531,6 +532,7 @@ void mapData::addTerrainAttribute(UINT layer, UID uid, eAttribute attr)
 		{
 			ter->createCollision();
 			_colTerrains.push_back(ter);
+			_collisionTerrains.push_back(ter);
 		}
 	}
 }
@@ -555,21 +557,38 @@ void mapData::removeTerrainAttribute(UINT layer, UID uid, eAttribute attr)
 			case eAttr_Trap: { break; }
 			case eAttr_Portal: { break; }
 			case eAttr_Dialog: { break; }
+			case eAttr_Chair: { break; }
 		}
 
 		// 속성이 아무것도 없다면 충돌체 제거
 		if (ter->getAtrribute() == NULL)
 		{
 			ter->removeCollision();
-			vector<terrain*>::iterator iter = _colTerrains.begin();
-			vector<terrain*>::iterator end = _colTerrains.end();
-			for (; iter != end; ++iter )
 			{
-				terrain* terr = (*iter);
-				if (terr->getUID() == ter->getUID())
+				vector<terrain*>::iterator iter = _colTerrains.begin();
+				vector<terrain*>::iterator end = _colTerrains.end();
+				for (; iter != end; ++iter)
 				{
-					_colTerrains.erase(iter);
-					break;
+					terrain* terr = (*iter);
+					if (terr->getUID() == ter->getUID())
+					{
+						_colTerrains.erase(iter);
+						break;
+					}
+				}
+			}
+
+			{
+				vector<terrain*>::iterator iter = _collisionTerrains.begin();
+				vector<terrain*>::iterator end = _collisionTerrains.end();
+				for (; iter != end; ++iter)
+				{
+					terrain* terr = (*iter);
+					if (terr->getUID() == ter->getUID())
+					{
+						_collisionTerrains.erase(iter);
+						break;
+					}
 				}
 			}
 		}
@@ -695,6 +714,8 @@ void mapData::addTerrain(UINT layer, terrain* ter)
 
 	if (ter->checkAttribute(eAttr_Collide))
 		_colTerrains.push_back(ter);
+	if(NULL != ter->getAtrribute())
+		_collisionTerrains.push_back(ter);
 
 	++_uidCount;
 }

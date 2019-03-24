@@ -48,6 +48,8 @@ void uiSprite::render()
 void uiSprite::setAnimation(WORD aniKey)
 {
 	_aniKey = aniKey;
+	if(_ani)
+		_ani->stop();
 	_ani = ANIMANAGER->findAnimation(_aniUID, aniKey);
 	if(_ani)
 		_ani->start();

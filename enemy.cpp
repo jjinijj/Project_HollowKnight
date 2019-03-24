@@ -82,6 +82,8 @@ POINTF enemy::getBulletFirePoint()
 void enemy::dead()
 {
 	_isAlive = false;
+	_colWidth = 0.f;
+	_colHeight = 0.f;
 }
 
 void enemy::takeDamage(int damage)

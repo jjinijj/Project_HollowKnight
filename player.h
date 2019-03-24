@@ -6,6 +6,7 @@ class playerState;
 class gameObject;
 class mapData;
 class npc;
+class terrain;
 class player : public singletonBase<player>
 {
 public:
@@ -149,6 +150,10 @@ private:
 	actorManager* _actorM;
 	npc*		  _talkTarget;
 
+	terrain* _chair;
+	float _startX;
+	float _startY;
+
 	function<void(void)> _function;
 	map<UINT, playerState*> _stateMap;	// 상태 맵
 
@@ -240,7 +245,7 @@ public:
 	// 씬 이동 구역인지 확인
 	bool checkPortal();
 	// 앉을 수 있는지 확인
-	bool checkPossibleSit();
+	bool trySit();
 
 	//=====================================================
 	// set

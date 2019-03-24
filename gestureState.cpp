@@ -200,3 +200,89 @@ void talkState::end()
 	_player->endTalk();
 }
 
+HRESULT sitState::init(player * p)
+{
+	HRESULT hr = playerState::init(p);
+	assert(S_OK == hr);
+
+	_state = player::ePlayer_State_Sit;
+	setAnimation(player::ePlayer_Ani_Sit);
+
+
+	return S_OK;
+}
+
+void sitState::update()
+{
+	playerState::update();
+	if (KEYMANAGER->isOnceKeyDown(VK_LEFT) || KEYMANAGER->isOnceKeyDown(VK_RIGHT))
+	{
+		_nextState = player::ePlayer_State_Idle;
+	}
+	else
+	{
+		_sitTime += TIMEMANAGER->getElapsedTime();
+		if(3.f <= _sitTime)
+			end();
+	}
+}
+
+void sitState::render()
+{
+	float x = _player->getPosX();
+	float y = _player->getPosY();
+
+	_img->aniRender( _player->getPosX() - player::PLAYER_SIZE_WIDE_HALF
+					,_player->getPosY() - player::PLAYER_SIZE_HEIGHT
+					, _ani, _alpha, false);
+}
+
+void sitState::start()
+{
+	playerState::start();
+	_sitTime = 0.f;
+	_ani->start();
+}
+
+void sitState::end()
+{
+	playerState::end();
+	_nextState = player::ePlayer_State_Drowse;
+}
+
+HRESULT drowseState::init(player* p)
+{
+	HRESULT hr = playerState::init(p);
+	assert(S_OK == hr);
+
+	_state = player::ePlayer_State_Drowse;
+	setAnimation(player::ePlayer_Ani_Drowse);
+
+	return S_OK;
+}
+
+void drowseState::update()
+{
+	playerState::update();
+	if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
+	{
+		_player->setDirectionLeft();
+		end();
+	}
+	else if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
+	{
+		_player->setDirectionRight();
+		end();
+	}
+}
+
+void drowseState::start()
+{
+	playerState::start();
+	_ani->start();
+}
+
+void drowseState::end()
+{
+	_nextState = player::ePlayer_State_Sit;
+}

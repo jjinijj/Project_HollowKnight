@@ -33,8 +33,8 @@ void loadingScene::update()
 	if (_iaDataAllLoad)
 	{
 		//SCENEMANAGER->changeScene(eSceneName_Title);
-		SCENEMANAGER->changeScene(eSceneName_MapTool);
-		//SCENEMANAGER->changeScene(eSceneName_DirtMouth);
+		//SCENEMANAGER->changeScene(eSceneName_MapTool);
+		SCENEMANAGER->changeScene(eSceneName_DirtMouth);
 		_iaDataAllLoad = false;
 	}
 }
@@ -107,7 +107,7 @@ void loadingScene::loadImageData()
 	IMAGEMANAGER->addImage("block_big", L"image/block_big.png", 677, 209);
 
 	// chair
-	//IMAGEMANAGER->addImage("chair", L"image/chair.png", 185, 92);
+	IMAGEMANAGER->addImage("chair", L"image/chair.png", 185, 92);
 
 	// gold Rock
 	IMAGEMANAGER->addFrameImage("goldRock", L"image/goldRock.png", 749, 109, 7, 1);
@@ -151,7 +151,7 @@ void loadingScene::loadImageData()
 	IMAGEMANAGER->addImage("charm2", L"image/charm2_.png", 50, 50);
 
 
-	IMAGEMANAGER->addFrameImage("chair", L"image/chair.png", 366, 90, 2, 1);
+	//IMAGEMANAGER->addFrameImage("chair", L"image/chair.png", 366, 90, 2, 1);
 	IMAGEMANAGER->addFrameImage("fence", L"image/fence.png", 960, 800, 1, 1);
 	IMAGEMANAGER->addFrameImage("floor", L"image/floor.png", 800, 800, 1, 1);
 	IMAGEMANAGER->addFrameImage("streetLamp", L"image/streetLamp.png", 960, 480, 1, 1);

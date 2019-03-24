@@ -54,14 +54,16 @@ void playerStatusUI::render()
 
 void playerStatusUI::setHpStatus(UINT count)
 {
-	if(count < 0)
+	if(count <= 0)
 		count = 0;
 	else if(5 < count)
 		count = 5;
 
+	int cnt = count;
+
 	for (int ii = 0; ii < 5; ++ii)
 	{
-		if (ii <= (count - 1))
+		if (ii <= (cnt - 1))
 		{
 			if(_hp[ii]->getAniKey() != eHpIconState_Idle)
 				_hp[ii]->setAnimation(eHpIconState_Idle);
