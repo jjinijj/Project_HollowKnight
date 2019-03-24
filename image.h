@@ -133,8 +133,8 @@ public:
 	//루프 렌더 - 수정 필요
 	void loopRender(D2D1_RECT_F drawArea, int offSetX = 0, int offSetY = 0, float opacity = 1.0f, bool isAbsolute = true);
 
-	void aniRender(int destX, int destY, animation* ani, bool isAbsolute = true);
-	void aniRenderReverseX(int destX, int destY, animation* ani, bool isAbsolute = true);
+	void aniRender(int destX, int destY, animation* ani, float alpha, bool isAbsolute = true);
+	void aniRenderReverseX(int destX, int destY, animation* ani, float alpha, bool isAbsolute = true);
 
 	
 	//===================================================================

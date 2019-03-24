@@ -48,11 +48,11 @@ void playerState::render()
 	if(_isRight)
 		_img->aniRender( _player->getPosX() - player::PLAYER_SIZE_WIDE_HALF
 						,_player->getPosY() - player::PLAYER_SIZE_HEIGHT
-						, _ani, false);
+						, _ani, 1.0f, false);
 	else
 		_img->aniRenderReverseX( _player->getPosX() - player::PLAYER_SIZE_WIDE_HALF
 								,_player->getPosY() - player::PLAYER_SIZE_HEIGHT
-								,_ani, false);
+								,_ani, 1.0f, false);
 }
 
 void playerState::start()

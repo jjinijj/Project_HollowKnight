@@ -35,11 +35,11 @@ void actorState::render()
 	if(_isRight)
 		_img->aniRender( _actor->getPosX() - _width / 2.f
 						,_actor->getPosY() - _height
-						,_ani, false);
+						,_ani, 1.0f, false);
 	else
 		_img->aniRenderReverseX( _actor->getPosX() - _width / 2.f
 								,_actor->getPosY() - _height
-								,_ani, false);
+								,_ani, 1.0f, false);
 }
 
 void actorState::start()

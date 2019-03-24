@@ -59,7 +59,7 @@ void effect::render()
 	//애니메이션이 재생중이 아니라면 렌더링 하지 않는다
 	if (!_isRunning) return;
 
-	_effectImage->aniRender(_x, _y, _effectAnimation);
+	_effectImage->aniRender(_x, _y, _effectAnimation, 1.0f);
 }
 
 void effect::startEffect(int x, int y)

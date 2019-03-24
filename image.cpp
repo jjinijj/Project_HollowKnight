@@ -367,19 +367,19 @@ void image::loopRender(D2D1_RECT_F drawArea, int offSetX, int offSetY, float opa
 
 }
 
-void image::aniRender(int destX, int destY, animation* ani, bool isAbsolute)
+void image::aniRender(int destX, int destY, animation* ani, float alpha, bool isAbsolute)
 {
-	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight(), 1.f, isAbsolute);
+	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight(), alpha, isAbsolute);
 }
 
-void image::aniRenderReverseX(int destX, int destY, animation * ani, bool isAbsolute)
+void image::aniRenderReverseX(int destX, int destY, animation* ani, float alpha, bool isAbsolute)
 {
 	D2D1_SIZE_F size;
 	size.width = -1;
 	size.height = 1;
 	//D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Scale(size, Point2F(destX + _imageInfo->frameWidth / 2, destY + _imageInfo->frameHeight / 2)));
 	D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Scale(size, Point2F(destX - CAMERA->getPosX() + _imageInfo->frameWidth / 2, destY - CAMERA->getPosY() + _imageInfo->frameHeight / 2)));
-	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight(), 1.0f, isAbsolute);
+	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight(), alpha, isAbsolute);
 	D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 }
 

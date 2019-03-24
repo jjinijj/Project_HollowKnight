@@ -35,6 +35,7 @@ HRESULT player::init(float x, float y)
 	initState();
 
 	_power = 1;
+	_hp = 5;
 
 	return S_OK;
 }
@@ -166,6 +167,15 @@ void player::standOffDamage()
 }
 
 void player::takeDamage()
+{
+	_hp -= 1;
+	if(_hp < 0)
+	{
+		dead();
+	}
+}
+
+void player::dead()
 {
 }
 

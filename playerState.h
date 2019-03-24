@@ -89,3 +89,15 @@ private:
 	void rightMove();
 	void leftMove();
 };
+
+// 데미지 입음
+class takeDamage : public playerState
+{
+private:
+
+
+public:
+	HRESULT init(player* p);
+	void update();
+	void render();
+};

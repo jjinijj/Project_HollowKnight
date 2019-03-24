@@ -112,6 +112,7 @@ private:
 	bool _isFloating;			// 공중에 떠있는가
 
 	UINT _power;
+	int	 _hp;
 
 	float _x;					// 위치 : center
 	float _y;					// 위치 : bottom
@@ -188,6 +189,8 @@ public:
 	void standOffDamage();
 	// 데미지 입음
 	void takeDamage();
+	// 죽음
+	void dead();
 
 	//=====================================================
 	// check
