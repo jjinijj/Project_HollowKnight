@@ -19,10 +19,46 @@ HRESULT sceneManager::init()
 {
 	_currentScene = nullptr;
 
-	_fileNameMap.insert(make_pair(eSceneName_DirtMouth, "dirthMouth"));
-	_fileNameMap.insert(make_pair(eSceneName_CrossLoad_01, "crossLoad_01"));
-	_fileNameMap.insert(make_pair(eSceneName_Iselda_Store, "iseldaStore"));
-	_fileNameMap.insert(make_pair(eSceneName_Test, "test"));
+	{
+		SCENEDATA* data = new SCENEDATA;
+		data->setInfo(false, false, eSceneName_Loading, "Loading");
+		_fileNameMap.insert(make_pair(eSceneName_Loading, data));
+	}
+	{
+		SCENEDATA* data = new SCENEDATA;
+		data->setInfo(false, false, eSceneName_MapTool, "MapTool");
+		_fileNameMap.insert(make_pair(eSceneName_MapTool, data));
+	}
+	{
+		SCENEDATA* data = new SCENEDATA;
+		data->setInfo(false, false, eSceneName_Title, "Title");
+		_fileNameMap.insert(make_pair(eSceneName_Title, data));
+	}
+	{
+		SCENEDATA* data = new SCENEDATA;
+		data->setInfo(false, false, eSceneName_Load, "Load");
+		_fileNameMap.insert(make_pair(eSceneName_Load, data));
+	}
+	{
+		SCENEDATA* data = new SCENEDATA;
+		data->setInfo(true, false, eSceneName_DirtMouth, "dirthMouth");
+		_fileNameMap.insert(make_pair(eSceneName_DirtMouth, data));
+	}
+	{
+		SCENEDATA* data = new SCENEDATA;
+		data->setInfo(true, false, eSceneName_CrossLoad_01, "crossLoad_01");
+		_fileNameMap.insert(make_pair(eSceneName_CrossLoad_01, data));
+	}
+	{
+		SCENEDATA* data = new SCENEDATA;
+		data->setInfo(true, true, eSceneName_Iselda_Store, "iseldaStore");
+		_fileNameMap.insert(make_pair(eSceneName_Iselda_Store, data));
+	}
+	{
+		SCENEDATA* data = new SCENEDATA;
+		data->setInfo(true, false, eSceneName_Test, "test");
+		_fileNameMap.insert(make_pair(eSceneName_Test, data));
+	}
 
 	return S_OK;
 }
@@ -110,7 +146,17 @@ string sceneManager::getSceneFileName(eSceneName name)
 	fileName.clear();
 
 	if( _fileNameMap.find(name) != _fileNameMap.end() )
-		fileName = _fileNameMap[name];
+		fileName = _fileNameMap[name]->nameText;
 
 	return fileName;
+}
+
+bool sceneManager::isInGameScene(eSceneName name)
+{
+	bool check = false;
+
+	if (_fileNameMap.find(name) != _fileNameMap.end())
+		check = _fileNameMap[name]->isInGameScene;
+
+	return check;
 }

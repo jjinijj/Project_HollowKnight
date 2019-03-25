@@ -605,6 +605,50 @@ void mapData::removeTerrainAttribute(UINT layer, UID uid, eAttribute attr)
 	}
 }
 
+void mapData::setNextPortal(UINT uid)
+{
+	map<UINT, eSceneName>::iterator iter = _portalMap.find(uid);
+
+	if (iter != _portalMap.end())
+	{
+		int idx = (iter->second);
+		while (true)
+		{
+			idx += 1;
+			if (eSceneName_None <= idx)
+			{
+				_portalMap.erase(iter);
+				break;
+			}
+			else if(SCENEMANAGER->isInGameScene((eSceneName)idx))
+			{
+				iter->second = (eSceneName)idx;
+				break;
+			}
+		}
+	}
+	else
+	{
+		_portalMap.insert(make_pair(uid, eSceneName_DirtMouth));
+	}
+}
+
+eSceneName mapData::getLinkedSceneName(UINT uid)
+{
+	map<UINT, eSceneName>::iterator iter = _portalMap.begin();
+	map<UINT, eSceneName>::iterator end = _portalMap.end();
+
+	for (iter; end != iter; ++iter)
+	{
+		if (iter->first == uid)
+		{
+			return iter->second;
+		}
+	}
+
+	return eSceneName_None;
+}
+
 terrain* mapData::getTerrain(UINT layer, UINT uid)
 {
 	terrain* ter = nullptr;

@@ -344,6 +344,8 @@ private:
 	void clickBtnInspector(eAttribute attr, uiButton* btn);
 	void clickUpBtnInspector(eAttribute attr);
 
+	void clickBtnInspectorPortal(uiButton* btn);
+
 	void clickBtnUpNone(uiButton* btn);
 
 	void clickBtnDelTerrain();

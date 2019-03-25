@@ -1293,10 +1293,19 @@ void mapTool::initUI()
 		for (int ii = 0; ii < eAttr_Count; ++ii)
 		{
 			_uiBtnInspectors[ii] = new uiButton;
-			_uiBtnInspectors[ii]->init("uiBG2", "uiBG3", "uiBG", 5.f, 25.f + (ii * 25.f), width - 10.f, 20.f);
 			_uiBtnInspectors[ii]->setText(txts[ii], 15);
-			_uiBtnInspectors[ii]->setOnClickFunction(std::bind(&mapTool::clickBtnInspector, this, (eAttribute)ii, _uiBtnInspectors[ii]));
-			_uiBtnInspectors[ii]->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnInspector, this, (eAttribute)ii));
+			_uiBtnInspectors[ii]->init("uiBG2", "uiBG3", "uiBG", 5.f, 25.f + (ii * 25.f), width - 10.f, 20.f);
+
+			if (eAttr_Portal == ii)
+			{
+				_uiBtnInspectors[ii]->setOnClickFunction(std::bind(&mapTool::clickBtnInspectorPortal, this, _uiBtnInspectors[ii]));
+			}
+			else
+			{
+				_uiBtnInspectors[ii]->setOnClickFunction(std::bind(&mapTool::clickBtnInspector, this, (eAttribute)ii, _uiBtnInspectors[ii]));
+				_uiBtnInspectors[ii]->setOnClickUPFunction(std::bind(&mapTool::clickUpBtnInspector, this, (eAttribute)ii));
+			}
+
 			_uiPanelInspector->insertChild(_uiBtnInspectors[ii]);
 		}
 		
@@ -1787,6 +1796,30 @@ void mapTool::clickUpBtnInspector(eAttribute attr)
 	}
 }
 
+void mapTool::clickBtnInspectorPortal(uiButton* btn)
+{
+	if (!_select.obj)
+		return;
+
+	if (eLayer_Actor == _select.layer)
+		return;
+	
+	UINT uid = _select.obj->getUID();
+	_mapData->setNextPortal(uid);
+
+	if (_mapData->getLinkedSceneName(uid) == eSceneName_None)
+	{
+		_mapData->removeTerrainAttribute(_select.layer, uid, eAttr_Portal);
+		btn->setState(eButton_Up);
+	}
+	else
+	{
+		btn->setState(eButton_Down);
+	}
+
+	refreshDetailText();
+}
+
 
 void mapTool::clickBtnUpNone(uiButton * btn)
 {
@@ -2150,7 +2183,8 @@ void mapTool::refreshDetailText()
 	}
 	else
 	{
-		txt.append(format(L"[UID : %d] \n", _select.obj->getUID()));
+		UINT uid = _select.obj->getUID();
+		txt.append(format(L"[UID : %d] \n", uid));
 		for (int ii = 0; ii < eAttr_Count; ++ii)
 		{
 			if (!checkAttribute(_select.attr, attribute((eAttribute)ii)))
@@ -2161,7 +2195,7 @@ void mapTool::refreshDetailText()
 				case eAttr_Collide:			{ txt.append(L"Collide\n");break; }
 				case eAttr_Trigger:			
 				{
-					int uid = _mapData->getTriggerIndex(_select.obj->getUID());
+					int uid = _mapData->getTriggerIndex(uid);
 					txt.append(format(L"Trigger : %d\n", uid));
 					break; 
 				}
@@ -2170,8 +2204,23 @@ void mapTool::refreshDetailText()
 				case eAttr_Trap:			{ txt.append(L"Trap\n");break; }
 				case eAttr_Portal:			
 				{
-					eSceneName name = eSceneName_None;
-					txt.append(format(L"Portal : %d\n", name));
+					eSceneName name = _mapData->getLinkedSceneName(uid);
+
+					switch (name)
+					{
+						case eSceneName_Loading:		{ txt.append(L"Portal : Loading\n"); break; }
+						case eSceneName_MapTool:		{ txt.append(L"Portal : MapTool\n"); break; }
+						case eSceneName_Title:			{ txt.append(L"Portal : Title\n"); break; }
+						case eSceneName_Load:			{ txt.append(L"Portal : Load\n"); break; }
+						case eSceneName_DirtMouth:		{ txt.append(L"Portal : DirtMouth\n"); break; }
+						case eSceneName_CrossLoad_01:	{ txt.append(L"Portal : CrossLoad 01\n"); break; }
+						case eSceneName_Iselda_Store:	{ txt.append(L"Portal : Iselda Store\n"); break; }
+						case eSceneName_Test:			{ txt.append(L"Portal : Test\n"); break; }
+						case eSceneName_None:			{ txt.append(L"None\n"); break; }
+						default:
+							break;
+					}
+
 					break; 
 				}
 				case eAttr_Dialog:			{ txt.append(L"Dialog");break; }

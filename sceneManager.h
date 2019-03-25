@@ -6,6 +6,22 @@
 //씬을 위한 게임노드 전방선언
 class gameNode;
 
+typedef struct tagSceneData
+{
+	bool		isInGameScene;
+	bool		isEnterBuild;
+	eSceneName	name;
+	string		nameText;
+
+	void setInfo(bool inIsInGameScene,  bool isEnter, eSceneName inName, string inText)
+	{
+		isInGameScene = inIsInGameScene;
+		isEnterBuild = isEnter;
+		name = inName;
+		nameText = inText;
+	}
+}SCENEDATA;
+
 class sceneManager : public singletonBase<sceneManager>
 {
 public:
@@ -16,7 +32,7 @@ private:
 	static baseScene*	_currentScene;	//현재 씬
 	mapSceneList		_mSceneList;
 
-	map<eSceneName, string> _fileNameMap;		// 
+	map<eSceneName, SCENEDATA*> _fileNameMap;		// 
 
 public:
 	sceneManager();
@@ -38,5 +54,8 @@ public:
 
 	// 파일명
 	string getSceneFileName(eSceneName name);
+
+	// 확인
+	bool isInGameScene(eSceneName name);
 };
 
