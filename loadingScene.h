@@ -5,6 +5,11 @@ class loadingScene:	public baseScene
 {
 private:
 	bool _iaDataAllLoad;
+	image* _bg;
+	image* _back;
+
+	float _time;
+	float _alpha;
 
 public:
 	loadingScene();

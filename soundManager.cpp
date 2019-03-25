@@ -272,7 +272,7 @@ void soundManager::setEffectPause()
 
 void soundManager::setBgmPause()
 {
-	_bgmGroup->setPaused(true);
+	_bgmSoundGroup->stop();
 }
 
 void soundManager::setAllSoundPause()

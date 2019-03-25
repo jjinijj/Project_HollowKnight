@@ -5,6 +5,8 @@
 #include "mapToolScene.h"
 #include "dirtMouthScene.h"
 #include "titleScene.h"
+#include "crossLoad.h"
+#include "loadScene.h"
 
 class playGround : public gameNode
 {

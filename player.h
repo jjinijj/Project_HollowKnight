@@ -151,6 +151,7 @@ private:
 	npc*		  _talkTarget;
 
 	terrain* _chair;
+	terrain* _portal;
 	float _startX;
 	float _startY;
 
@@ -207,6 +208,7 @@ public:
 
 	// æ¿ ¿Ãµø
 	void enterPortal();
+	void enterPortalTrigger();
 
 	void sightResetUp();
 	void sightResetDown();

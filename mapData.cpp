@@ -891,6 +891,20 @@ bool mapData::loadMapInfo(string fileName, int* terrainCnt, int& actorCnt)
 		actorCnt = infos.front();
 		infos.pop();
 
+	}
+
+	if (!infos.empty())
+	{
+		while(!infos.empty())
+		{
+			int key = infos.front();
+			infos.pop();
+			int value = infos.front();
+			infos.pop();
+	
+			_portalMap.insert(make_pair(key, (eSceneName)value));
+		}
+	
 		return true;
 	}
 
@@ -982,6 +996,11 @@ void mapData::saveMapInfo(string fileName)
 		info.append(format("%d,", _triggerPool[ii]));
 
 	info.append(format("%d,", _actors.size()));
+	map<UINT, eSceneName>::iterator iter = _portalMap.begin();
+	map<UINT, eSceneName>::iterator end = _portalMap.end();
+	for(iter; end != iter; ++iter)
+		info.append(format("%d, %d,", iter->first, iter->second));
+
 
 	HANDLE file;
 	DWORD write;

@@ -14,14 +14,18 @@ HRESULT playGround::init()
 {
 	gameNode::init(true);
 
+	
 	SCENEMANAGER->addScene(eSceneName_Loading, new loadingScene);
 	SCENEMANAGER->addScene(eSceneName_MapTool, new mapToolScene);
 	SCENEMANAGER->addScene(eSceneName_DirtMouth, new dirtMouthScene);
 	SCENEMANAGER->addScene(eSceneName_Title, new titleScene);
-
+	SCENEMANAGER->addScene(eSceneName_CrossLoad_01, new crossLoad);
+	SCENEMANAGER->addScene(eSceneName_Load, new loadScene);
 
 
 	SCENEMANAGER->changeScene(eSceneName_Loading);
+	
+
 	
 	return S_OK;
 }

@@ -108,6 +108,8 @@ void player::update()
 	updateCollision();
 	if(checkCollisionEnemy())
 		takeDamage();
+	if(checkPortal())
+		enterPortalTrigger();
 
 	if(_function)
 		_function();
@@ -303,6 +305,24 @@ bool player::isTalkEnd()
 
 void player::enterPortal()
 {
+	if (_portal)
+	{
+		eSceneName next = _mapData->getLinkedSceneName(_portal->getUID());
+		if(eSceneName_None != next)
+		{
+			SCENEMANAGER->setNextScene(next);
+			_portal = nullptr;
+		}
+	}
+}
+
+void player::enterPortalTrigger()
+{
+	if(_portal)
+	{
+		if(_portal->checkAttribute(eAttr_Trigger))
+			enterPortal();
+	}
 }
 
 void player::sightResetUp()
@@ -351,6 +371,28 @@ bool player::checkPossibleTalk()
 
 bool player::checkPortal()
 {
+	if (!_mapData)
+		return false;
+
+	vector<terrain*>* vCol = _mapData->getCollisionTerains();
+	vector<terrain*>::iterator iter = vCol->begin();
+	vector<terrain*>::iterator end = vCol->end();
+	for (iter; end != iter; ++iter)
+	{
+		terrain* ter = (*iter);
+		if (ter->checkAttribute(eAttr_Portal))
+		{
+			RECTD2D col = ter->getCollision();
+			if (CheckIntersectRect(_collision, col))
+			{
+				_portal = ter;
+				return true;
+			}
+		}
+	}
+
+	_portal = nullptr;
+
 	return false;
 }
 
@@ -382,6 +424,8 @@ bool player::trySit()
 			}
 		}
 	}
+
+	_chair = nullptr;
 
 	return false;
 }

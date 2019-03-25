@@ -19,26 +19,26 @@ HRESULT sceneManager::init()
 {
 	_currentScene = nullptr;
 
-	{
-		SCENEDATA* data = new SCENEDATA;
-		data->setInfo(false, false, eSceneName_Loading, "Loading");
-		_fileNameMap.insert(make_pair(eSceneName_Loading, data));
-	}
-	{
-		SCENEDATA* data = new SCENEDATA;
-		data->setInfo(false, false, eSceneName_MapTool, "MapTool");
-		_fileNameMap.insert(make_pair(eSceneName_MapTool, data));
-	}
-	{
-		SCENEDATA* data = new SCENEDATA;
-		data->setInfo(false, false, eSceneName_Title, "Title");
-		_fileNameMap.insert(make_pair(eSceneName_Title, data));
-	}
-	{
-		SCENEDATA* data = new SCENEDATA;
-		data->setInfo(false, false, eSceneName_Load, "Load");
-		_fileNameMap.insert(make_pair(eSceneName_Load, data));
-	}
+	//{
+	//	SCENEDATA* data = new SCENEDATA;
+	//	data->setInfo(false, false, eSceneName_Loading, "Loading");
+	//	_fileNameMap.insert(make_pair(eSceneName_Loading, data));
+	//}
+	//{
+	//	SCENEDATA* data = new SCENEDATA;
+	//	data->setInfo(false, false, eSceneName_MapTool, "MapTool");
+	//	_fileNameMap.insert(make_pair(eSceneName_MapTool, data));
+	//}
+	//{
+	//	SCENEDATA* data = new SCENEDATA;
+	//	data->setInfo(false, false, eSceneName_Title, "Title");
+	//	_fileNameMap.insert(make_pair(eSceneName_Title, data));
+	//}
+	//{
+	//	SCENEDATA* data = new SCENEDATA;
+	//	data->setInfo(false, false, eSceneName_Load, "Load");
+	//	_fileNameMap.insert(make_pair(eSceneName_Load, data));
+	//}
 	{
 		SCENEDATA* data = new SCENEDATA;
 		data->setInfo(true, false, eSceneName_DirtMouth, "dirthMouth");
@@ -60,6 +60,8 @@ HRESULT sceneManager::init()
 		_fileNameMap.insert(make_pair(eSceneName_Test, data));
 	}
 
+	_nextScene = eSceneName_None;
+	_isChangeScene = false;
 	return S_OK;
 }
 
@@ -88,8 +90,16 @@ void sceneManager::release()
 
 void sceneManager::update()
 {
-	if (_currentScene) 
-		_currentScene->update();
+	if (_isChangeScene)
+	{
+		_isChangeScene = false;
+		changeScene(eSceneName_Load);
+	}
+	else
+	{
+		if (_currentScene) 
+			_currentScene->update();
+	}
 }
 
 void sceneManager::render()
@@ -138,6 +148,24 @@ HRESULT sceneManager::changeScene(eSceneName sceneName)
 		return S_OK;
 	}
 	return E_FAIL;
+}
+
+HRESULT sceneManager::changeNextScene()
+{
+	return changeScene(_nextScene);
+}
+
+void sceneManager::setNextScene(eSceneName sceneName)
+{
+	mapSceneIter find = _mSceneList.find(sceneName);
+	if(_mSceneList.end() == find)
+		return;
+
+	if(_currentScene->getSceneName() == sceneName)
+		return;
+
+	_nextScene = sceneName;
+	_isChangeScene = true;
 }
 
 string sceneManager::getSceneFileName(eSceneName name)

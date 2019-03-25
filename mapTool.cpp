@@ -2195,8 +2195,7 @@ void mapTool::refreshDetailText()
 				case eAttr_Collide:			{ txt.append(L"Collide\n");break; }
 				case eAttr_Trigger:			
 				{
-					int uid = _mapData->getTriggerIndex(uid);
-					txt.append(format(L"Trigger : %d\n", uid));
+					txt.append(format(L"Trigger : %d\n", _mapData->getTriggerIndex(uid)));
 					break; 
 				}
 				case eAttr_Breakable:		{ txt.append(L"Breakable\n");break; }
@@ -2216,7 +2215,7 @@ void mapTool::refreshDetailText()
 						case eSceneName_CrossLoad_01:	{ txt.append(L"Portal : CrossLoad 01\n"); break; }
 						case eSceneName_Iselda_Store:	{ txt.append(L"Portal : Iselda Store\n"); break; }
 						case eSceneName_Test:			{ txt.append(L"Portal : Test\n"); break; }
-						case eSceneName_None:			{ txt.append(L"None\n"); break; }
+						case eSceneName_None:			{ txt.append(L"Portal : None\n"); break; }
 						default:
 							break;
 					}

@@ -32,6 +32,10 @@ private:
 	static baseScene*	_currentScene;	//ÇöÀç ¾À
 	mapSceneList		_mSceneList;
 
+	bool				_isChangeScene;
+
+	eSceneName			_nextScene;		// ´ÙÀ½ ¾À
+
 	map<eSceneName, SCENEDATA*> _fileNameMap;		// 
 
 public:
@@ -48,6 +52,9 @@ public:
 
 	//¾À º¯°æ ÇÔ¾¥
 	HRESULT changeScene(eSceneName sceneName);
+	HRESULT changeNextScene();
+
+	void setNextScene(eSceneName sceneName);
 
 	// ÇöÀç ¾À
 	baseScene* getCurrentScene() { return _currentScene; }

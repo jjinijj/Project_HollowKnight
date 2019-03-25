@@ -31,6 +31,7 @@
 #define MAP_NAME_CROSSLOAD_3	"map_crossload_03"
 
 #define PLAYER_UID				9999
+#define LOADING_UID				10000
 
 //=============================================
 //   enum

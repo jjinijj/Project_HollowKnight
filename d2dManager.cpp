@@ -49,7 +49,7 @@ HRESULT d2dManager::init()
 	_writeFactory->CreateTextFormat(L"맑은고딕", NULL, DWRITE_FONT_WEIGHT_REGULAR,
 		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, DEFAULT_FONT_SIZE, L"", &_defaultTextFormat);
 
-	hr = createCollection(L"font/DungGeunMo.ttf");
+	hr = createCollection(L"font/JejuHallasan.ttf");
 	assert(hr == S_OK);
 
 	// COM 라이브러리 초기화 -> 호출하지 않으면 CoCreateInstance가 제대로 수행되지 않음
@@ -353,7 +353,7 @@ void d2dManager::drawText(LPCWSTR string, float x, float y, UINT fontSize, COLOR
 	if (!isRectFInRangeWindow(rcf))
 		return;
 
-	IDWriteTextFormat* font = getFontFormat(L"둥근모꼴", fontSize);
+	IDWriteTextFormat* font = getFontFormat(L"제주한라산", fontSize);
 	_renderTarget->DrawTextA(string, lstrlenW(string), font, rcf, createBrush(rgb, 1));
 }
 

@@ -51,7 +51,7 @@ HRESULT baseInGameScene::init()
 	UIMANAGER->insertUI(eUI_Status, statusUI);
 	UIMANAGER->setStatusUI(statusUI);
 
-	PLAYER->init(100.f, 100.f);
+	
 	PLAYER->mapDataLink(_mapData);
 	PLAYER->actorManagerLink(_actorM);
 
@@ -86,7 +86,11 @@ void baseInGameScene::render()
 {
 	baseScene::render();
 
+	IMAGEMANAGER->findImage("bg")->render(0.f, 0.f, WINSIZEX, WINSIZEY, 0.4f, true);
+
 	_mapData->renderBack();
+	IMAGEMANAGER->findImage("bg")->render(0.f, 0.f, WINSIZEX, WINSIZEY, 0.2f, true);
+
 	_actorM->render();
 	PLAYER->render();
 	_mapData->renderFront();
