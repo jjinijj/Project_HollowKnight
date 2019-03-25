@@ -51,6 +51,10 @@ HRESULT baseInGameScene::init()
 	UIMANAGER->insertUI(eUI_Status, statusUI);
 	UIMANAGER->setStatusUI(statusUI);
 
+	PLAYER->init(100.f, 100.f);
+	PLAYER->mapDataLink(_mapData);
+	PLAYER->actorManagerLink(_actorM);
+
 	//_actorM->createEnemy(WINSIZEX / 2.f, WINSIZEY / 2.f + 100.f, eEnemy_Gruzzer);
 	//_actorM->createNPC(WINSIZEX / 2.f, WINSIZEY / 2.f, eNpc_Elderbug);
 
