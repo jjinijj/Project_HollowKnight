@@ -72,8 +72,6 @@ void mapToolScene::update()
 	//if (_tool)
 	//	_tool->update();
 
-
-	
 }
 
 void mapToolScene::render()

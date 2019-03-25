@@ -23,7 +23,8 @@ void titleScene::release()
 void titleScene::update()
 {
 	if(KEYMANAGER->isOnceKeyDown(VK_RETURN))
-		SCENEMANAGER->changeScene(eSceneName_DirtMouth);
+		//SCENEMANAGER->changeScene(eSceneName_DirtMouth);
+		SCENEMANAGER->changeScene(eSceneName_MapTool);
 }
 
 void titleScene::render()

@@ -70,6 +70,9 @@ enum eSceneName
 	eSceneName_Load,
 	eSceneName_DirtMouth,
 	eSceneName_CrossLoad_01,
+	eSceneName_Iselda_Store,
+
+	eSceneName_Test,
 
 	eSceneName_None,
 	eSceneName_Count = eSceneName_None

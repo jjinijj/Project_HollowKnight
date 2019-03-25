@@ -103,6 +103,11 @@ void mapData::update()
 
 void mapData::render()
 {
+	if (_background)
+	{
+		_background->render(1.0f, false);
+	}
+
 	renderBack();
 	renderActors();
 	renderFront();
@@ -110,6 +115,11 @@ void mapData::render()
 
 void mapData::renderBack()
 {
+	if (_background)
+	{
+		_background->render(1.0f, false);
+	}
+
 	iterVTerrain iter;
 	iterVTerrain end;
 	for (int ii = 0; ii < eLayer_NearFront; ++ii)
@@ -700,9 +710,19 @@ HRESULT mapData::load(string fileName)
 
 	int terrainCnt[eLayer_Count];
 	int actorCnt = 0;
-	loadMapInfo(fileName, terrainCnt, actorCnt);
-	loadMapDate(fileName, terrainCnt);
-	loadActorData(fileName, actorCnt);
+
+	bool check = false;
+
+	check = loadMapInfo(fileName, terrainCnt, actorCnt);
+	if(check)
+		check =	loadMapDate(fileName, terrainCnt);
+	if(check)
+		loadActorData(fileName, actorCnt);
+
+	if (fileName == SCENEMANAGER->getSceneFileName(eSceneName_Iselda_Store))
+		_background = IMAGEMANAGER->findImage("IseldaStoreBG");
+	else
+		_background = nullptr;
 
 	return S_OK;
 }
@@ -720,7 +740,7 @@ void mapData::addTerrain(UINT layer, terrain* ter)
 	++_uidCount;
 }
 
-void mapData::loadMapDate(string fileName, int* terrainCnt)
+bool mapData::loadMapDate(string fileName, int* terrainCnt)
 {
 	string address;
 	address.clear();
@@ -735,6 +755,9 @@ void mapData::loadMapDate(string fileName, int* terrainCnt)
 	HANDLE file;
 	DWORD read;
 	file = CreateFile(address.c_str(), GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if(!file)
+		return false;
 
 	ReadFile(file, packs, sizeof(TARRAINPACK) * count, &read, NULL);
 	CloseHandle(file);
@@ -761,9 +784,10 @@ void mapData::loadMapDate(string fileName, int* terrainCnt)
 
 	SAFE_DELETE_ARRAY(packs);
 
+	return true;
 }
 
-void mapData::loadMapInfo(string fileName, int* terrainCnt, int& actorCnt)
+bool mapData::loadMapInfo(string fileName, int* terrainCnt, int& actorCnt)
 {
 	string address;
 	char info[512] = "";
@@ -822,10 +846,14 @@ void mapData::loadMapInfo(string fileName, int* terrainCnt, int& actorCnt)
 	{
 		actorCnt = infos.front();
 		infos.pop();
+
+		return true;
 	}
+
+	return false;
 }
 
-void mapData::loadActorData(string fileName, int actorCnt)
+bool mapData::loadActorData(string fileName, int actorCnt)
 {
 	string address;
 	address.clear();
@@ -890,6 +918,8 @@ void mapData::loadActorData(string fileName, int actorCnt)
 	}
 
 	SAFE_DELETE_ARRAY(packs);
+
+	return true;
 }
 
 void mapData::saveMapInfo(string fileName)

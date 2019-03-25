@@ -183,11 +183,14 @@ private:
 	eSceneName _curFileName;			// 현재 파일
 	eSceneName _selFileName;			// 선택한 파일
 	
+	player* _player;
+
 	bool _isPicking;
 	bool _isOpenSampleBoard;
 	bool _isCloseSampleBoard;
 	bool _isShowAllLayer;			// 모든 레이어 렌더
 	bool _isReposition;				// 위치 다시
+	bool _isPlayerStay;
 
 	POINTF _pickMousePos;
 	POINTF _originPos;				// 움직이기 전 위치
@@ -256,7 +259,8 @@ private:
 	// 레이어 변경
 	uiPanel* _uiPanelPopUpLayerChange;
 
-
+	uiButton* _uiBtnPlayerStay;
+	uiImage* _chairImg;
 
 	RECTD2D _miniScope;
 	RECTD2D _pickArea;					// 드래그
@@ -373,4 +377,6 @@ private:
 
 	void clickBtnSaveMap();
 	void clickBtnLoadMap();
+
+	void clickBtnPlayerStay();
 };

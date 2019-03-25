@@ -12,12 +12,11 @@ windowDialog::~windowDialog()
 
 HRESULT windowDialog::init()
 {
-
 	_background = new uiPanel;
-	_background->init(0, WINSIZEY / 2.f, WINSIZEX, WINSIZEY / 2.f, IMAGEMANAGER->findImage("uiBG"));
+	_background->init(WINSIZEX * 0.1f, WINSIZEY * 0.75f, WINSIZEX * 0.8f, WINSIZEY * 0.20f, IMAGEMANAGER->findImage("backboard"));
 	
 	_text = new uiText;
-	_text->init(10.f, 10.f);
+	_text->init(100.f, 50.f);
 	_text->setFontColor(RGB(255, 255, 255));
 	_text->setFontSize(30);
 

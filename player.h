@@ -163,6 +163,7 @@ public:
 	player();
 	~player();
 
+	HRESULT init();
 	HRESULT init(float x, float y);
 	void release();
 	void update();
@@ -170,30 +171,6 @@ public:
 
 	void mapDataLink(mapData* data) { _mapData = data; }
 	void actorManagerLink(actorManager* actorM) {_actorM = actorM;}
-
-	//void resetPlayer();
-	//void move();
-	
-	//void changeState(ePlayer_State state);
-	//
-	//void evaluateEvent();
-	//
-	//void takeDamage();
-	//void changeCoin(int value);
-	//
-	//void attackUseSword();
-	//void attackUseBullet();
-	//
-	////void setManagerLink(objectManager* objM, bulletManager* bulletM, enemyManager* enemyM, uiManager* uiM) { _objM = objM; _bulletM = bulletM; _enemyM = enemyM; _uiM = uiM; }
-	//
-	//bool checkInteractionObject(int type);
-	//gameObject* findInteractionObject(int type);
-	//bool checkIntersectEnemy();
-	//bool checkFloating();
-	//
-	//bool isStateCheck_Attack();	
-	//bool isMoveable();
-	//
 
 	// 이동
 	void moveRight();
@@ -234,6 +211,9 @@ public:
 	void sightResetUp();
 	void sightResetDown();
 
+	// 상태 전환
+	void changeState(ePlayer_State state);
+
 	//=====================================================
 	// check
 	//=====================================================
@@ -254,8 +234,8 @@ public:
 	//=====================================================
 	
 	// 위치 x : mid
-	void setPositionX(float x) { _x = x; }
-	void setPositionY(float y) { _y = y; }
+	void setPositionX(float x) { _x = x; updateCollision();}
+	void setPositionY(float y) { _y = y; updateCollision();}
 	// 위치 y : bottom
 	void setAttkDirection(eDirection dir) {_dir_atk = dir;}
 
@@ -288,8 +268,7 @@ private:
 	void initState();
 	// 애니메이션 초기화
 	void initAnimaion();
-	// 상태 전환
-	void changeState(ePlayer_State state);
+
 	// 충돌체 갱신
 	void updateCollision();
 	// 위치 보정 및 공중에 떠있는지 확인

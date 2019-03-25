@@ -186,7 +186,9 @@ void loadingScene::loadImageData()
 	IMAGEMANAGER->addImage("uiBG3", L"image/uibg3.png", 100, 100);
 	IMAGEMANAGER->addImage("uiBG4", L"image/uibg4.png", 100, 100);
 	IMAGEMANAGER->addImage("uiBG5", L"image/uibg5.png", 100, 100);
-
+	IMAGEMANAGER->addImage("backboard", L"image/backboard.png", 909, 507);
+	IMAGEMANAGER->addImage("IseldaStoreBG", L"image/IseldaStoreBackground.png", 1024, 515);
+	IMAGEMANAGER->addImage("IseldaStoreFront", L"image/IseldaStoreFront.png", 1024, 515);
 
 
 	IMGDATABASE->insertImage(eImage_Town_Floor, IMAGEMANAGER->findImage("floor"));

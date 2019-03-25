@@ -34,6 +34,8 @@ private:
 	UINT _uidCount;
 
 	WORD _triggerPool[TRRIGER_MAX_COUNT];			// terrain uid
+
+	image* _background;
 	
 public:
 	mapData();
@@ -114,9 +116,9 @@ public:
 private:
 	void addTerrain(UINT layer, terrain* ter);
 	
-	void loadMapInfo(string fileName, int* terrainCnt, int& actorCnt);
-	void loadMapDate(string fileName, int* terrainCnt);
-	void loadActorData(string fileName, int actorCnt);
+	bool loadMapInfo(string fileName, int* terrainCnt, int& actorCnt);
+	bool loadMapDate(string fileName, int* terrainCnt);
+	bool loadActorData(string fileName, int actorCnt);
 
 	void saveMapInfo(string fileName);
 	void saveMapDate(string fileName);

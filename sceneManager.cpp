@@ -20,6 +20,9 @@ HRESULT sceneManager::init()
 	_currentScene = nullptr;
 
 	_fileNameMap.insert(make_pair(eSceneName_DirtMouth, "dirthMouth"));
+	_fileNameMap.insert(make_pair(eSceneName_CrossLoad_01, "crossLoad_01"));
+	_fileNameMap.insert(make_pair(eSceneName_Iselda_Store, "iseldaStore"));
+	_fileNameMap.insert(make_pair(eSceneName_Test, "test"));
 
 	return S_OK;
 }

@@ -382,7 +382,7 @@
       <Filter>PlayGround\ui</Filter>
     </ClInclude>
     <ClInclude Include="titleScene.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>PlayGround\scene\title</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -603,7 +603,7 @@
       <Filter>PlayGround\ui</Filter>
     </ClCompile>
     <ClCompile Include="titleScene.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>PlayGround\scene\title</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,6 +22,16 @@ player::~player()
 {
 }
 
+HRESULT player::init()
+{
+	_x = 0.f;
+	_y = 0.f;
+	initAnimaion();
+	initState();
+
+	return S_OK;
+}
+
 HRESULT player::init(float x, float y)
 {
 	_x = x;
@@ -174,6 +184,9 @@ void player::attack()
 
 void player::attackDamage()
 {
+	if (!_actorM)
+		return;
+
 	map<UINT, enemy*> ems = _actorM->getEnemys();
 
 	map<UINT, enemy*>::iterator iter  = ems.begin();
@@ -313,6 +326,9 @@ bool player::checkDirection(eDirection dir)
 
 bool player::checkPossibleTalk()
 {
+	if (!_actorM)
+		return false;
+
 	bool check = false;
 
 	map<UINT, npc*> npcs = _actorM->getNPCs();
@@ -340,6 +356,9 @@ bool player::checkPortal()
 
 bool player::trySit()
 {
+	if (!_mapData)
+		return false;
+
 	vector<terrain*>* vCol = _mapData->getCollisionTerains();
 	vector<terrain*>::iterator iter = vCol->begin();
 	vector<terrain*>::iterator end = vCol->end();
@@ -686,6 +705,9 @@ void player::updateCollision()
 
 void player::fixPosition()
 {
+	if(!_mapData)
+		return;
+
 	vector<terrain*>* vCol = _mapData->getColliderTerrains();
 	vector<terrain*>::iterator iter = vCol->begin();
 	vector<terrain*>::iterator end = vCol->end();
@@ -755,6 +777,9 @@ playerState* player::findState(ePlayer_State state)
 
 bool player::checkCollisionEnemy()
 {
+	if(!_actorM)
+		return false;
+
 	bool check = false;
 
 	map<UINT, enemy*> ems = _actorM->getEnemys();

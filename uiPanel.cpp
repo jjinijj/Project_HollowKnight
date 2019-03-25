@@ -56,7 +56,7 @@ void uiPanel::render()
 	if(!_isViewing)
 		return;
 
-	D2DMANAGER->drawRectangle(_rc);
+	//D2DMANAGER->drawRectangle(_rc);
 	if(_img)
 		_img->render(_rc, 1.f, true);
 

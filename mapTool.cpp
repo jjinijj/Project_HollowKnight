@@ -64,7 +64,13 @@ HRESULT mapTool::init()
 
 	CAMERA->setScope(_canvas->getRect());
 	
-	//_state = nullptr;
+	_player = new player;
+	_player->init();
+	_player->setPositionX(WINSIZEX/2);
+	_player->setPositionY(WINSIZEY/2);
+	_player->mapDataLink(_mapData);
+	
+	_isPlayerStay = false;
 
 	return S_OK;
 }
@@ -147,6 +153,18 @@ void mapTool::update()
 {
 	uiBase::update();
 
+	if (!_isPlayerStay)
+	{
+		_player->update();
+		CAMERA->setPosX(_player->getPosX() - WINSIZEX * 0.40f);
+		CAMERA->setPosY(_player->getPosY() - WINSIZEY * 0.60f);
+	}
+	else
+	{
+		_player->setPositionX(CAMERA->getPosX() + _uiBtnPlayerStay->getWorldPosition().x + 100.f);
+		_player->setPositionY(CAMERA->getPosY() + _uiBtnPlayerStay->getWorldPosition().y + 180.f);
+	}
+
 	switch (_mode)
 	{
 		case eToolMode_DrawTerrain: { updateDrawTerrain();	break;}
@@ -185,7 +203,7 @@ void mapTool::render()
 	}
 	
 	uiBase::render();
-	_sampleImage;
+	_player->render();
 
 	if (_isPicking)
 		D2DMANAGER->drawRectangle(_pickArea);
@@ -210,6 +228,9 @@ void mapTool::render()
 		D2DMANAGER->drawRectangle(_miniScope);
 		terrains = nullptr;
 	}
+
+
+	
 
 	switch (_mode)
 	{
@@ -1044,6 +1065,24 @@ void mapTool::initUI()
 		_uiBtnViewMode[eViewMode_HideImage]->setText(L" Hide \n Img", 20);
 	}
 
+	// 대기
+	{
+		RECTD2D rc = _uiBtnViewMode[eViewMode_Layer]->getRect();
+		RECTD2D rc2 = _uiBtnViewMode[eViewMode_HideImage]->getRect();
+		_uiBtnPlayerStay = new uiButton;
+		_uiBtnPlayerStay->init( "uiBG3", "uiBG"
+							   ,rc.right, rc.bottom + UI_SPACE
+							   ,rc2.left - rc.right, WINSIZEY - rc.bottom + UI_SPACE);
+		_uiBtnPlayerStay->setOnClickFunction(std::bind(&mapTool::clickBtnPlayerStay, this));
+
+
+		_chairImg = new uiImage;
+		_chairImg->init(UI_SPACE, 100.f, IMAGEMANAGER->findImage("chair"));
+		_uiBtnPlayerStay->insertChild(_chairImg);
+
+		insertUIObject(_uiBtnPlayerStay);
+	}
+
 	// 지형 위치 조절
 	{
 		// reset
@@ -1181,8 +1220,8 @@ void mapTool::initUI()
 						   ,miniMap.bottom - miniMap.top
 						   ,IMAGEMANAGER->findImage("uiBG5"));
 		_uiListFiles->setCellHeight(30.f);
-		_uiListFiles->setCountPerLine(3);
 		_uiListFiles->setGap(5.f, 5.f);
+		_uiListFiles->setCountPerLine(3);
 
 		insertUIObject(_uiListFiles);
 
@@ -2257,4 +2296,27 @@ void mapTool::clickBtnLoadMap()
 	_selFileName = eSceneName_None;
 	if(_selBtnFileName)
 		_selBtnFileName->setState(eButton_Up);
+}
+
+void mapTool::clickBtnPlayerStay()
+{
+	if (_isPlayerStay)
+	{
+		_player->setPositionX(WINSIZEX * 0.25f);
+		_player->setPositionY(WINSIZEY * 0.80f);
+
+		_player->changeState(player::ePlayer_State_Idle);
+		_isPlayerStay = false;
+	}
+	else
+	{
+		_player->setPositionX(_uiBtnPlayerStay->getWorldPosition().x + 100.f);
+		_player->setPositionY(_uiBtnPlayerStay->getWorldPosition().y + 180.f);
+
+		_player->changeState(player::ePlayer_State_Sit);
+		_isPlayerStay = true;
+
+		CAMERA->setPosX(0.f);
+		CAMERA->setPosY(0.f);
+	}
 }

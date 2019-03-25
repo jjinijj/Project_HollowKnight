@@ -170,7 +170,7 @@ void camera::moveTraceTarget()
 		return;
 
 	_x = *_targetX - (_scopeWidth / 2.f);
-	_y = *_targetY - (_scopeHeight * 0.9f);
+	_y = *_targetY - (_scopeHeight * 0.8f);
 
 	fixCameroPos();
 }
