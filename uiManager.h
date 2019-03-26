@@ -10,6 +10,7 @@ enum eUIType
 	eUI_Title,
 	eUI_Dialog,
 	eUI_Status,
+	eUI_ExitPop,
 
 	eUI_None,
 	eUI_Count = eUI_None,

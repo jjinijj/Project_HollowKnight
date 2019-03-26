@@ -166,6 +166,7 @@
     <ClInclude Include="elderbugState.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemyHeaders.h" />
+    <ClInclude Include="exitPopup.h" />
     <ClInclude Include="gameObject.h" />
     <ClInclude Include="gestureState.h" />
     <ClInclude Include="gruzzer.h" />
@@ -250,6 +251,7 @@
     <ClCompile Include="elderbug.cpp" />
     <ClCompile Include="elderbugState.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="exitPopup.cpp" />
     <ClCompile Include="gameObject.cpp" />
     <ClCompile Include="gestureState.cpp" />
     <ClCompile Include="gruzzer.cpp" />

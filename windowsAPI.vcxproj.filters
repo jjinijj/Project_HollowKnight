@@ -393,6 +393,9 @@
     <ClInclude Include="loadScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="exitPopup.h">
+      <Filter>PlayGround\ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -619,6 +622,9 @@
     </ClCompile>
     <ClCompile Include="loadScene.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="exitPopup.cpp">
+      <Filter>PlayGround\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

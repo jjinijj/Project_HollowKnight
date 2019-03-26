@@ -223,6 +223,11 @@ void loadingScene::loadImageData()
 	IMAGEMANAGER->addImage("IseldaStoreBG", L"image/IseldaStoreBackground.png", 1024, 515);
 	IMAGEMANAGER->addImage("IseldaStoreFront", L"image/IseldaStoreFront.png", 1024, 515);
 
+	IMAGEMANAGER->addImage("startText", L"image/startText.png", 182, 53);
+	IMAGEMANAGER->addImage("mapToolText", L"image/mapToolText.png", 302, 53);
+	IMAGEMANAGER->addImage("exitText", L"image/exitText.png", 128, 52);
+	IMAGEMANAGER->addFrameImage("menuCursor", L"image/menuCursor.png", 1089, 72, 11, 1);
+
 
 	IMGDATABASE->insertImage(eImage_Town_Floor, IMAGEMANAGER->findImage("floor"));
 	IMGDATABASE->insertImage(eImage_Town_BG, IMAGEMANAGER->findImage("town_bg"));
