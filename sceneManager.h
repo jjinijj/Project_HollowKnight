@@ -73,6 +73,8 @@ public:
 	// »Æ¿Œ
 	bool isInGameScene(eSceneName name);
 
+	bool isChangeScene() { return _isChangeScene; }
+
 private:
 	void setCursorVisible();
 };

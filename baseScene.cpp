@@ -15,6 +15,7 @@ baseScene::~baseScene()
 
 HRESULT baseScene::init()
 {
+	DEVTOOL->clearDebugMode();
 	return S_OK;
 }
 

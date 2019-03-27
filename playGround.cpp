@@ -83,15 +83,22 @@ void playGround::render()
 	//===========================================================================
 	//				##		여기에 코드 작성(Start)			##
 
-	if (!_exitPop->isOpen())
+	if (SCENEMANAGER->isChangeScene())
 	{
-		SCENEMANAGER->render();
-		UIMANAGER->render();
-		DEVTOOL->render();
-		TIMEMANAGER->render();
+		IMAGEMANAGER->findImage("bg")->render(0.f, 0.f, WINSIZEX, WINSIZEY, 1.0f, true);
 	}
 	else
-		_exitPop->render();
+	{
+		if (!_exitPop->isOpen())
+		{
+			SCENEMANAGER->render();
+			UIMANAGER->render();
+			DEVTOOL->render();
+			TIMEMANAGER->render();
+		}
+		else
+			_exitPop->render();
+	}
 
 	//				##			여기에 코드 작성(End)			##
 	//===========================================================================
