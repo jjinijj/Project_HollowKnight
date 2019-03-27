@@ -153,9 +153,12 @@ HRESULT sceneManager::changeScene(eSceneName sceneName)
 				for( ; _cursorCnt != 0; ++_cursorCnt)
 					ShowCursor(true);
 			}
-
-			ShowCursor(true);
-			++_cursorCnt;
+			
+			if (0 == _cursorCnt)
+			{
+				ShowCursor(true);
+				++_cursorCnt;
+			}
 		}
 		else
 		{
@@ -164,8 +167,12 @@ HRESULT sceneManager::changeScene(eSceneName sceneName)
 				for(; _cursorCnt != 0; --_cursorCnt)
 					ShowCursor(false);
 			}
-			ShowCursor(false);
-			--_cursorCnt;
+
+			if (0 == _cursorCnt)
+			{
+				ShowCursor(false);
+				--_cursorCnt;
+			}
 		}
 
 		return S_OK;
