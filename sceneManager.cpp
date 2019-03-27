@@ -67,6 +67,9 @@ HRESULT sceneManager::init()
 
 void sceneManager::release()
 {
+	_currentScene	= nullptr;
+	_nextScene		= nullptr;
+
 	mapSceneIter iter = _mSceneList.begin();
 
 	for (; iter != _mSceneList.end(); )
@@ -148,44 +151,85 @@ HRESULT sceneManager::changeScene(eSceneName sceneName)
 		
 		// ui 세팅
 		_currentScene->initUI();
-
-		if (eSceneName_MapTool == sceneName)
-		{
-			if (_cursorCnt < 0)
-			{
-				for( ; _cursorCnt != 0; ++_cursorCnt)
-					ShowCursor(true);
-			}
-			
-			if (0 == _cursorCnt)
-			{
-				ShowCursor(true);
-				++_cursorCnt;
-			}
-		}
-		else
-		{
-			if(0 < _cursorCnt)
-			{
-				for(; _cursorCnt != 0; --_cursorCnt)
-					ShowCursor(false);
-			}
-
-			if (0 == _cursorCnt)
-			{
-				ShowCursor(false);
-				--_cursorCnt;
-			}
-		}
+		
+		setCursorVisible();
+		
 
 		return S_OK;
 	}
 	return E_FAIL;
 }
 
+HRESULT sceneManager::changeLoadScene()
+{
+	mapSceneIter find = _mSceneList.find(eSceneName_Load);
+
+	if (find == _mSceneList.end())
+		return E_FAIL;
+
+	if (find->second == _currentScene)
+		return S_OK;
+
+
+	// 이전씬의 ui 밀어주기
+	UIMANAGER->release();
+	UIMANAGER->init();
+
+	if (SUCCEEDED(find->second->init()))
+	{
+		if (_currentScene)
+			_currentScene->release();
+
+		_currentScene = find->second;
+		setCursorVisible();
+	}
+
+	return S_OK;
+}
+
 HRESULT sceneManager::changeNextScene()
 {
-	return changeScene(_nextSceneName);
+	if(!_nextScene)
+		return E_FAIL;
+
+	// 이전씬의 ui 밀어주기
+	UIMANAGER->release();
+	UIMANAGER->init();
+
+	if(_currentScene)
+		_currentScene->release();
+	
+	_currentScene = _nextScene;
+	_currentScene->initUI();
+	
+	setCursorVisible();
+
+	_nextScene = nullptr;
+	_nextSceneName = eSceneName_None;
+
+	return S_OK;
+}
+
+HRESULT sceneManager::createNextScene(mapData*m, actorManager* am)
+{
+	mapSceneIter find = _mSceneList.find(_nextSceneName);
+
+	//변경할 씬을 못찾았다
+	if (find == _mSceneList.end())
+		return E_FAIL;
+
+	// 현재씬
+	if (find->second == _currentScene)
+		return S_OK;
+
+	//성공적으로 씬이 변경이되면 init함수를 실행
+	if (SUCCEEDED(find->second->init()))
+	{
+		_nextScene = find->second;
+		_nextScene->setSceneData(m, am);
+	}
+
+	return S_OK;
 }
 
 void sceneManager::setNextScene(eSceneName sceneName)
@@ -220,4 +264,36 @@ bool sceneManager::isInGameScene(eSceneName name)
 		check = _fileNameMap[name]->isInGameScene;
 
 	return check;
+}
+
+void sceneManager::setCursorVisible()
+{
+	if (eSceneName_MapTool == _currentScene->getSceneName())
+	{
+		if (_cursorCnt < 0)
+		{
+			for (; _cursorCnt != 0; ++_cursorCnt)
+				ShowCursor(true);
+		}
+
+		if (0 == _cursorCnt)
+		{
+			ShowCursor(true);
+			++_cursorCnt;
+		}
+	}
+	else
+	{
+		if (0 < _cursorCnt)
+		{
+			for (; _cursorCnt != 0; --_cursorCnt)
+				ShowCursor(false);
+		}
+
+		if (0 == _cursorCnt)
+		{
+			ShowCursor(false);
+			--_cursorCnt;
+		}
+	}
 }

@@ -62,8 +62,6 @@ void loadingScene::update()
 		else
 		{
 			SCENEMANAGER->changeScene(eSceneName_Title);
-			//SCENEMANAGER->changeScene(eSceneName_MapTool);
-			//SCENEMANAGER->changeScene(eSceneName_DirtMouth);
 			_iaDataAllLoad = false;
 		}
 	}

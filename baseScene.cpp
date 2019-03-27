@@ -33,3 +33,7 @@ void baseScene::render()
 void baseScene::initUI()
 {
 }
+
+void baseScene::setSceneData(mapData * m, actorManager * am)
+{
+}

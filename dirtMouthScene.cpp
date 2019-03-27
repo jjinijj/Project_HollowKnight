@@ -13,7 +13,7 @@ dirtMouthScene::~dirtMouthScene()
 HRESULT dirtMouthScene::init()
 {
 	_sceneName = eSceneName_DirtMouth;
-	PLAYER->init(1000.f, 1500.f);
+
 	baseInGameScene::init();
 
 	//SOUNDMANAGER->addSound("Dirtmouth","sound/Dirtmouth.wav", true, true); 

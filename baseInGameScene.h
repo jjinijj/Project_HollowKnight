@@ -21,6 +21,8 @@ public:
 	void render()	override;
 	void initUI()	override;
 
+	void setSceneData(mapData* m, actorManager* am);
+
 	// actorµé ¹èÄ¡(npc, enemy)
 	virtual void setActors();
 

@@ -23,18 +23,18 @@ HRESULT baseInGameScene::init()
 	baseScene::init();
 	_isInGameScene = true;
 
-	_mapData = new mapData;
-	_mapData->init();
-	_mapData->load(SCENEMANAGER->getSceneFileName(_sceneName));
-
-	_actorM = new actorManager;
-	_actorM->init();
-	_actorM->mapDataLink(_mapData);
-
-	setActors();
-
-	PLAYER->mapDataLink(_mapData);
-	PLAYER->actorManagerLink(_actorM);
+	//_mapData = new mapData;
+	//_mapData->init();
+	//_mapData->load(SCENEMANAGER->getSceneFileName(_sceneName));
+	//
+	//_actorM = new actorManager;
+	//_actorM->init();
+	//_actorM->mapDataLink(_mapData);
+	//
+	//setActors();
+	//
+	//PLAYER->mapDataLink(_mapData);
+	//PLAYER->actorManagerLink(_actorM);
 
 	return S_OK;
 
@@ -99,6 +99,14 @@ void baseInGameScene::initUI()
 
 	POINTF pos = _mapData->getPlayerStartPosition();
 	PLAYER->setStart(pos.x, pos.y);
+}
+
+void baseInGameScene::setSceneData(mapData * m, actorManager * am)
+{
+	_mapData = m;
+	_actorM = am;
+
+	setActors();
 }
 
 void baseInGameScene::setActors()

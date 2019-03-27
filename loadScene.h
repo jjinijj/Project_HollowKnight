@@ -4,6 +4,9 @@
 class uiBase;
 class loadScene : public baseScene
 {
+public:
+	bool _isFinSceneData;
+
 private:
 	animation* _ani;
 	float _time;
@@ -21,3 +24,4 @@ public:
 
 };
 
+static DWORD CALLBACK ThreadFunction_LoadScene(LPVOID lpParameter);

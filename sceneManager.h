@@ -3,8 +3,8 @@
 #include "baseScene.h"
 #include <map>
 
-//씬을 위한 게임노드 전방선언
-class gameNode;
+class mapData;
+class actorManager;
 
 typedef struct tagSceneData
 {
@@ -37,6 +37,8 @@ private:
 	int					_cursorCnt;			// 커서 on/off에 사용
 
 	eSceneName			_nextSceneName;		// 다음 씬
+	baseScene*			_nextScene;
+
 	map<eSceneName, SCENEDATA*> _fileNameMap;		// 
 
 public:
@@ -53,7 +55,9 @@ public:
 
 	//씬 변경 함쑤
 	HRESULT changeScene(eSceneName sceneName);
+	HRESULT changeLoadScene();
 	HRESULT changeNextScene();
+	HRESULT createNextScene(mapData* m, actorManager* am);
 
 	void setNextScene(eSceneName sceneName);
 
@@ -68,5 +72,8 @@ public:
 
 	// 확인
 	bool isInGameScene(eSceneName name);
+
+private:
+	void setCursorVisible();
 };
 

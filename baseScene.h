@@ -24,6 +24,8 @@ public:
 
 	virtual void initUI()	= 0;
 
+	virtual void setSceneData(mapData* m, actorManager* am);
+
 	eSceneName getSceneName()	{ return _sceneName;		}
 	bool isInGameScene()		{ return _isInGameScene;	}
 };

@@ -25,6 +25,8 @@ HRESULT playGround::init()
 
 	SCENEMANAGER->changeScene(eSceneName_Loading);
 	
+	PLAYER->init(0, 0.f);
+
 	_exitPop = new exitPopup;
 	_exitPop->init();
 	_exitPop->uiClose();
@@ -81,10 +83,9 @@ void playGround::render()
 	//===========================================================================
 	//				##		여기에 코드 작성(Start)			##
 
-	SCENEMANAGER->render();
-	
 	if (!_exitPop->isOpen())
 	{
+		SCENEMANAGER->render();
 		UIMANAGER->render();
 		DEVTOOL->render();
 		TIMEMANAGER->render();

@@ -138,6 +138,9 @@ void player::setStart(float x, float y)
 	_x = x;
 	_y = y;
 
+	_startX = x;
+	_startY = y;
+
 	UIMANAGER->getStatusUI()->setHpStatus(_hp);
 
 	updateCollision();
