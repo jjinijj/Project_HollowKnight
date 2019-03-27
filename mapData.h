@@ -101,6 +101,8 @@ public:
 	// uid
 	int getTerrainIndex(UINT uid);
 
+	POINTF getPlayerStartPosition();
+
 	// 레이어에 있는 지형들
 	vTerrain* getLayerTerrains(UINT layer)	{ return &_terrainsByLayer[layer]; }
 	// 충돌체 있는 지형들

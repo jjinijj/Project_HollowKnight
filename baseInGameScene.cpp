@@ -95,6 +95,10 @@ void baseInGameScene::initUI()
 	statusUI->uiOpen();
 	UIMANAGER->insertUI(eUI_Status, statusUI);
 	UIMANAGER->setStatusUI(statusUI);
+
+
+	POINTF pos = _mapData->getPlayerStartPosition();
+	PLAYER->setStart(pos.x, pos.y);
 }
 
 void baseInGameScene::setActors()

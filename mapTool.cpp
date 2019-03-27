@@ -1289,7 +1289,8 @@ void mapTool::initUI()
 									,L"Trap"
 									,L"Portal"
 									,L"Dialog"
-									,L"Chair"};
+									,L"Chair"
+									,L"GenPoint"};
 		for (int ii = 0; ii < eAttr_Count; ++ii)
 		{
 			_uiBtnInspectors[ii] = new uiButton;
@@ -2350,8 +2351,10 @@ void mapTool::clickBtnPlayerStay()
 {
 	if (_isPlayerStay)
 	{
-		_player->setPositionX(WINSIZEX * 0.25f);
-		_player->setPositionY(WINSIZEY * 0.80f);
+		POINTF pf = _mapData->getPlayerStartPosition();
+
+		_player->setPositionX(pf.x);
+		_player->setPositionY(pf.y);
 
 		_player->changeState(player::ePlayer_State_Idle);
 		_isPlayerStay = false;

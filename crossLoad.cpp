@@ -19,7 +19,7 @@ HRESULT crossLoad::init()
 	SOUNDMANAGER->play("Crossroad");
 
 
-	PLAYER->setPositionY(300.f);
+	//PLAYER->setPositionY(300.f);
 	return S_OK;
 }
 

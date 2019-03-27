@@ -47,6 +47,7 @@ enum eAttribute
 	eAttr_Portal,		// 씬 이동
 	eAttr_Dialog,		// 대화 가능
 	eAttr_Chair,		// 의자 속성
+	eAttr_Player_Pos,	// 플레이어 시작 위치
 
 	eAttr_None,
 	eAttr_Count = eAttr_None,

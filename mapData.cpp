@@ -48,18 +48,20 @@ void mapData::clear()
 	{
 		size = _terrainsByLayer[ii].size();
 		for (iter = _terrainsByLayer[ii].begin(); _terrainsByLayer[ii].end() != iter; )
-		{
 			iter = _terrainsByLayer[ii].erase(iter);
-		}
 
 		_terrainsByLayer[ii].clear();
 	}
 
 	for (iter = _colTerrains.begin(); _colTerrains.end() != iter; )
-	{
 		iter = _colTerrains.erase(iter);
-	}
+
 	_colTerrains.clear();
+
+	for (iter = _collisionTerrains.begin(); _collisionTerrains.end() != iter; )
+		iter = _collisionTerrains.erase(iter);
+
+	_collisionTerrains.clear();
 
 
 	for (iter = _terrains.begin(); _terrains.end() != iter; )
@@ -425,6 +427,32 @@ void mapData::deleteTerrain(UINT layer, UID uid)
 			}
 		}
 
+		iter = _colTerrains.begin();
+		end = _colTerrains.end();
+		for (; iter != end; ++iter)
+		{
+			terrain* it = (*iter);
+			if (it->getUID() == ter->getUID())
+			{
+				_colTerrains.erase(iter);
+				break;
+			}
+		}
+
+		iter = _collisionTerrains.begin();
+		end = _collisionTerrains.end();
+		for (; iter != end; ++iter)
+		{
+			terrain* it = (*iter);
+			if (it->getUID() == ter->getUID())
+			{
+				_collisionTerrains.erase(iter);
+				break;
+			}
+		}
+
+
+
 		iter = _terrains.begin();
 		end = _terrains.end();
 		for (; iter != end; ++iter)
@@ -699,6 +727,25 @@ int mapData::getTerrainIndex(UINT layer, UINT uid)
 int mapData::getTerrainIndex(UINT uid)
 {
 	return -1;
+}
+
+POINTF mapData::getPlayerStartPosition()
+{
+	POINTF pos = {0.f, 0.f};
+
+	int size = _collisionTerrains.size();
+	for(int ii = 0; ii < size; ++ii)
+	{
+		terrain* ter = _collisionTerrains[ii];
+		if (ter->checkAttribute(eAttr_Player_Pos))
+		{
+			pos.x = ter->getPosX() + (ter->getCollision().right - ter->getCollision().left) * 0.5f;
+			pos.y = ter->getPosY() + (ter->getCollision().bottom - ter->getCollision().top) * 0.5f;
+			break;
+		}
+	}
+
+	return pos;
 }
 
 actorBase* mapData::getActor(UINT uid)
