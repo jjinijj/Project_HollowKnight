@@ -33,10 +33,10 @@ private:
 	mapSceneList		_mSceneList;
 
 	bool				_isChangeScene;
+	
+	int					_cursorCnt;			// 커서 on/off에 사용
 
 	eSceneName			_nextSceneName;		// 다음 씬
-	baseScene*			_nextScene;
-
 	map<eSceneName, SCENEDATA*> _fileNameMap;		// 
 
 public:

@@ -18,7 +18,7 @@ sceneManager::~sceneManager()
 HRESULT sceneManager::init()
 {
 	_currentScene = nullptr;
-
+	_cursorCnt = 0;
 	//{
 	//	SCENEDATA* data = new SCENEDATA;
 	//	data->setInfo(false, false, eSceneName_Loading, "Loading");
@@ -145,6 +145,28 @@ HRESULT sceneManager::changeScene(eSceneName sceneName)
 
 		//바꾸려는 씬을 현재 씬으로 교체한다.
 		_currentScene = find->second;
+
+		if (eSceneName_MapTool == sceneName)
+		{
+			if (_cursorCnt < 0)
+			{
+				for( ; _cursorCnt != 0; ++_cursorCnt)
+					ShowCursor(true);
+			}
+
+			ShowCursor(true);
+			++_cursorCnt;
+		}
+		else
+		{
+			if(0 < _cursorCnt)
+			{
+				for(; _cursorCnt != 0; --_cursorCnt)
+					ShowCursor(false);
+			}
+			ShowCursor(false);
+			--_cursorCnt;
+		}
 
 		return S_OK;
 	}
