@@ -9,7 +9,7 @@ private:
 
 	int _selIdx;
 
-	eSceneName _nextSceneName;
+	eSceneName _nextSceneNameName;
 
 	float _alpha;
 

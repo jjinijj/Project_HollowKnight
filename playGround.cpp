@@ -25,7 +25,9 @@ HRESULT playGround::init()
 
 	SCENEMANAGER->changeScene(eSceneName_Loading);
 	
-
+	_exitPop = new exitPopup;
+	_exitPop->init();
+	_exitPop->uiClose();
 	
 	return S_OK;
 }
@@ -42,12 +44,22 @@ void playGround::update()
 {
 	gameNode::update();
 
-	if (KEYMANAGER->isOnceKeyDown(VK_ESCAPE))
-		PostQuitMessage(0);
-
 	SOUNDMANAGER->update();
-	if(UIMANAGER->getUI(eUI_ExitPop)->isOpen())
+	
+	// 인게임에서 메인화면으로 빠져나오기 : 로딩중에는 불가능
+	if(SCENEMANAGER->getCurrentScene()->isInGameScene() && KEYMANAGER->isOnceKeyDown(VK_ESCAPE))
+	{
+		if (_exitPop->isOpen())
+			_exitPop->uiClose();
+		else
+			_exitPop->uiOpen();
+	}
+
+	if (_exitPop->isOpen())
+	{
+		_exitPop->update();
 		return;
+	}
 
 	CAMERA->update();
 	SCENEMANAGER->update();
@@ -70,15 +82,20 @@ void playGround::render()
 	//				##		여기에 코드 작성(Start)			##
 
 	SCENEMANAGER->render();
-	UIMANAGER->render();
-
+	
+	if (!_exitPop->isOpen())
+	{
+		UIMANAGER->render();
+		DEVTOOL->render();
+		TIMEMANAGER->render();
+	}
+	else
+		_exitPop->render();
 
 	//				##			여기에 코드 작성(End)			##
 	//===========================================================================
 	//				##카메라 정보 마우스 정보 시간정보 출력	##===================
 
-	DEVTOOL->render();
-	TIMEMANAGER->render();
 
 	// Draw 끝 - 이 코드가 빠지면 D2D 출력 X
 	D2DMANAGER->endDraw();

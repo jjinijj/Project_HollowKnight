@@ -226,6 +226,9 @@ void loadingScene::loadImageData()
 	IMAGEMANAGER->addImage("startText", L"image/startText.png", 182, 53);
 	IMAGEMANAGER->addImage("mapToolText", L"image/mapToolText.png", 302, 53);
 	IMAGEMANAGER->addImage("exitText", L"image/exitText.png", 128, 52);
+	IMAGEMANAGER->addImage("yesText", L"image/yesText.png", 103, 52);
+	IMAGEMANAGER->addImage("noText", L"image/noText.png", 83, 52);
+	IMAGEMANAGER->addImage("qText", L"image/qText.png", 772, 66);
 	IMAGEMANAGER->addFrameImage("menuCursor", L"image/menuCursor.png", 1089, 72, 11, 1);
 
 

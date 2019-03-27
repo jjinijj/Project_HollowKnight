@@ -133,6 +133,16 @@ void player::render()
 		_state->render();
 }
 
+void player::setStart(float x, float y)
+{
+	_x = x;
+	_y = y;
+
+	UIMANAGER->getStatusUI()->setHpStatus(_hp);
+
+	updateCollision();
+}
+
 //===================================================================================================
 
 void player::moveRight()
@@ -260,6 +270,9 @@ void player::lookUp()
 {
 	CAMERA->setPosY(CAMERA->getPosY() - _sight);
 	_sight += 10.f;
+
+	DEVTOOL->pushBackDebugText(format(L"%f", CAMERA->getPosY()));
+
 	if(PLAYER_LOOK_SIGHT < _sight)
 		_sight = static_cast<float>(PLAYER_LOOK_SIGHT);
 }

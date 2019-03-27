@@ -31,10 +31,6 @@ HRESULT baseInGameScene::init()
 	_actorM->init();
 	_actorM->mapDataLink(_mapData);
 
-
-	//DEVTOOL->setDebugMode(DEBUG_SHOW_TEXT);
-	//DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
-
 	setActors();
 
 	windowDialog* dialogUi = new windowDialog;
@@ -50,13 +46,10 @@ HRESULT baseInGameScene::init()
 	statusUI->uiOpen();
 	UIMANAGER->insertUI(eUI_Status, statusUI);
 	UIMANAGER->setStatusUI(statusUI);
-
 	
 	PLAYER->mapDataLink(_mapData);
 	PLAYER->actorManagerLink(_actorM);
 
-	//_actorM->createEnemy(WINSIZEX / 2.f, WINSIZEY / 2.f + 100.f, eEnemy_Gruzzer);
-	//_actorM->createNPC(WINSIZEX / 2.f, WINSIZEY / 2.f, eNpc_Elderbug);
 
 	return S_OK;
 
@@ -68,16 +61,58 @@ void baseInGameScene::release()
 
 	SAFE_RELEASE(_mapData);
 	SAFE_RELEASE(_actorM);
-	//SAFE_RELEASE(_player);
 
 	SAFE_DELETE(_mapData);
 	SAFE_DELETE(_actorM);
-	//SAFE_DELETE(_player);
 }
 
 void baseInGameScene::update()
 {
 	baseScene::update();
+
+	if(KEYMANAGER->isOnceKeyDown('1'))
+	{
+		if(DEVTOOL->checkDebugMode(DEBUG_SHOW_RECT))
+			DEVTOOL->delDebugMode(DEBUG_SHOW_RECT);
+		else
+			DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
+	}
+	else if (KEYMANAGER->isOnceKeyDown('2'))
+	{
+		if (DEVTOOL->checkDebugMode(DEBUG_SHOW_TEXT))
+			DEVTOOL->delDebugMode(DEBUG_SHOW_TEXT);
+		else
+			DEVTOOL->setDebugMode(DEBUG_SHOW_TEXT);
+	}
+	else if (KEYMANAGER->isOnceKeyDown('3'))
+	{
+		if (DEVTOOL->checkDebugMode(DEBUG_SHOW_UID))
+			DEVTOOL->delDebugMode(DEBUG_SHOW_UID);
+		else
+			DEVTOOL->setDebugMode(DEBUG_SHOW_UID);
+	}
+	else if (KEYMANAGER->isOnceKeyDown('4'))
+	{
+		if (DEVTOOL->checkDebugMode(DEBUG_SHOW_COLLISON))
+			DEVTOOL->delDebugMode(DEBUG_SHOW_COLLISON);
+		else
+			DEVTOOL->setDebugMode(DEBUG_SHOW_COLLISON);
+	}
+	else if (KEYMANAGER->isOnceKeyDown('5'))
+	{
+		if (DEVTOOL->checkDebugMode(DEBUG_SHOW_POSITION))
+			DEVTOOL->delDebugMode(DEBUG_SHOW_POSITION);
+		else
+			DEVTOOL->setDebugMode(DEBUG_SHOW_POSITION);
+	}
+	else if (KEYMANAGER->isOnceKeyDown('6'))
+	{
+		if (DEVTOOL->checkDebugMode(DEBUG_HIDE_IMAGE))
+			DEVTOOL->delDebugMode(DEBUG_HIDE_IMAGE);
+		else
+			DEVTOOL->setDebugMode(DEBUG_HIDE_IMAGE);
+	}
+
 	PLAYER->update();
 	_actorM->update();
 }

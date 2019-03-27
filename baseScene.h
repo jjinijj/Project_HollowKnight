@@ -5,6 +5,7 @@ class mapData;
 class baseScene
 {
 protected:
+
 	bool _isInGameScene;
 	
 	eSceneName _sceneName;
@@ -21,7 +22,8 @@ public:
 	virtual void update()	= 0;
 	virtual void render()	= 0;
 
+	//virtual void initUI()	= 0;
+
 	eSceneName getSceneName()	{ return _sceneName;		}
 	bool isInGameScene()		{ return _isInGameScene;	}
 };
-

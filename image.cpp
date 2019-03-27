@@ -377,8 +377,18 @@ void image::aniRenderReverseX(int destX, int destY, animation* ani, float alpha,
 	D2D1_SIZE_F size;
 	size.width = -1;
 	size.height = 1;
+
+	float pivotX = destX;
+	float pivotY = destY;
+
+	if (!isAbsolute)
+	{
+		pivotX -= CAMERA->getPosX();
+		pivotY -= CAMERA->getPosY();
+	}
+
 	//D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Scale(size, Point2F(destX + _imageInfo->frameWidth / 2, destY + _imageInfo->frameHeight / 2)));
-	D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Scale(size, Point2F(destX - CAMERA->getPosX() + _imageInfo->frameWidth / 2, destY - CAMERA->getPosY() + _imageInfo->frameHeight / 2)));
+	D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Scale(size, Point2F(pivotX + _imageInfo->frameWidth / 2, pivotY + _imageInfo->frameHeight / 2)));
 	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight(), alpha, isAbsolute);
 	D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 }

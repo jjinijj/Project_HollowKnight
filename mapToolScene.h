@@ -10,11 +10,6 @@ class uiButton;
 class mapToolScene:	public baseScene
 {
 private:
-	mapTool* _tool;
-
-	RECTD2D _fileZone;
-	RECTD2D _hierarchy;
-	RECTD2D _inspector;
 
 public:
 	mapToolScene();

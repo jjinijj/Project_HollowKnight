@@ -29,3 +29,7 @@ void baseScene::update()
 void baseScene::render()
 {
 }
+
+//void baseScene::initUI()
+//{
+//}

@@ -170,6 +170,7 @@ public:
 	void update();
 	void render();
 
+	void setStart(float x, float y);
 	void mapDataLink(mapData* data) { _mapData = data; }
 	void actorManagerLink(actorManager* actorM) {_actorM = actorM;}
 

@@ -60,7 +60,7 @@ HRESULT sceneManager::init()
 		_fileNameMap.insert(make_pair(eSceneName_Test, data));
 	}
 
-	_nextScene = eSceneName_None;
+	_nextSceneName = eSceneName_None;
 	_isChangeScene = false;
 	return S_OK;
 }
@@ -131,6 +131,7 @@ HRESULT sceneManager::changeScene(eSceneName sceneName)
 	if (find->second == _currentScene) 
 		return S_OK;
 
+
 	// 이전씬의 ui 밀어주기
 	UIMANAGER->release();
 	UIMANAGER->init();
@@ -139,7 +140,7 @@ HRESULT sceneManager::changeScene(eSceneName sceneName)
 	if (SUCCEEDED(find->second->init()))
 	{
 		//현재 어떤 씬의 정보가 들어있을수도 있으므로 릴리즈 시켜주고
-		if (_currentScene) 
+		if (_currentScene)
 			_currentScene->release();
 
 		//바꾸려는 씬을 현재 씬으로 교체한다.
@@ -152,7 +153,7 @@ HRESULT sceneManager::changeScene(eSceneName sceneName)
 
 HRESULT sceneManager::changeNextScene()
 {
-	return changeScene(_nextScene);
+	return changeScene(_nextSceneName);
 }
 
 void sceneManager::setNextScene(eSceneName sceneName)
@@ -164,7 +165,7 @@ void sceneManager::setNextScene(eSceneName sceneName)
 	if(_currentScene->getSceneName() == sceneName)
 		return;
 
-	_nextScene = sceneName;
+	_nextSceneName = sceneName;
 	_isChangeScene = true;
 }
 

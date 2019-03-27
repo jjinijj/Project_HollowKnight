@@ -7,10 +7,13 @@
 #include "titleScene.h"
 #include "crossLoad.h"
 #include "loadScene.h"
+#include"exitPopup.h"
 
 class playGround : public gameNode
 {
 private:
+	exitPopup* _exitPop;
+
 
 public:
 	playGround();

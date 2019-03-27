@@ -16,5 +16,6 @@ public:
 	void release();
 	void render();
 	void update();
+
 };
 

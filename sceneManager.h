@@ -34,7 +34,8 @@ private:
 
 	bool				_isChangeScene;
 
-	eSceneName			_nextScene;		// ¥Ÿ¿Ω æ¿
+	eSceneName			_nextSceneName;		// ¥Ÿ¿Ω æ¿
+	baseScene*			_nextScene;
 
 	map<eSceneName, SCENEDATA*> _fileNameMap;		// 
 
@@ -56,8 +57,11 @@ public:
 
 	void setNextScene(eSceneName sceneName);
 
-	// «ˆ¿Á æ¿
-	baseScene* getCurrentScene() { return _currentScene; }
+	// æ¿ ¡§∫∏
+	baseScene* getCurrentScene()	{ return _currentScene; }
+	eSceneName getCurrentSceneName(){ return _currentScene->getSceneName();}
+	eSceneName getNextSceneName()	{ return _nextSceneName;}
+	
 
 	// ∆ƒ¿œ∏Ì
 	string getSceneFileName(eSceneName name);

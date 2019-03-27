@@ -6,6 +6,7 @@ private:
 	bool _isExit;
 	
 	image* _background;
+	image* _question;
 	image* _menu[2];
 	image* _cursor;
 	animation* _cursorAni;

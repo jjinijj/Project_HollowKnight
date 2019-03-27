@@ -142,6 +142,9 @@
     <Filter Include="PlayGround\scene\ingame\crossLoad">
       <UniqueIdentifier>{0c33e344-3983-4bab-a981-878a02fa43b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\scene\loadScene">
+      <UniqueIdentifier>{e7063e32-0c75-41eb-a601-02938d4e3e47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -390,11 +393,11 @@
     <ClInclude Include="crossLoad.h">
       <Filter>PlayGround\scene\ingame\crossLoad</Filter>
     </ClInclude>
-    <ClInclude Include="loadScene.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="exitPopup.h">
       <Filter>PlayGround\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="loadScene.h">
+      <Filter>PlayGround\scene\loadScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -620,11 +623,11 @@
     <ClCompile Include="crossLoad.cpp">
       <Filter>PlayGround\scene\ingame\crossLoad</Filter>
     </ClCompile>
-    <ClCompile Include="loadScene.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="exitPopup.cpp">
       <Filter>PlayGround\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="loadScene.cpp">
+      <Filter>PlayGround\scene\loadScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

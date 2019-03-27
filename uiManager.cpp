@@ -20,6 +20,18 @@ HRESULT uiManager::init()
 
 void uiManager::release()
 {
+	iterUiMap iter = _uiMap.begin();
+
+	for (iter; _uiMap.end() != iter;)
+	{
+		uiBase* ui = (*iter).second;
+		iter = _uiMap.erase(iter);
+
+		SAFE_RELEASE(ui);
+		SAFE_DELETE(ui);
+	}
+
+	_uiMap.clear();
 }
 
 void uiManager::update()

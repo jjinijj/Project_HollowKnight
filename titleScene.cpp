@@ -7,7 +7,7 @@
 titleScene::titleScene()
 : _isInputEnterKey(false)
 , _selIdx(0)
-, _nextSceneName(eSceneName_None)
+, _nextSceneNameName(eSceneName_None)
 , _alpha(0.f)
 , _back(nullptr)
 , _bg(nullptr)
@@ -41,6 +41,10 @@ HRESULT titleScene::init()
 	
 	_cursorAni->start();
 
+	_isInputEnterKey = false;
+	_nextSceneNameName = eSceneName_None;
+	_alpha = 0.f;
+
 	return S_OK;
 }
 
@@ -69,9 +73,9 @@ void titleScene::update()
 					_isInputEnterKey = true;
 
 					if (0 == _selIdx)
-						_nextSceneName = eSceneName_DirtMouth;
+						_nextSceneNameName = eSceneName_DirtMouth;
 					else if(1 == _selIdx)
-						_nextSceneName = eSceneName_MapTool;
+						_nextSceneNameName = eSceneName_MapTool;
 					else
 						PostQuitMessage(0);
 				}
@@ -99,7 +103,7 @@ void titleScene::update()
 		_alpha -= 0.01f;
 		if (_alpha < 0.f)
 		{
-			SCENEMANAGER->setNextScene(_nextSceneName);
+			SCENEMANAGER->setNextScene(_nextSceneNameName);
 		}
 	}
 }
