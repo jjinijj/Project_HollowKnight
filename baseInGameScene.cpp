@@ -33,23 +33,8 @@ HRESULT baseInGameScene::init()
 
 	setActors();
 
-	windowDialog* dialogUi = new windowDialog;
-	dialogUi->init();
-	dialogUi->setActive(true);
-	dialogUi->uiClose();
-	UIMANAGER->insertUI(eUI_Dialog, dialogUi);
-	UIMANAGER->setDialogUI(dialogUi);
-
-	playerStatusUI* statusUI = new playerStatusUI;
-	statusUI->init();
-	statusUI->setActive(true);
-	statusUI->uiOpen();
-	UIMANAGER->insertUI(eUI_Status, statusUI);
-	UIMANAGER->setStatusUI(statusUI);
-	
 	PLAYER->mapDataLink(_mapData);
 	PLAYER->actorManagerLink(_actorM);
-
 
 	return S_OK;
 
@@ -70,48 +55,12 @@ void baseInGameScene::update()
 {
 	baseScene::update();
 
-	if(KEYMANAGER->isOnceKeyDown('1'))
-	{
-		if(DEVTOOL->checkDebugMode(DEBUG_SHOW_RECT))
-			DEVTOOL->delDebugMode(DEBUG_SHOW_RECT);
-		else
-			DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
-	}
-	else if (KEYMANAGER->isOnceKeyDown('2'))
-	{
-		if (DEVTOOL->checkDebugMode(DEBUG_SHOW_TEXT))
-			DEVTOOL->delDebugMode(DEBUG_SHOW_TEXT);
-		else
-			DEVTOOL->setDebugMode(DEBUG_SHOW_TEXT);
-	}
-	else if (KEYMANAGER->isOnceKeyDown('3'))
-	{
-		if (DEVTOOL->checkDebugMode(DEBUG_SHOW_UID))
-			DEVTOOL->delDebugMode(DEBUG_SHOW_UID);
-		else
-			DEVTOOL->setDebugMode(DEBUG_SHOW_UID);
-	}
-	else if (KEYMANAGER->isOnceKeyDown('4'))
-	{
-		if (DEVTOOL->checkDebugMode(DEBUG_SHOW_COLLISON))
-			DEVTOOL->delDebugMode(DEBUG_SHOW_COLLISON);
-		else
-			DEVTOOL->setDebugMode(DEBUG_SHOW_COLLISON);
-	}
-	else if (KEYMANAGER->isOnceKeyDown('5'))
-	{
-		if (DEVTOOL->checkDebugMode(DEBUG_SHOW_POSITION))
-			DEVTOOL->delDebugMode(DEBUG_SHOW_POSITION);
-		else
-			DEVTOOL->setDebugMode(DEBUG_SHOW_POSITION);
-	}
-	else if (KEYMANAGER->isOnceKeyDown('6'))
-	{
-		if (DEVTOOL->checkDebugMode(DEBUG_HIDE_IMAGE))
-			DEVTOOL->delDebugMode(DEBUG_HIDE_IMAGE);
-		else
-			DEVTOOL->setDebugMode(DEBUG_HIDE_IMAGE);
-	}
+	if(KEYMANAGER->isOnceKeyDown('1')) setDebugMode(DEBUG_SHOW_RECT);
+	if(KEYMANAGER->isOnceKeyDown('2')) setDebugMode(DEBUG_SHOW_TEXT);
+	if(KEYMANAGER->isOnceKeyDown('3')) setDebugMode(DEBUG_SHOW_UID);
+	if(KEYMANAGER->isOnceKeyDown('4')) setDebugMode(DEBUG_SHOW_COLLISON);
+	if(KEYMANAGER->isOnceKeyDown('5')) setDebugMode(DEBUG_SHOW_POSITION);
+	if(KEYMANAGER->isOnceKeyDown('6')) setDebugMode(DEBUG_HIDE_IMAGE);
 
 	PLAYER->update();
 	_actorM->update();
@@ -129,6 +78,23 @@ void baseInGameScene::render()
 	_actorM->render();
 	PLAYER->render();
 	_mapData->renderFront();
+}
+
+void baseInGameScene::initUI()
+{
+	windowDialog* dialogUi = new windowDialog;
+	dialogUi->init();
+	dialogUi->setActive(true);
+	dialogUi->uiClose();
+	UIMANAGER->insertUI(eUI_Dialog, dialogUi);
+	UIMANAGER->setDialogUI(dialogUi);
+
+	playerStatusUI* statusUI = new playerStatusUI;
+	statusUI->init();
+	statusUI->setActive(true);
+	statusUI->uiOpen();
+	UIMANAGER->insertUI(eUI_Status, statusUI);
+	UIMANAGER->setStatusUI(statusUI);
 }
 
 void baseInGameScene::setActors()
@@ -150,4 +116,12 @@ void baseInGameScene::setActors()
 		for(iter; end != iter; ++iter)
 			_actorM->addEnemy(*iter);
 	}
+}
+
+void baseInGameScene::setDebugMode(UINT mode)
+{
+	if (DEVTOOL->checkDebugMode(mode))
+		DEVTOOL->delDebugMode(mode);
+	else
+		DEVTOOL->setDebugMode(mode);
 }

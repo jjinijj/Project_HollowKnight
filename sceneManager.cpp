@@ -145,6 +145,9 @@ HRESULT sceneManager::changeScene(eSceneName sceneName)
 
 		//바꾸려는 씬을 현재 씬으로 교체한다.
 		_currentScene = find->second;
+		
+		// ui 세팅
+		_currentScene->initUI();
 
 		if (eSceneName_MapTool == sceneName)
 		{

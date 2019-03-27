@@ -129,3 +129,8 @@ void titleScene::render()
 									,1.0f, true);
 	}
 }
+
+void titleScene::initUI()
+{
+	baseScene::initUI();
+}

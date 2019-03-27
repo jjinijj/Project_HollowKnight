@@ -21,12 +21,6 @@ HRESULT mapToolScene::init()
 	// 메인화면으로 빠져나가기 위함
 	_isInGameScene = true;
 	
-	mapTool* tool = new mapTool;
-	tool->init();
-	UIMANAGER->insertUI(eUI_MapTool, tool);
-	tool->uiOpen();
-	tool->setActive(true);
-
 	DEVTOOL->clearDebugMode();
 	DEVTOOL->setDebugMode(DEBUG_SHOW_RECT);
 	DEVTOOL->setDebugMode(DEBUG_SHOW_TEXT);
@@ -38,13 +32,27 @@ HRESULT mapToolScene::init()
 
 void mapToolScene::release()
 {
+	baseScene::release();
 }
 
 void mapToolScene::update()
 {
+	baseScene::update();
 }
 
 void mapToolScene::render()
 {
+	baseScene::render();
+}
+
+void mapToolScene::initUI()
+{
+	baseScene::initUI();
+
+	mapTool* tool = new mapTool;
+	tool->init();
+	UIMANAGER->insertUI(eUI_MapTool, tool);
+	tool->uiOpen();
+	tool->setActive(true);
 }
 

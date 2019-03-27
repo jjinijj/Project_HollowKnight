@@ -53,9 +53,6 @@ void actorManager::release()
 		{
 			actorBase* actor = iter->second;
 			iter = _actorMap.erase(iter);
-
-			SAFE_RELEASE(actor);
-			SAFE_DELETE(actor);
 		}
 		_actorMap.clear();
 	}
@@ -355,8 +352,10 @@ void actorManager::destroyActor(UINT uid)
 	else if (actor->getType() == eActor_Npc)
 		_actorMap.erase(uid);
 
-	SAFE_RELEASE(actor);
-	SAFE_DELETE(actor);
+	_mapData->deleteActor(uid);
+
+	//SAFE_RELEASE(actor);
+	//SAFE_DELETE(actor);
 }
 
 actorBase* actorManager::getActor(UINT uid)

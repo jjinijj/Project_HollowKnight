@@ -18,5 +18,8 @@ public:
 	void release()  override;
 	void update()	override;
 	void render()	override;
+
+	void initUI()	override;
 };
+
 

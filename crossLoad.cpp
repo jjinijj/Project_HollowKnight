@@ -19,13 +19,13 @@ HRESULT crossLoad::init()
 	SOUNDMANAGER->play("Crossroad");
 
 
-	PLAYER->setPositionY(500.f);
+	PLAYER->setPositionY(300.f);
 	return S_OK;
 }
 
 void crossLoad::release()
 {
-	
+	baseInGameScene::release();
 }
 
 void crossLoad::update()
@@ -36,4 +36,9 @@ void crossLoad::update()
 void crossLoad::render()
 {
 	baseInGameScene::render();
+}
+
+void crossLoad::initUI()
+{
+	baseInGameScene::initUI();
 }

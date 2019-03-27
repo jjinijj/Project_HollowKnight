@@ -24,7 +24,7 @@ HRESULT dirtMouthScene::init()
 
 void dirtMouthScene::release()
 {
-
+	baseInGameScene::release();
 }
 
 void dirtMouthScene::update()
@@ -35,4 +35,9 @@ void dirtMouthScene::update()
 void dirtMouthScene::render()
 {
 	baseInGameScene::render();
+}
+
+void dirtMouthScene::initUI()
+{
+	baseInGameScene::initUI();
 }

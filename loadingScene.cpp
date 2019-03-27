@@ -81,6 +81,10 @@ void loadingScene::render()
 	_bg->render(0.f, 0.f, WINSIZEX, WINSIZEY, _alpha, true);
 }
 
+void loadingScene::initUI()
+{
+}
+
 
 void loadingScene::loadImageData()
 {

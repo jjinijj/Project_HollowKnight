@@ -50,3 +50,8 @@ void loadScene::update()
 			SOUNDMANAGER->play("ui_button_confirm");
 	}
 }
+
+void loadScene::initUI()
+{
+	baseScene::initUI();
+}

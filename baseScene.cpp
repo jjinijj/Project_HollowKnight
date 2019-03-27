@@ -30,6 +30,6 @@ void baseScene::render()
 {
 }
 
-//void baseScene::initUI()
-//{
-//}
+void baseScene::initUI()
+{
+}

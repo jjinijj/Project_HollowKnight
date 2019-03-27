@@ -19,8 +19,12 @@ public:
 	void release()  override;
 	void update()	override;
 	void render()	override;
+	void initUI()	override;
 
 	// actorµé ¹èÄ¡(npc, enemy)
 	virtual void setActors();
+
+private:
+	void setDebugMode(UINT mode);
 };
 
