@@ -8,6 +8,7 @@ class mapData;
 class npc;
 class terrain;
 class enemy;
+class objectManager;
 class player : public singletonBase<player>
 {
 public:
@@ -154,7 +155,6 @@ private:
 	float _pushedPower;			// 밀림
 	int _tempValue;
 
-	mapData* _mapData;			// 맵 정보
 
 	playerState* _state;		// 현재 상태
 	playerState* _act;			// 추가 상태 : 현재 상태와 함께 사용되며 애니메이션 우선 출력
@@ -174,9 +174,11 @@ private:
 	WORD _dir_atk;				// 공격 방향
 	WORD _dir_pushed;			// 밀리는 방향
 
-	actorManager* _actorM;
-	npc*		  _talkTarget;
-
+	mapData*		_mapData;	// 맵 정보
+	actorManager*	_actorM;
+	objectManager*	_objM;
+	
+	npc*	 _talkTarget;
 	terrain* _chair;
 	terrain* _portal;
 	
@@ -200,8 +202,9 @@ public:
 	void render();
 
 	void setStart(float x, float y);
-	void mapDataLink(mapData* data) { _mapData = data; }
-	void actorManagerLink(actorManager* actorM) {_actorM = actorM;}
+	void mapDataLink(mapData* data)				{ _mapData = data;  }
+	void actorManagerLink(actorManager* actorM) { _actorM = actorM; }
+	void objectManagerLink(objectManager* objM) { _objM = objM;		}
 
 	// 이동
 	void moveRight();
@@ -315,8 +318,10 @@ private:
 	void fixPosition();
 	// 상태 찾기
 	playerState* findState(ePlayer_State state);
-	// 충돌 체크
+	// 충돌 체크 enemy
 	void checkCollisionEnemy();
+	// 충돌체크 coin
+	void checkCollisionCoin();
 
 	// 시야 리셋
 	void sightDown();

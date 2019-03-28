@@ -35,6 +35,7 @@
 #define MENU_CURSOR_UID				10001
 #define UI_UID						100000
 #define EFFECT_UID					101000
+#define OBJECT_UID					102000
 
 //=============================================
 //   enum
@@ -124,6 +125,22 @@ enum eLayer
 	eLayer_Count = eLayer_None,
 };
 
+enum eObject_Type
+{
+	eObject_DopObject,
+
+	eObject_None,
+	eObject_Count = eObject_None,
+};
+
+enum eDropObject_Type
+{
+	eDrop_Coin,
+	eDrop_Item,
+
+	eDrop_None,
+	eDrop_Count = eDrop_None,
+};
 
 //=============================================
 //   debug mode

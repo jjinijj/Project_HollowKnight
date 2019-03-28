@@ -10,8 +10,7 @@ protected:
 	
 	eSceneName _sceneName;
 
-	actorManager* _actorM;
-	mapData* _mapData;
+
 
 public:
 	baseScene();

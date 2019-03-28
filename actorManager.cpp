@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "actorManager.h"
+#include "ObjectManager.h"
 #include "enemyHeaders.h"
 #include "npcHeaders.h"
 #include "bullet.h"
@@ -521,9 +522,24 @@ void actorManager::hitEnemy(enemy* em, UINT damage)
 void actorManager::hitEnemy(UINT uid, UINT damage)
 {
 	enemy* em = getEnemy(uid);
-	if(em)
+	if(!em)
+		return;
+
+	if(!(em->isAlive()))
+		return;
+	
+	em->takeDamage(damage);
+
+	if (!em->isAlive())
 	{
-		em->takeDamage(damage);
+		int value = RND->getFromIntTo(1, 5);
+		POINTF pos = {};
+		pos.x = em->getPosX();
+		pos.y = em->getPosY();
+		for (int ii = 0; ii < value; ++ii)
+		{
+			_objM->createGameObject(pos.x, pos.y - 20.f, eObject_DopObject, eDrop_Coin);
+		}
 	}
 }
 

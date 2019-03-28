@@ -10,6 +10,7 @@ class bullet;
 class arcBullet;
 class linearBullet;
 class mapData;
+class objectManager;
 class actorManager : public singletonBase<actorManager>
 {
 
@@ -36,7 +37,8 @@ private:
 	list<bullet*> _bulletList;				// 현재 사용중인 bullets
 	bullet* _playerBullet;					// 플레이어 bullet;
 
-	mapData* _mapData;
+	mapData*		_mapData;
+	objectManager*	_objM;
 
 	UINT _uidCount;
 
@@ -49,7 +51,8 @@ public:
 	void render();
 	void update();
 
-	void mapDataLink(mapData* data) {_mapData = data;}
+	void mapDataLink(mapData* data) { _mapData = data; }
+	void objMLink(objectManager* m) { _objM = m; }
 
 	void firePlayerBullet(POINTF pos, float angle);
 	void fireEnemyBullet(enemy* em);

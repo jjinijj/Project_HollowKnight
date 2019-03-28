@@ -46,9 +46,11 @@ void baseInGameScene::release()
 
 	SAFE_RELEASE(_mapData);
 	SAFE_RELEASE(_actorM);
+	SAFE_RELEASE(_objM);
 
 	SAFE_DELETE(_mapData);
 	SAFE_DELETE(_actorM);
+	SAFE_DELETE(_objM);
 }
 
 void baseInGameScene::update()
@@ -64,6 +66,7 @@ void baseInGameScene::update()
 
 	PLAYER->update();
 	_actorM->update();
+	_objM->update();
 }
 
 void baseInGameScene::render()
@@ -77,6 +80,7 @@ void baseInGameScene::render()
 
 	_actorM->render();
 	PLAYER->render();
+	_objM->render();
 	_mapData->renderFront();
 }
 
@@ -110,6 +114,13 @@ void baseInGameScene::setSceneData(mapData * m, actorManager * am)
 {
 	_mapData = m;
 	_actorM = am;
+
+	_objM = new objectManager;
+	_objM->init();
+	_objM->mapDataLink(_mapData);
+
+	_actorM->objMLink(_objM);
+	PLAYER->objectManagerLink(_objM);
 
 	setActors();
 }

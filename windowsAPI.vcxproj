@@ -162,6 +162,7 @@
     <ClInclude Include="corniferState.h" />
     <ClInclude Include="crossLoad.h" />
     <ClInclude Include="dirtMouthScene.h" />
+    <ClInclude Include="dropObject.h" />
     <ClInclude Include="elderbug.h" />
     <ClInclude Include="elderbugState.h" />
     <ClInclude Include="enemy.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="loadScene.h" />
     <ClInclude Include="npc.h" />
     <ClInclude Include="npcHeaders.h" />
+    <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playerState.h" />
     <ClInclude Include="jumpState.h" />
@@ -248,6 +250,7 @@
     <ClCompile Include="corniferState.cpp" />
     <ClCompile Include="crossLoad.cpp" />
     <ClCompile Include="dirtMouthScene.cpp" />
+    <ClCompile Include="dropObject.cpp" />
     <ClCompile Include="elderbug.cpp" />
     <ClCompile Include="elderbugState.cpp" />
     <ClCompile Include="enemy.cpp" />
@@ -259,6 +262,7 @@
     <ClCompile Include="iTween.cpp" />
     <ClCompile Include="loadScene.cpp" />
     <ClCompile Include="npc.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playerState.cpp" />
     <ClCompile Include="jumpState.cpp" />

@@ -3,6 +3,7 @@
 #include "player.h"
 #include "actorManager.h"
 #include "mapData.h"
+#include "objectManager.h"
 
 class baseInGameScene: public baseScene
 {
@@ -10,6 +11,7 @@ protected:
 	//player*			_player;
 	mapData*		_mapData;
 	actorManager*	_actorM;
+	objectManager*	_objM;
 
 public:
 	baseInGameScene();

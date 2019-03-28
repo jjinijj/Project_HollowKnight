@@ -145,6 +145,9 @@
     <Filter Include="PlayGround\scene\loadScene">
       <UniqueIdentifier>{e7063e32-0c75-41eb-a601-02938d4e3e47}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\object">
+      <UniqueIdentifier>{0d7d2a18-228c-4693-9533-e9e701f012a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -399,6 +402,12 @@
     <ClInclude Include="loadScene.h">
       <Filter>PlayGround\scene\loadScene</Filter>
     </ClInclude>
+    <ClInclude Include="dropObject.h">
+      <Filter>PlayGround\object</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>PlayGround\object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -628,6 +637,12 @@
     </ClCompile>
     <ClCompile Include="loadScene.cpp">
       <Filter>PlayGround\scene\loadScene</Filter>
+    </ClCompile>
+    <ClCompile Include="dropObject.cpp">
+      <Filter>PlayGround\object</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>PlayGround\object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

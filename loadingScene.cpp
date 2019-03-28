@@ -341,6 +341,7 @@ static DWORD CALLBACK ThreadFunction(LPVOID lpParameter)
 	SOUNDMANAGER->addSound("ui_change_selection","sound/ui_change_selection.wav", false, false);			Sleep(sleepTime);
 	SOUNDMANAGER->addSound("ui_button_confirm","sound/ui_button_confirm.wav", false, false);				Sleep(sleepTime);
 	SOUNDMANAGER->addSound("begin_button","sound/begin_button.wav", false, false);							Sleep(sleepTime);
+	SOUNDMANAGER->addSound("geo_small_collect_1","sound/geo_small_collect_1.wav", false, false);							Sleep(sleepTime);
 
 	
 	loadHelper->_isSoundDataLoadFin = true;

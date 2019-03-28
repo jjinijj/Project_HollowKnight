@@ -12,6 +12,8 @@
 #include "actorManager.h"
 #include "windowDialog.h"
 #include "playerStatusUI.h";
+#include "objectManager.h"
+#include "dropObject.h"
 
 player::player()
 {
@@ -120,6 +122,7 @@ void player::update()
 	fixPosition();
 	updateCollision();
 	checkCollisionEnemy();
+	checkCollisionCoin();
 	if(checkPortal())
 		enterPortalTrigger();
 
@@ -1097,6 +1100,26 @@ void player::checkCollisionEnemy()
 	if (attaker)
 	{
 		takeDamageFromEnemy(attaker);
+	}
+}
+
+void player::checkCollisionCoin()
+{
+	list<dropCoin*> coins = _objM->getCoinList();
+
+	list<dropCoin*>::iterator iter = coins.begin();
+	list<dropCoin*>::iterator end = coins.end();
+	
+	for(iter; end != iter; ++iter)
+	{
+		dropCoin* coin = (*iter);
+		if(CheckIntersectRect(_collision, coin->getCollision()))
+		{
+			// todo
+			SOUNDMANAGER->play("geo_small_collect_1");
+			_coin += coin->getPrice();
+			_objM->removeGameObject(coin->getUID());
+		}
 	}
 }
 
