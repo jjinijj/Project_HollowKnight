@@ -55,7 +55,7 @@ void bullet::update()
 {
 	actorBase::update();
 	updateCollision();
-	++_lifeTime += TIMEMANAGER->getElapsedTime();
+	_lifeTime += TIMEMANAGER->getElapsedTime();
 }
 
 void bullet::render()

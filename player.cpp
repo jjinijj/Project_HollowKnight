@@ -30,6 +30,7 @@ HRESULT player::init()
 	initAnimaion();
 	initState();
 
+
 	return S_OK;
 }
 
@@ -207,6 +208,11 @@ void player::setStart(float x, float y)
 
 	_startX = x;
 	_startY = y;
+
+	// Ä«¸Þ¶ó
+	RECTD2D rc = { 0.f, 0.f, WINSIZEX, WINSIZEY };
+	POINTFLOAT pf = {MAPSIZEX, MAPSIZEY};
+	CAMERA->init(pf, rc, PLAYER_MOVE_SPEED, &_x, &_y);
 
 	UIMANAGER->getStatusUI()->setHpStatus(_hp);
 

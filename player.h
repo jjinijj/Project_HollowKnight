@@ -264,6 +264,8 @@ public:
 	bool trySit();
 	// 원거리 공격 가능한지 확인
 	bool checkPossibleStandOff();
+	// 무적상태인가
+	bool isInvicible() { return (0.f <_invincibleTime); }
 
 	//=====================================================
 	// set

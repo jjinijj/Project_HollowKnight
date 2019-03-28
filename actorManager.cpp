@@ -548,11 +548,14 @@ bool actorManager::checkHitSomething(bullet* bt)
 			return true;
 	}
 
-		// 플레이어가 맞음
-	if ( CheckIntersectRect(rc, PLAYER->getCollision()) )
+	if (!PLAYER->isInvicible())
 	{
-		PLAYER->takeDamage();
-		return true;
+		// 플레이어가 맞음
+		if ( CheckIntersectRect(rc, PLAYER->getCollision()) )
+		{
+			PLAYER->takeDamage();
+			return true;
+		}
 	}
 
 	return false;

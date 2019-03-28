@@ -87,8 +87,8 @@ void primalAspid::attack()
 
 bool primalAspid::checkTargetInViewRange()
 {
-	if (CheckInRange( MakePointF(_target->getPosX(), _target->getPosY())
-					 , MakePointF(_x, _y), SIGHT_RANGE) )
+	if (CheckInRange(MakePointF(_target->getPosX(), _target->getPosY())
+					 , MakePointF(_x, _y), SIGHT_RANGE))
 		return true;
 	else
 		return false;
@@ -105,7 +105,7 @@ bool primalAspid::checkTargetInAttackRange()
 
 void primalAspid::moveToTarget()
 {
-	_angle = atan2f(_target->getPosX() - _y, _target->getPosX() - _x);
+	_angle = atan2f(_target->getPosY() - _y, _target->getPosX() - _x);
 	_x += cosf(_angle) * (_speed * TIMEMANAGER->getElapsedTime());
 	_y += sinf(_angle) * (_speed * TIMEMANAGER->getElapsedTime());
 	fixPosition();
@@ -113,7 +113,7 @@ void primalAspid::moveToTarget()
 
 void primalAspid::moveFromTarget()
 {
-	_angle = atan2f(_target->getPosX() - _y, _target->getPosX() - _x);
+	_angle = atan2f(_target->getPosY() - _y, _target->getPosX() - _x);
 	_x -= cosf(_angle) * (_speed * TIMEMANAGER->getElapsedTime());
 	_y -= sinf(_angle) * (_speed * TIMEMANAGER->getElapsedTime());
 	fixPosition();
