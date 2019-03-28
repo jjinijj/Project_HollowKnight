@@ -14,7 +14,7 @@
 #include "playerStatusUI.h";
 
 player::player()
-{
+: atkcnt(0){
 }
 
 
@@ -114,7 +114,53 @@ void player::update()
 	if(_function)
 		_function();
 
+	if (_effectAni)
+	{
+		if (!_effectAni->isPlay())
+		{
+			_effectAni = nullptr;
+			_effectImg = nullptr;
+			atkcnt = 0;
+		}
+		else
+		{
+			switch (_dir_atk)
+			{
+				case eDirection_Right:
+				{
+					_effectPos.x = _collisionAtk.right - 100;
+					_effectPos.y = _collisionAtk.top;
+					break;
+				}
+
+				case eDirection_Left:
+				{
+					_effectPos.x = _collisionAtk.left;
+					_effectPos.y = _collisionAtk.top;
+					break;
+				}
+
+				case eDirection_Up:
+				{
+					_effectPos.x = _collision.left - 50;
+					_effectPos.y = _collisionAtk.top;
+					break;
+				}
+
+				case eDirection_Down:
+				{
+					_effectPos.x = _collision.left - 50;
+					_effectPos.y = _collisionAtk.bottom - 120;
+					break;
+				}
+			}
+
+			_effectAni->frameUpdate(TIMEMANAGER->getElapsedTime());
+		}
+	}
+
 	DEVTOOL->pushBackDebugText(format(L"state : %d", _state->getState()));
+
 }
 
 void player::render()
@@ -125,12 +171,22 @@ void player::render()
 		D2DMANAGER->drawRectangle(_collisionAtk, false);
 	}
 	if (DEVTOOL->checkDebugMode(DEBUG_SHOW_TEXT))
-		D2DMANAGER->drawText(format(L"%d", _state->getState()).c_str(), _collision.left, _collision.top, false);
+	{
+		if (_effectImg)
+			D2DMANAGER->drawText(format(L"%d", _effectAni->getFrameIdx().x).c_str(), _collision.left, _collision.top - 10, false);
+	}
 	
 	if(_act)
 		_act->render();
 	else
 		_state->render();
+
+	if (_effectImg)
+	{
+		_effectImg->aniRender(_effectPos.x, _effectPos.y, _effectAni, 1.0f, false);
+		D2DMANAGER->drawText(format(L"%d, %.2f, %.2f", _effectAni->getFrameIdx().x, _effectPos.x, _effectPos.y).c_str()
+							 , _collision.left, _collision.top - 20, false);
+	}
 }
 
 void player::setStart(float x, float y)
@@ -202,6 +258,8 @@ void player::attackDamage()
 	if (!_actorM)
 		return;
 
+	++atkcnt;
+
 	map<UINT, enemy*> ems = _actorM->getEnemys();
 
 	map<UINT, enemy*>::iterator iter  = ems.begin();
@@ -210,8 +268,49 @@ void player::attackDamage()
 	{
 		enemy* em = iter->second;
 
-		if(CheckIntersectRect(_collisionAtk, em->getCollision()))
+		if (CheckIntersectRect(_collisionAtk, em->getCollision()))
 			_actorM->hitEnemy(em->getUID(), _power);
+	}
+
+	if (_effectAni)
+	{
+		_effectAni->stop();
+		_effectAni = nullptr;
+		_effectImg = nullptr;
+	}
+
+	
+	switch (_dir_atk)
+	{
+		case eDirection_Right:
+		{
+			_effectAni = ANIMANAGER->findAnimation(PLAYER_UID, ePlayer_Ani_Effect_Swing_Right);
+			break;
+		}
+
+		case eDirection_Left:
+		{
+			_effectAni = ANIMANAGER->findAnimation(PLAYER_UID, ePlayer_Ani_Effect_Swing_Left);
+			break;
+		}
+
+		case eDirection_Up:
+		{
+			_effectAni = ANIMANAGER->findAnimation(PLAYER_UID, ePlayer_Ani_Effect_Swing_Up);
+			break;
+		}
+
+		case eDirection_Down:
+		{
+			_effectAni = ANIMANAGER->findAnimation(PLAYER_UID, ePlayer_Ani_Effect_Swing_Down);
+			break;
+		}
+	}
+
+	if (_effectAni)
+	{
+		_effectImg = _effectAni->getImage();
+		_effectAni->start();
 	}
 }
 
@@ -703,6 +802,15 @@ void player::initAnimaion()
 	{
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Drowse, "knight_sitAnddrowse"
 										   , 2, 3, 5, false);
+	}
+
+	// effect swing
+	{
+		image* img = IMAGEMANAGER->findImage("swing");
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Effect_Swing_Up, "swing_updown", 0, 0, PLAYER_ANI_SPEED_SLOW, false);
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Effect_Swing_Down, "swing_updown", 2, 2, PLAYER_ANI_SPEED_SLOW, false);
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Effect_Swing_Left, "swing", 4, 6, PLAYER_ANI_SPEED_FAST, false);
+		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_Effect_Swing_Right, "swing", 0, 3, PLAYER_ANI_SPEED_FAST, false);
 	}
 }
 

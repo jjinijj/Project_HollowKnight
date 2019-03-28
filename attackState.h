@@ -10,6 +10,9 @@ class player;
 class attackState: public playerState
 {
 private:
+	image*		_effectImg;
+	animation*	_effectAni;
+	UINT		_effectKey;
 
 public:
 	attackState();

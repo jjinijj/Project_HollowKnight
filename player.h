@@ -104,6 +104,11 @@ public:
 		eplayer_Ani_Look_Up_Loop,// 위로 보기 반복
 		eplayer_Ani_Look_Down_Loop,// 아래로 보기 반복
 
+		ePlayer_Ani_Effect_Swing_Right,
+		ePlayer_Ani_Effect_Swing_Left,
+		ePlayer_Ani_Effect_Swing_Up,
+		ePlayer_Ani_Effect_Swing_Down,
+
 		ePlayer_Ani_None,
 		ePlayer_Ani_Count = ePlayer_Ani_None,
 	};
@@ -138,6 +143,11 @@ private:
 	playerState* _state;		// 현재 상태
 	playerState* _act;			// 추가 상태 : 현재 상태와 함께 사용되며 애니메이션 우선 출력
 	ePlayer_State _nextState;	// 다음 상태
+	
+	image*		_effectImg;
+	animation*	_effectAni;
+	POINTF		_effectPos;
+
 
 	RECTD2D _collision;			// 충돌체
 	RECTD2D _collisionAtk;		// 공격 충돌체

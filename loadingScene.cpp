@@ -102,6 +102,10 @@ void loadingScene::loadImageData()
 	
 	IMAGEMANAGER->addFrameImage("knight_loading", L"image/loading.png", 376, 220, 4, 2);
 
+	// effect swing
+	IMAGEMANAGER->addFrameImage("swing", L"image/swing.png", 1028, 308, 4, 2);
+	IMAGEMANAGER->addFrameImage("swing_updown", L"image/swing_updown.png", 304, 240, 2, 2);
+
 	// enemy tiktik
 	IMAGEMANAGER->addFrameImage("tiktik_move", L"image/tiktik_move.png", 416, 190, 4, 2);
 	IMAGEMANAGER->addFrameImage("tiktik_move_under", L"image/tiktik_move_under.png", 416, 190, 4, 2);
@@ -296,7 +300,7 @@ static DWORD CALLBACK ThreadFunction(LPVOID lpParameter)
 
 	SOUNDMANAGER->addSound("Dirtmouth","sound/Dirtmouth.wav", true, true);									Sleep(100);
 	SOUNDMANAGER->addSound("Safety","sound/Dirtmouth.wav", true, true);										Sleep(100);
-	SOUNDMANAGER->addSound("Title","sound/Title.wav", true, true);										Sleep(100);
+	SOUNDMANAGER->addSound("Title","sound/Title.wav", true, true);											Sleep(100);
 	SOUNDMANAGER->addSound("Crossroad","sound/S19 Crossroads Bass.wav", true, true);						Sleep(100);
 																											Sleep(100);
 	SOUNDMANAGER->addSound("Elderbug_01","sound/Elderbug_01.wav", false, false);							Sleep(100);

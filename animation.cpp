@@ -685,3 +685,13 @@ void animation::resume()
 {
 	_play = TRUE;
 }
+
+POINT animation::getFrameIdx()
+{
+	POINT p = {0, 0};
+
+	p.x = _playList[_nowPlayIndex] % (_img->GetMaxFrameX() + 1);
+	p.y = _playList[_nowPlayIndex] / (_img->GetMaxFrameX() + 1);
+
+	return p;
+}
