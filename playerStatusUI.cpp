@@ -42,6 +42,10 @@ HRESULT playerStatusUI::init()
 	_uiGauge->setValue(0.0);
 	insertUIObject(_uiGauge);
 
+	_coinUi = IMAGEMANAGER->findImage("coin_ui");
+	_textImg = IMAGEMANAGER->findImage("number");
+	
+
 	return S_OK;
 }
 
@@ -60,6 +64,21 @@ void playerStatusUI::update()
 void playerStatusUI::render()
 {
 	uiBase::render();
+	_coinUi->render(270, 180, 1.f, true);
+	
+	list<int>::iterator iter = _idxs.begin();
+	list<int>::iterator end = _idxs.end();
+	int ii = 0;
+	for(iter; end != iter; ++iter)
+	{
+		_textImg->frameRender(ii * 50 + 350.f
+							  , 180.f
+							  , *iter
+							  , 0
+							  , 1.0f
+							  , true);
+		++ii;
+	}
 }
 
 void playerStatusUI::setHpStatus(UINT count)
@@ -99,4 +118,32 @@ void playerStatusUI::setGaugeValue(float value)
 void playerStatusUI::setGaugeChangeValue(float value)
 {
 	_uiGauge->changeValue(value);
+}
+
+void playerStatusUI::setCoin(UINT price)
+{
+	_idxs.clear();
+
+	if(0 == price)
+	{
+		_idxs.push_back(0);
+		return;
+	}
+
+	int value = price;
+	while (0 != value)
+	{
+		int temp = value /10;
+
+		if (0 == temp)
+		{
+			_idxs.push_back(value);
+			break;
+		}
+		else
+		{
+			_idxs.push_back(temp);
+			value %= 10;
+		}
+	}
 }

@@ -218,6 +218,7 @@ void player::setStart(float x, float y)
 	CAMERA->init(pf, rc, PLAYER_MOVE_SPEED, &_x, &_y);
 
 	UIMANAGER->getStatusUI()->setHpStatus(_hp);
+	UIMANAGER->getStatusUI()->setCoin(_coin);
 
 	updateCollision();
 }
@@ -1118,6 +1119,7 @@ void player::checkCollisionCoin()
 			// todo
 			SOUNDMANAGER->play("geo_small_collect_1");
 			_coin += coin->getPrice();
+			UIMANAGER->getStatusUI()->setCoin(_coin);
 			_objM->removeGameObject(coin->getUID());
 		}
 	}

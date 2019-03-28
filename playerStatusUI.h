@@ -21,6 +21,10 @@ private:
 	vector<uiSprite*>	_hp;
 	uiProgress*			_uiGauge;
 
+	image*				_coinUi;
+	image*				_textImg;
+	list<int>			_idxs;
+
 public:
 	playerStatusUI();
 	~playerStatusUI();
@@ -35,5 +39,7 @@ public:
 	// 0.0 ~ 1.0f
 	void setGaugeValue(float value);
 	void setGaugeChangeValue(float value);
+
+	void setCoin(UINT value);
 };
 
