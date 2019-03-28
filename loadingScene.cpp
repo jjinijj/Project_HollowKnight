@@ -79,6 +79,10 @@ void loadingScene::render()
 	_bg->render(0.f, 0.f, WINSIZEX, WINSIZEY, _alpha, true);
 }
 
+void loadingScene::startScene()
+{
+}
+
 void loadingScene::initUI()
 {
 }
@@ -297,42 +301,43 @@ void loadingScene::loadData()
 static DWORD CALLBACK ThreadFunction(LPVOID lpParameter)
 {
 	loadingScene* loadHelper = (loadingScene*)lpParameter;
+	int sleepTime = 1;
 
-	SOUNDMANAGER->addSound("Dirtmouth","sound/Dirtmouth.wav", true, true);									Sleep(100);
-	SOUNDMANAGER->addSound("Safety","sound/Dirtmouth.wav", true, true);										Sleep(100);
-	SOUNDMANAGER->addSound("Title","sound/Title.wav", true, true);											Sleep(100);
-	SOUNDMANAGER->addSound("Crossroad","sound/S19 Crossroads Bass.wav", true, true);						Sleep(100);
-																											Sleep(100);
-	SOUNDMANAGER->addSound("Elderbug_01","sound/Elderbug_01.wav", false, false);							Sleep(100);
-	SOUNDMANAGER->addSound("Elderbug_02","sound/Elderbug_02.wav", false, false);							Sleep(100);
-	SOUNDMANAGER->addSound("Elderbug_03","sound/Elderbug_03.wav", false, false);							Sleep(100);
-	SOUNDMANAGER->addSound("Elderbug_04","sound/Elderbug_04.wav", false, false);							Sleep(100);
-																											Sleep(100);
-	SOUNDMANAGER->addSound("Cornifer_01","sound/Cornifer_01.wav", false, false);							Sleep(100);
-	SOUNDMANAGER->addSound("Cornifer_02","sound/Cornifer_02.wav", false, false);							Sleep(100);
-	SOUNDMANAGER->addSound("Cornifer_03","sound/Cornifer_03.wav", false, false);							Sleep(100);
-																											Sleep(100);
-	SOUNDMANAGER->addSound("sword_1","sound/sword_1.wav", false, false);									Sleep(100);
-	SOUNDMANAGER->addSound("sword_2","sound/sword_2.wav", false, false);									Sleep(100);
-	SOUNDMANAGER->addSound("sword_3","sound/sword_3.wav", false, false);									Sleep(100);
-	SOUNDMANAGER->addSound("sword_4","sound/sword_4.wav", false, false);									Sleep(100);
-																											Sleep(100);
-	SOUNDMANAGER->addSound("hero_jump","sound/hero_jump.wav", false, false);								Sleep(100);
-	SOUNDMANAGER->addSound("hero_land_hard","sound/hero_land_hard.wav", false, false);						Sleep(100);
-	SOUNDMANAGER->addSound("hero_land_soft","sound/hero_land_soft.wav", false, false);						Sleep(100);
-	SOUNDMANAGER->addSound("hero_run_footsteps_stone","sound/hero_run_footsteps_stone.wav", false, true);	Sleep(100);
-	SOUNDMANAGER->addSound("focus_health_heal","sound/focus_health_heal.wav", false, false);				Sleep(100);
-																											Sleep(100);
-	SOUNDMANAGER->addSound("enemy_damage","sound/enemy_damage.wav", false, false);							Sleep(100);
-	SOUNDMANAGER->addSound("enemy_death_sword","sound/enemy_death_sword.wav", false, false);				Sleep(100);
-	SOUNDMANAGER->addSound("buzzer_fly","sound/buzzer_fly.wav", false, false);								Sleep(100);
-	SOUNDMANAGER->addSound("crawler","sound/crawler.wav", false, false);									Sleep(100);
-																											Sleep(100);
-	SOUNDMANAGER->addSound("ui_save","sound/ui_save.wav", false, false);									Sleep(100);
-	SOUNDMANAGER->addSound("ui_option_click","sound/ui_option_click.wav", false, false);					Sleep(100);
-	SOUNDMANAGER->addSound("ui_change_selection","sound/ui_change_selection.wav", false, false);			Sleep(100);
-	SOUNDMANAGER->addSound("ui_button_confirm","sound/ui_button_confirm.wav", false, false);				Sleep(100);
-	SOUNDMANAGER->addSound("begin_button","sound/begin_button.wav", false, false);							Sleep(100);
+	SOUNDMANAGER->addSound("Dirtmouth","sound/Dirtmouth.wav", true, true);									Sleep(sleepTime);
+	SOUNDMANAGER->addSound("Safety","sound/Dirtmouth.wav", true, true);										Sleep(sleepTime);
+	SOUNDMANAGER->addSound("Title","sound/Title.wav", true, true);											Sleep(sleepTime);
+	SOUNDMANAGER->addSound("Crossroad","sound/S19 Crossroads Bass.wav", true, true);						Sleep(sleepTime);
+																											Sleep(sleepTime);
+	SOUNDMANAGER->addSound("Elderbug_01","sound/Elderbug_01.wav", false, false);							Sleep(sleepTime);
+	SOUNDMANAGER->addSound("Elderbug_02","sound/Elderbug_02.wav", false, false);							Sleep(sleepTime);
+	SOUNDMANAGER->addSound("Elderbug_03","sound/Elderbug_03.wav", false, false);							Sleep(sleepTime);
+	SOUNDMANAGER->addSound("Elderbug_04","sound/Elderbug_04.wav", false, false);							Sleep(sleepTime);
+																											Sleep(sleepTime);
+	SOUNDMANAGER->addSound("Cornifer_01","sound/Cornifer_01.wav", false, false);							Sleep(sleepTime);
+	SOUNDMANAGER->addSound("Cornifer_02","sound/Cornifer_02.wav", false, false);							Sleep(sleepTime);
+	SOUNDMANAGER->addSound("Cornifer_03","sound/Cornifer_03.wav", false, false);							Sleep(sleepTime);
+																											Sleep(sleepTime);
+	SOUNDMANAGER->addSound("sword_1","sound/sword_1.wav", false, false);									Sleep(sleepTime);
+	SOUNDMANAGER->addSound("sword_2","sound/sword_2.wav", false, false);									Sleep(sleepTime);
+	SOUNDMANAGER->addSound("sword_3","sound/sword_3.wav", false, false);									Sleep(sleepTime);
+	SOUNDMANAGER->addSound("sword_4","sound/sword_4.wav", false, false);									Sleep(sleepTime);
+																											Sleep(sleepTime);
+	SOUNDMANAGER->addSound("hero_jump","sound/hero_jump.wav", false, false);								Sleep(sleepTime);
+	SOUNDMANAGER->addSound("sword_hit_reject","sound/sword_hit_reject.wav", false, false);						Sleep(sleepTime);
+	SOUNDMANAGER->addSound("hero_land_soft","sound/hero_land_soft.wav", false, false);						Sleep(sleepTime);
+	SOUNDMANAGER->addSound("hero_run_footsteps_stone","sound/hero_run_footsteps_stone.wav", false, true);	Sleep(sleepTime);
+	SOUNDMANAGER->addSound("hero_fireball","sound/hero_fireball.wav", false, false);						Sleep(sleepTime);
+																											Sleep(sleepTime);
+	SOUNDMANAGER->addSound("enemy_damage","sound/enemy_damage.wav", false, false);							Sleep(sleepTime);
+	SOUNDMANAGER->addSound("enemy_death_sword","sound/enemy_death_sword.wav", false, false);				Sleep(sleepTime);
+	SOUNDMANAGER->addSound("buzzer_fly","sound/buzzer_fly.wav", false, false);								Sleep(sleepTime);
+	SOUNDMANAGER->addSound("crawler","sound/crawler.wav", false, false);									Sleep(sleepTime);
+																											Sleep(sleepTime);
+	SOUNDMANAGER->addSound("ui_save","sound/ui_save.wav", false, false);									Sleep(sleepTime);
+	SOUNDMANAGER->addSound("ui_option_click","sound/ui_option_click.wav", false, false);					Sleep(sleepTime);
+	SOUNDMANAGER->addSound("ui_change_selection","sound/ui_change_selection.wav", false, false);			Sleep(sleepTime);
+	SOUNDMANAGER->addSound("ui_button_confirm","sound/ui_button_confirm.wav", false, false);				Sleep(sleepTime);
+	SOUNDMANAGER->addSound("begin_button","sound/begin_button.wav", false, false);							Sleep(sleepTime);
 
 	loadHelper->_isSoundDataLoadFin = true;
 

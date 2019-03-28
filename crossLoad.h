@@ -6,11 +6,12 @@ public:
 	crossLoad();
 	~crossLoad();
 
-	HRESULT init()  override;
-	void release()  override;
-	void update()	override;
-	void render()	override;
+	HRESULT init()		override;
+	void release()		override;
+	void update()		override;
+	void render()		override;
 
-	void initUI()	override;
+	void startScene()	override;
+	void initUI()		override;
 };
 

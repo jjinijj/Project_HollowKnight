@@ -256,13 +256,8 @@ void player::attack()
 	if (_act)
 		_act->start();
 
+	// 사운드 랜덤 출력
 	int idx = RND->getInt(_vSwordSound.size());
-
-	string addr = "sound/";
-	addr.append(_vSwordSound[idx]);
-	addr.append(".wav");
-
-	//SOUNDMANAGER->addSound(_vSwordSound[idx], addr, false, false);
 	SOUNDMANAGER->play(_vSwordSound[idx]);
 }
 
@@ -300,6 +295,7 @@ void player::attackDamage()
 			terrain* ter = *iterT;
 			if (CheckIntersectRect(_collisionAtk, ter->getCollision()))
 			{
+				SOUNDMANAGER->play("sword_hit_reject");
 				_isPushed = true;
 				_pushedPower = static_cast<float>(PLAYER_PUSHED_POW);
 			}
@@ -389,6 +385,7 @@ void player::standOffDamage()
 		angle = PI;
 	}
 
+	SOUNDMANAGER->play("hero_fireball");
 	_actorM->firePlayerBullet(pos, angle);
 }
 
@@ -643,7 +640,8 @@ bool player::trySit()
 
 bool player::checkPossibleStandOff()
 {
-	if(PLAYER_USE_SKILL_VALUE <= _skillValue && _actorM->checkPlayerBullet())
+	//PLAYER_USE_SKILL_VALUE <= _skillValue && 
+	if(_actorM->checkPlayerBullet())
 		return true;
 	else
 		return false;

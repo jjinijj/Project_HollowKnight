@@ -16,7 +16,7 @@ HRESULT crossLoad::init()
 	_sceneName = eSceneName_CrossLoad_01;
 	baseInGameScene::init();
 
-	SOUNDMANAGER->play("Crossroad");
+	
 
 
 	//PLAYER->setPositionY(300.f);
@@ -36,6 +36,12 @@ void crossLoad::update()
 void crossLoad::render()
 {
 	baseInGameScene::render();
+}
+
+void crossLoad::startScene()
+{
+	baseInGameScene::startScene();
+	SOUNDMANAGER->play("Crossroad");
 }
 
 void crossLoad::initUI()

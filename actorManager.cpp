@@ -397,6 +397,7 @@ void actorManager::firePlayerBullet(POINTF pos, float angle)
 	else
 		colPos = { pos.x + 100, pos.y + 100};
 
+	
 	_playerBullet->setColPos(colPos);
 }
 

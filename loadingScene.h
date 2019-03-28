@@ -15,11 +15,13 @@ public:
 	loadingScene();
 	~loadingScene();
 
-	HRESULT init()	override;
-	void release()	override;
-	void update()	override;
-	void render()	override;
-	void initUI()	override;
+	HRESULT init()		override;
+	void release()		override;
+	void update()		override;
+	void render()		override;
+	
+	void startScene()	override;
+	void initUI()		override;
 
 	bool _isSoundDataLoadFin;
 private:

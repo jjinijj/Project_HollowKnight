@@ -40,6 +40,8 @@ HRESULT bullet::init( UINT uid
 
 	_colPos = {_x, _y};
 
+	_dir = (angle < PI / 2) ? eRIGHT : eLEFT;
+
 	return S_OK;
 }
 

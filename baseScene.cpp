@@ -31,6 +31,11 @@ void baseScene::render()
 {
 }
 
+void baseScene::startScene()
+{
+	initUI();
+}
+
 void baseScene::initUI()
 {
 }

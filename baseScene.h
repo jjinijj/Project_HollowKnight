@@ -22,6 +22,7 @@ public:
 	virtual void update()	= 0;
 	virtual void render()	= 0;
 
+	virtual void startScene();
 	virtual void initUI()	= 0;
 
 	virtual void setSceneData(mapData* m, actorManager* am);

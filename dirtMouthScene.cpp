@@ -13,11 +13,7 @@ dirtMouthScene::~dirtMouthScene()
 HRESULT dirtMouthScene::init()
 {
 	_sceneName = eSceneName_DirtMouth;
-
 	baseInGameScene::init();
-
-	//SOUNDMANAGER->addSound("Dirtmouth","sound/Dirtmouth.wav", true, true); 
-	SOUNDMANAGER->play("Dirtmouth");
 
 	return S_OK;
 }
@@ -35,6 +31,12 @@ void dirtMouthScene::update()
 void dirtMouthScene::render()
 {
 	baseInGameScene::render();
+}
+
+void dirtMouthScene::startScene()
+{
+	baseInGameScene::startScene();
+	SOUNDMANAGER->play("Dirtmouth");
 }
 
 void dirtMouthScene::initUI()

@@ -64,6 +64,10 @@ void loadScene::update()
 	}
 }
 
+void loadScene::startScene()
+{
+}
+
 void loadScene::initUI()
 {
 	baseScene::initUI();

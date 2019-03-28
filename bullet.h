@@ -64,7 +64,7 @@ public:
 	bool isPang();
 	float getRadius()			{ return _radius;}
 	bool isAppear()				{ return _isAppear;}
-	bool isOldBullet()			{ return ( _lifeTime < LIFE_TIME); }
+	bool isOldBullet()			{ return (LIFE_TIME < _lifeTime); }
 	eBULLET_TYPE getBulletType(){ return (eBULLET_TYPE)_subType;}
 
 	void updateCollision() override;

@@ -20,6 +20,7 @@ public:
 	void render();
 	void update();
 
+	void startScene();
 	void initUI();
 
 };

@@ -80,6 +80,11 @@ void baseInGameScene::render()
 	_mapData->renderFront();
 }
 
+void baseInGameScene::startScene()
+{
+	baseScene::startScene();
+}
+
 void baseInGameScene::initUI()
 {
 	windowDialog* dialogUi = new windowDialog;

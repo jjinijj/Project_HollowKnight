@@ -200,7 +200,7 @@ HRESULT sceneManager::changeNextScene()
 		_currentScene->release();
 	
 	_currentScene = _nextScene;
-	_currentScene->initUI();
+	_currentScene->startScene();
 	
 	setCursorVisible();
 

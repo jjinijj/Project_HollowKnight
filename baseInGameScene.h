@@ -15,11 +15,14 @@ public:
 	baseInGameScene();
 	~baseInGameScene();
 
-	HRESULT init()  override;
-	void release()  override;
-	void update()	override;
-	void render()	override;
-	void initUI()	override;
+	HRESULT init()		override;
+	void release()		override;
+	void update()		override;
+	void render()		override;
+	
+	void startScene()	override;
+	void initUI()		override;
+
 
 	void setSceneData(mapData* m, actorManager* am);
 
