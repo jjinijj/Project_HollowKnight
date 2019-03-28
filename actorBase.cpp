@@ -22,13 +22,14 @@ actorBase::~actorBase()
 HRESULT actorBase::init()
 {
 	gameObject::init();
+	_renderAlpha = 1.0f;
 	return S_OK;
 }
 
 HRESULT actorBase::init(UINT uid, float x, float y)
 {
 	gameObject::init(uid, x, y);
-
+	_renderAlpha = 1.0f;
 	return S_OK;
 }
 

@@ -53,9 +53,9 @@ void uiList::update()
 		_scroll->update();
 		if (0 < _childCount)
 		{
-			float value = (_childCount / _countPerLine) - _linePerPage;
+			int value = (_childCount / _countPerLine) - _linePerPage;
 
-			if(value < 0.f)
+			if(value < 0)
 				_curLine = 0;
 			else
 				_curLine = static_cast<int>(_scroll->getValue() * value );

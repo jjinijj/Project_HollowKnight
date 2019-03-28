@@ -25,11 +25,22 @@ HRESULT enemy::init(UINT uid, float x, float y)
 	_isAlive = true;
 	_isAppear = true;
 
+	_renderAlpha = 1.0f;
+
 	return S_OK;
 }
 
 void enemy::update()
 {
+	if (0 < _renderAlphaCnt)
+	{
+		_renderAlpha = _renderAlphaCnt % 10 * 0.1f;
+		++_renderAlphaCnt;
+
+		if(30 < _renderAlphaCnt)
+			_renderAlphaCnt = 0;
+	}
+
 	actorBase::update();
 	updateCollision();
 }
@@ -44,6 +55,9 @@ void enemy::release()
 void enemy::render()
 {
 	actorBase::render();
+
+	if(DEVTOOL->checkDebugMode(DEBUG_SHOW_TEXT))
+		D2DMANAGER->drawText(format(L"%d", _hp).c_str(), _collision.left, _collision.top - 10, false);
 }
 
 ACTORPACK* enemy::makePack()
@@ -85,7 +99,8 @@ void enemy::dead()
 	_colWidth = 0.f;
 	_colHeight = 0.f;
 
-	//SOUNDMANAGER->addSound("enemy_death_sword","sound/enemy_death_sword.wav", false, false);
+	_hp = 0;
+
 	SOUNDMANAGER->play("enemy_death_sword");
 }
 
@@ -94,6 +109,8 @@ void enemy::takeDamage(int damage)
 	_hp -= damage;
 	if (_hp <= 0)
 		dead();
+
+	_renderAlphaCnt = 9;
 }
 
 void enemy::fixPosition()

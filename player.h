@@ -7,6 +7,7 @@ class gameObject;
 class mapData;
 class npc;
 class terrain;
+class enemy;
 class player : public singletonBase<player>
 {
 public:
@@ -140,7 +141,9 @@ private:
 
 	float _sight;				// 위/아래 카매라 이동
 	float _invincibleTime;		// 무적
-	float _pushedPower;
+	float _renderAlpha;			// 이미지 알파값
+	float _pushedPower;			// 밀림
+	int _tempValue;
 
 	mapData* _mapData;			// 맵 정보
 
@@ -167,6 +170,8 @@ private:
 
 	terrain* _chair;
 	terrain* _portal;
+	
+	// 리젠포인트
 	float _startX;
 	float _startY;
 
@@ -207,6 +212,8 @@ public:
 	void standOffDamage();
 	// 데미지 입음
 	void takeDamage();
+	// 데미지 입음
+	void takeDamageFromEnemy(enemy* em);
 	// 죽음
 	void dead();
 	// 리젠
@@ -271,15 +278,17 @@ public:
 	//=====================================================
 
 	// 위치 x : mid
-	float getPosX() { return _x; }
+	float getPosX()			{ return _x; }
 	// 위치 y : bottom   
-	float getPosY() { return _y; }
+	float getPosY()			{ return _y; }
 	// 방향			   
-	WORD getDirection()	 { return _dir; }
+	WORD getDirection()		{ return _dir; }
 	// 힘
-	UINT getPower()		{ return _power; }
+	UINT getPower()			{ return _power; }
 	// 충돌체
-	RECTD2D getCollision() { return _collision; }
+	RECTD2D getCollision()	{ return _collision; }
+	
+	float getAlpha()		{ return _renderAlpha; }
 
 private:
 	// 상태 초기화
@@ -294,7 +303,7 @@ private:
 	// 상태 찾기
 	playerState* findState(ePlayer_State state);
 	// 충돌 체크
-	bool checkCollisionEnemy();
+	void checkCollisionEnemy();
 
 	// 시야 리셋
 	void sightDown();

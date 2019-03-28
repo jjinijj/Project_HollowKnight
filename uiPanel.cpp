@@ -68,8 +68,8 @@ void uiPanel::changeImage(image* img)
 	_img = img;
 	if( _img )
 	{
-		_width = _img->GetWidth();
-		_height = _img->GetHeight();
+		_width =  static_cast<float>(_img->GetWidth());
+		_height = static_cast<float>(_img->GetHeight());
 	}
 }
 

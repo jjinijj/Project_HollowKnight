@@ -54,6 +54,9 @@ protected:
 	eDirection _dir;
 	eDirection _dirUD;
 
+	float	_renderAlpha;
+	int		_renderAlphaCnt;
+
 	wstring		_name;
 
 	actorState* _state;
@@ -82,6 +85,8 @@ public:
 
 	float getWidth()	{ return _width; }
 	float getHeight()	{ return _height;}
+
+	float getRenderAlpha() { return _renderAlpha; }
 
 protected:
 	void changeState(actorState* state);

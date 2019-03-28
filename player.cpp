@@ -26,6 +26,7 @@ HRESULT player::init()
 {
 	_x = 0.f;
 	_y = 0.f;
+	_renderAlpha = 1.0f;
 	initAnimaion();
 	initState();
 
@@ -39,6 +40,8 @@ HRESULT player::init(float x, float y)
 
 	_startX = x;
 	_startY = y;
+
+	_renderAlpha = 1.0f;
 
 	_collision = { x, y, x + 10.f, y + 10.f };
 	_atkRange = {100.f, 25.f};
@@ -85,8 +88,15 @@ void player::release()
 
 void player::update()
 {
-	if(0.f < _invincibleTime)
+	if (0.f < _invincibleTime)
+	{
 		_invincibleTime -= TIMEMANAGER->getElapsedTime();
+		_renderAlpha = _tempValue % 10 * 0.1f;
+		++_tempValue;
+	}
+	else
+		_renderAlpha = 1.0f;
+	
 
 	// 상태 갱신
 	_state->update();
@@ -106,8 +116,7 @@ void player::update()
 
 	fixPosition();
 	updateCollision();
-	if(checkCollisionEnemy())
-		takeDamage();
+	checkCollisionEnemy();
 	if(checkPortal())
 		enterPortalTrigger();
 
@@ -173,8 +182,7 @@ void player::render()
 	}
 	if (DEVTOOL->checkDebugMode(DEBUG_SHOW_TEXT))
 	{
-		if (_effectImg)
-			D2DMANAGER->drawText(format(L"%d", _effectAni->getFrameIdx().x).c_str(), _collision.left, _collision.top - 10, false);
+		D2DMANAGER->drawText(format(L"%d", _dir_pushed).c_str(), _collision.left, _collision.top - 10, false);
 	}
 	
 	if(_act)
@@ -223,7 +231,7 @@ void player::moveJump(float jumpPower)
 void player::moveFall(float gravity)
 {
 	// 밀리는 도중에는 추락안함
-	if(!_isPushed || eDirection_Up != _dir_pushed)
+	if(!_isPushed || (eDirection_Up & _dir_pushed) != eDirection_Up)
 		_y += (gravity);
 }
 
@@ -343,8 +351,8 @@ void player::attackDamage()
 
 void player::standOff()
 {
-	_act = _stateMap[ePlayer_State_StandOff];
-	_act->start();
+	//_act = _stateMap[ePlayer_State_StandOff];
+	//_act->start();
 }
 
 void player::standOffDamage()
@@ -357,19 +365,44 @@ void player::takeDamage()
 	if(0.f < _invincibleTime)
 		return;
 
-
-	//SOUNDMANAGER->addSound("enemy_damage","sound/enemy_damage.wav", false, false);
 	SOUNDMANAGER->play("enemy_damage");
 	_hp -= 1;
-	if(_hp <= 0)
+	if (_hp <= 0)
 		dead();
 	
 	UIMANAGER->getStatusUI()->setHpStatus(_hp);
-	_invincibleTime = 1.f;
+	_invincibleTime = 1.5f;
+	_tempValue = 9;
+}
+
+void player::takeDamageFromEnemy(enemy* em)
+{
+	if (0.f < _invincibleTime)
+		return;
+
+	SOUNDMANAGER->play("enemy_damage");
+	_hp -= 1;
+	if (_hp <= 0)
+		dead();
+	else
+	{
+		_isPushed = true;
+		_pushedPower = static_cast<float>(PLAYER_PUSHED_POW);
+
+		if(em->getPosX() < _x)
+			_dir_pushed = eDirection_Right;
+		else
+			_dir_pushed = eDirection_Left;
+	}
+
+	UIMANAGER->getStatusUI()->setHpStatus(_hp);
+	_invincibleTime = 1.5f;
+	_tempValue = 9;
 }
 
 void player::dead()
 {
+	_hp = 0;
 	changeState(ePlayer_State_Dead);
 }
 
@@ -381,12 +414,16 @@ void player::regen()
 		_x = col.left + (col.right - col.left) / 2.f;
 		_y = col.bottom - 20.f;
 
+		_renderAlpha = 1.0f;
+
 		changeState(ePlayer_State_Sit);
 	}
 	else
 	{
 		_x = _startX;
 		_y = _startY;
+
+		_renderAlpha = 1.0f;
 
 		changeState(ePlayer_State_Idle);
 	}
@@ -781,7 +818,7 @@ void player::initAnimaion()
 	{
 		image* img = IMAGEMANAGER->findImage("knight_attack3");
 		ANIMANAGER->addArrayFrameAnimation(PLAYER_UID, ePlayer_Ani_StandOff, "knight_attack3"
-										   , 0, img->GetMaxFrameX(), 4, PLAYER_ANI_SPEED_SLOW, false);
+										   , 0, img->GetMaxFrameX(), 4, PLAYER_ANI_SPEED, false);
 	}
 
 	// animation look up
@@ -905,14 +942,10 @@ void player::fixPosition()
 
 	if (_isPushed)
 	{
-		if (eDirection_Left == _dir_pushed)
-			_x -= _pushedPower;
-		else if (eDirection_Right == _dir_pushed)
-			_x += _pushedPower;
-		else if (eDirection_Up == _dir_pushed)
-			_y -= _pushedPower;
-		else
-			_y += _pushedPower;
+		if (eDirection_Left == _dir_pushed)			_x -= _pushedPower;
+		else if(eDirection_Right == _dir_pushed)	_x += _pushedPower;
+		else if(eDirection_Up == _dir_pushed)		_y -= _pushedPower;
+		else if(eDirection_Down == _dir_pushed)		_y += _pushedPower;
 
 		_pushedPower -= (TIMEMANAGER->getElapsedTime() * 5);
 		updateCollision();
@@ -989,12 +1022,12 @@ playerState* player::findState(ePlayer_State state)
 	return pState;
 }
 
-bool player::checkCollisionEnemy()
+void player::checkCollisionEnemy()
 {
 	if(!_actorM)
-		return false;
+		return;
 
-	bool check = false;
+	enemy* attaker = nullptr;
 
 	map<UINT, enemy*> ems = _actorM->getEnemys();
 
@@ -1009,12 +1042,16 @@ bool player::checkCollisionEnemy()
 
 		if (em->isAlive())
 		{
-			check = true;
+			attaker = em;
 			break;
 		}
 	}
 
-	return check;
+	// 에너미랑 충돌 -> 피 까임
+	if (attaker)
+	{
+		takeDamageFromEnemy(attaker);
+	}
 }
 
 void player::sightDown()

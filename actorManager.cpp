@@ -121,10 +121,10 @@ void actorManager::update()
 		for (iter; iter != end; ++iter)
 		{
 			actorBase* actor = iter->second;
-			if (CAMERA->inRangeInActiveArea( actor->getRect().left
+			if (CAMERA->inRangeInActiveArea(  actor->getRect().left
 											, actor->getRect().top
-											, static_cast<float>(actor->getWidth())
-											, static_cast<float>(actor->getHeight())))
+											, static_cast<int>(actor->getWidth())
+											, static_cast<int>(actor->getHeight())))
 				actor->update();
 
 		}

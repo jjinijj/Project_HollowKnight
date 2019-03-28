@@ -42,7 +42,9 @@ void uiSprite::render()
 {
 	uiObject::render();
 	if(_img && _ani)
-		_img->aniRender(_x, _y, _ani, 1.0f, true);
+		_img->aniRender( static_cast<int>(_x)
+						,static_cast<int>(_y)
+						,_ani, 1.0f, true);
 }
 
 void uiSprite::setAnimation(WORD aniKey)

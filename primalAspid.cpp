@@ -53,6 +53,7 @@ HRESULT primalAspid::init(UINT uid, float x, float y)
 	_speed = static_cast<float>(PRIMALASPID_MOVE_SPEED);
 
 	_target = PLAYER;
+	_hp = PRIBALASPID_MAX_HP;
 
 	primalState* state = new primalIdle;
 	state->init(this);

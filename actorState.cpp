@@ -33,13 +33,13 @@ void actorState::update()
 void actorState::render()
 {
 	if(_isRight)
-		_img->aniRender( _actor->getPosX() - _width / 2.f
-						,_actor->getPosY() - _height
-						,_ani, 1.0f, false);
+		_img->aniRender( static_cast<int>(_actor->getPosX() - _width / 2.f)
+						,static_cast<int>(_actor->getPosY() - _height)
+						,_ani, _actor->getRenderAlpha(), false);
 	else
 		_img->aniRenderReverseX( _actor->getPosX() - _width / 2.f
 								,_actor->getPosY() - _height
-								,_ani, 1.0f, false);
+								,_ani, _actor->getRenderAlpha(), false);
 }
 
 void actorState::start()

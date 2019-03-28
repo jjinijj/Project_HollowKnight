@@ -16,7 +16,9 @@ HRESULT uiImage::init(float x, float y, image* img)
 {
 	if ( img )
 	{
-		uiObject::init(x, y, img->GetWidth(), img->GetHeight());
+		uiObject::init(x, y
+					   , static_cast<float>(img->GetWidth())
+					   , static_cast<float>(img->GetHeight()));
 		_img = img;
 		_width = 0.f;
 		_height = 0.f;

@@ -100,7 +100,7 @@ void uiObject::insertChild(uiObject* ui)
 	}
 
 	_childs.push_back(ui);
-	_childCount = _childs.size();
+	_childCount = static_cast<int>(_childs.size());
 
 	ui->setParent(this);
 }
@@ -119,7 +119,7 @@ void uiObject::removeChild(uiObject* ui)
 	SAFE_RELEASE(ui);
 	SAFE_DELETE(ui);
 
-	_childCount = _childs.size();
+	_childCount = static_cast<int>(_childs.size());
 }
 
 void uiObject::removeChildAll()
