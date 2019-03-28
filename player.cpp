@@ -640,8 +640,10 @@ bool player::trySit()
 
 bool player::checkPossibleStandOff()
 {
-	//PLAYER_USE_SKILL_VALUE <= _skillValue && 
-	if(_actorM->checkPlayerBullet())
+	if(!_actorM)
+		return false;
+
+	if(PLAYER_USE_SKILL_VALUE <= _skillValue && _actorM->checkPlayerBullet())
 		return true;
 	else
 		return false;

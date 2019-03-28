@@ -46,6 +46,7 @@ void exitPopup::update()
 	{
 		_isExit = !_isExit;
 		_cursorAni->start();
+		SOUNDMANAGER->play("ui_change_selection");
 	}
 	if (KEYMANAGER->isOnceKeyDown(VK_RETURN))
 	{

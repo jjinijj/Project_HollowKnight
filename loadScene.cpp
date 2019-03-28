@@ -53,15 +53,9 @@ void loadScene::render()
 void loadScene::update()
 {
 	if (_isFinSceneData)
-	{
-		
-		if (!SOUNDMANAGER->isPlaySound("ui_button_confirm"))
 			SCENEMANAGER->changeNextScene();
-	}
 	else
-	{
 		_ani->frameUpdate(TIMEMANAGER->getElapsedTime());
-	}
 }
 
 void loadScene::startScene()
@@ -104,7 +98,7 @@ static DWORD CALLBACK ThreadFunction_LoadScene(LPVOID lpParameter)
 	Sleep(1000);
 
 	loadHelper->_isFinSceneData = true;
-	SOUNDMANAGER->play("ui_button_confirm");
+	
 
 	return 0;
 }

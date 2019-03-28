@@ -51,6 +51,9 @@ void loadingScene::update()
 {
 	if (_iaDataAllLoad && _isSoundDataLoadFin)
 	{
+		if(2.f <=_time)
+			SOUNDMANAGER->play("ui_save");
+
 		_time -= TIMEMANAGER->getElapsedTime();
 		
 		if (0.f < _time)
@@ -301,7 +304,7 @@ void loadingScene::loadData()
 static DWORD CALLBACK ThreadFunction(LPVOID lpParameter)
 {
 	loadingScene* loadHelper = (loadingScene*)lpParameter;
-	int sleepTime = 1;
+	int sleepTime = 100;
 
 	SOUNDMANAGER->addSound("Dirtmouth","sound/Dirtmouth.wav", true, true);									Sleep(sleepTime);
 	SOUNDMANAGER->addSound("Safety","sound/Dirtmouth.wav", true, true);										Sleep(sleepTime);
@@ -339,6 +342,7 @@ static DWORD CALLBACK ThreadFunction(LPVOID lpParameter)
 	SOUNDMANAGER->addSound("ui_button_confirm","sound/ui_button_confirm.wav", false, false);				Sleep(sleepTime);
 	SOUNDMANAGER->addSound("begin_button","sound/begin_button.wav", false, false);							Sleep(sleepTime);
 
+	
 	loadHelper->_isSoundDataLoadFin = true;
 
 	return 0;

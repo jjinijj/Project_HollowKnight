@@ -529,9 +529,6 @@ void actorManager::hitEnemy(UINT uid, UINT damage)
 
 bool actorManager::checkHitSomething(bullet* bt)
 {
-	//RECT collision = { (int)(bt->getPosition().x), (int)(bt->getPosition().y)
-	//				  ,(int)(bt->getPosition().x + bt->getRadius()), (int)(bt->getPosition().y + bt->getRadius())};
-
 	RECTD2D rc = bt->getCollision();
 
 	vector<terrain*>* vCol = _mapData->getColliderTerrains();
@@ -602,7 +599,7 @@ bool actorManager::checkPlayerBulletHitSomething()
 			// todo 충돌 수정해야하마마암아마암암아맘
 			if (CheckIntersectRect(collision, emCol))
 			{
-				hitEnemy(em, PLAYER->getPower());
+				hitEnemy(em->getUID(), PLAYER->getPower());
 				return true;
 			}
 		}

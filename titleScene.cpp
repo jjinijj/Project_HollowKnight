@@ -71,6 +71,7 @@ void titleScene::update()
 				if(KEYMANAGER->isOnceKeyDown(VK_RETURN))
 				{
 					_isInputEnterKey = true;
+					SOUNDMANAGER->play("ui_button_confirm");
 
 					if (0 == _selIdx)
 						//_nextSceneNameName = eSceneName_DirtMouth;
@@ -86,6 +87,7 @@ void titleScene::update()
 					if (2 < _selIdx)
 						_selIdx = 0;
 					_cursorAni->start();
+					SOUNDMANAGER->play("ui_change_selection");
 				}
 				else if(KEYMANAGER->isOnceKeyDown(VK_UP))
 				{
@@ -93,6 +95,7 @@ void titleScene::update()
 					if(_selIdx < 0)
 						_selIdx = 2;
 					_cursorAni->start();
+					SOUNDMANAGER->play("ui_change_selection");
 				}
 			}
 		}
