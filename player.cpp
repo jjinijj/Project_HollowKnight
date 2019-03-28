@@ -361,6 +361,11 @@ void player::standOff()
 	_skillValue -= PLAYER_USE_SKILL_VALUE;
 	if(_skillValue < 0)
 		_skillValue = 0;
+	
+	if(checkDirection(eDirection_Right))
+		_dir_atk = eDirection_Right;
+	else
+		_dir_atk = eDirection_Left;
 
 	float value = static_cast<float>(_skillValue) / static_cast<float>(_skillMax);
 	UIMANAGER->getStatusUI()->setGaugeChangeValue(value);
@@ -369,7 +374,22 @@ void player::standOff()
 void player::standOffDamage()
 {
 	// fire bullet
-	
+	POINTF pos = {};
+	float angle = 0.f;
+
+	pos.y = _y - 150;
+	if ((_dir_atk & eDirection_Right) == eDirection_Right)
+	{
+		pos.x = _x;
+		angle = 0.f;
+	}
+	else
+	{
+		pos.x = _x - 270.f;
+		angle = PI;
+	}
+
+	_actorM->firePlayerBullet(pos, angle);
 }
 
 void player::takeDamage()
@@ -623,7 +643,7 @@ bool player::trySit()
 
 bool player::checkPossibleStandOff()
 {
-	if(PLAYER_USE_SKILL_VALUE <= _skillValue)
+	if(PLAYER_USE_SKILL_VALUE <= _skillValue && _actorM->checkPlayerBullet())
 		return true;
 	else
 		return false;

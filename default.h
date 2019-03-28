@@ -34,6 +34,7 @@
 #define LOADING_UID					10000
 #define MENU_CURSOR_UID				10001
 #define UI_UID						100000
+#define EFFECT_UID					101000
 
 //=============================================
 //   enum

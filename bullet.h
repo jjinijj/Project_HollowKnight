@@ -5,6 +5,12 @@
 class bullet : public actorBase
 {
 public:
+
+	enum 
+	{
+		LIFE_TIME = 5,
+	};
+
 	enum eBULLET_TYPE
 	{
 		eLINEARBULLET,
@@ -16,11 +22,10 @@ public:
 
 	enum eSTATE
 	{
-		eMOVE,
+		eMOVE = 101000,
 		ePANG,
 
 		eNONE,
-		eCOUNT = eNONE,
 	};
 
 protected:
@@ -28,6 +33,8 @@ protected:
 	float _angle;
 	float _speed;
 	float _radius;
+
+	float _lifeTime;
 
 	POINTF _colPos;
 	bool _isAppear;
@@ -57,6 +64,7 @@ public:
 	bool isPang();
 	float getRadius()			{ return _radius;}
 	bool isAppear()				{ return _isAppear;}
+	bool isOldBullet()			{ return ( _lifeTime < LIFE_TIME); }
 	eBULLET_TYPE getBulletType(){ return (eBULLET_TYPE)_subType;}
 
 	void updateCollision() override;

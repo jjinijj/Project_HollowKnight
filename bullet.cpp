@@ -17,6 +17,7 @@ HRESULT bullet::init( UINT uid
 	_height = radius;
 	_colWidth = radius;
 	_colHeight = radius;
+	_lifeTime = 0.f;
 
 	_type = eActor_Bullet;
 
@@ -52,6 +53,7 @@ void bullet::update()
 {
 	actorBase::update();
 	updateCollision();
+	++_lifeTime += TIMEMANAGER->getElapsedTime();
 }
 
 void bullet::render()
@@ -82,6 +84,7 @@ void bullet::loadPack(ACTORPACK * pack)
 
 void bullet::move()
 {
+
 }
 
 void bullet::clear()
@@ -92,6 +95,7 @@ void bullet::clear()
 	_speed = 0.f;
 	_radius = 0.f;
 	_isAppear = false;
+	_lifeTime = 0.f;
 
 	SAFE_RELEASE(_state);
 	SAFE_RELEASE(_nextState);

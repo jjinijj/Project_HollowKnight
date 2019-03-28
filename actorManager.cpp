@@ -157,8 +157,11 @@ void actorManager::update()
 		{
 			bullet* bt = (*iter);
 			
+			// 오래되었는지
+			if (bt->isOldBullet())
+				iter = returnBulletQ(iter);
 			// 터지는 중인 bullet
-			if (bt->isPang())
+			else if (bt->isPang())
 			{
 				if (bt->isAppear())
 				{
@@ -166,20 +169,14 @@ void actorManager::update()
 					++iter;
 				}
 				else
-				{
 					iter = returnBulletQ(iter);
-					bt->clear();
-				}
 			}
 			// 충돌하면 bulletPangList로
 			else if ( checkHitSomething(bt) )
-			{
 				bt->hitSomething();
-			}
+			// 필드 밖으로 나갔다면
 			else if ( !checkBulletIntheField(bt))
-			{
 				iter = returnBulletQ(iter);
-			}
 			else
 			{
 				bt->update();
@@ -393,18 +390,12 @@ void actorManager::firePlayerBullet(POINTF pos, float angle)
 
 	_playerBullet = new linearBullet;
 
+	_playerBullet->init( PLAYER_UID, pos.x, pos.y
+						,angle, 20, 40, "player_bullet_fire_R", "player_bullet_pang_R");
 	if (angle < PI / 2)
-	{
-		_playerBullet->init( PLAYER_UID, pos.x, pos.y
-							,angle, 20, 40, "player_bullet_fire_R", "player_bullet_pang_R");
 		colPos = {pos.x + 270 - 100, pos.y + 100};
-	}
 	else
-	{
-		_playerBullet->init( PLAYER_UID, pos.x, pos.y
-							,angle, 20, 40, "player_bullet_fire_L", "player_bullet_pang_L");
 		colPos = { pos.x + 100, pos.y + 100};
-	}
 
 	_playerBullet->setColPos(colPos);
 }
@@ -652,6 +643,7 @@ list<bullet*>::iterator actorManager::returnBulletQ(iterB it)
 	}
 
 	it = _bulletList.erase(it);
+	bt->clear();
 
 	return it;
 }
