@@ -54,6 +54,8 @@ public:
 	// ¸ðµç sound volume control
 	void setAllSoundVolume(float volume);
 
+	void setVolume(string keyName, float volum);
+
 	// pause
 	void setEffectPause();
 	void setBgmPause();

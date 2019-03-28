@@ -38,5 +38,6 @@ public:
 
 private:
 	void initSetDialog();
+	void humming();
 };
 

@@ -67,6 +67,7 @@ void cornifer::release()
 void cornifer::update()
 {
 	npc::update();
+	humming();
 }
 
 void cornifer::render()
@@ -168,5 +169,32 @@ void cornifer::initSetDialog()
 		script.push_back(L"우리는 간신히 연명하기 위해 작은 가게를 열었어요.");
 
 		_dialogMap.insert(make_pair(2, script));
+	}
+}
+
+void cornifer::humming()
+{
+	float distance = pow((PLAYER->getPosX() - _x), 2) + pow((PLAYER->getPosY() - _y), 2);
+
+	DEVTOOL->pushBackDebugText(format(L"%.2f", distance));
+	if(distance < 3000000.f)
+	{
+		if(!SOUNDMANAGER->isPlaySound("Cornifer_Hum"))
+			SOUNDMANAGER->play("Cornifer_Hum");
+
+		if (_state->getState() == eIdle)
+		{
+			float volume = distance / 3000000.f;
+			DEVTOOL->pushBackDebugText(format(L"%.2f", volume));
+
+			SOUNDMANAGER->setVolume("Cornifer_Hum", 1.f - volume);
+		}
+		else
+			SOUNDMANAGER->stop("Cornifer_Hum");
+	}
+	else
+	{
+		if(SOUNDMANAGER->isPlaySound("Cornifer_Hum"))
+			SOUNDMANAGER->stop("Cornifer_Hum");
 	}
 }

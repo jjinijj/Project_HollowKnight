@@ -112,10 +112,10 @@ bool camera::inRangeInActiveArea(float left, float top, int width, int height)
 	float destY = top;
 	getPosInCamera(&destX, &destY);
 
-	if (_scope.right <= destX)			return false;
-	if (destX + width <= _scope.left)	return false;
-	if (_scope.bottom <= destY)			return false;
-	if (destY + height <= _scope.top)	return false;
+	if (_activeArea.right <= destX)			return false;
+	if (destX + width <= _activeArea.left)	return false;
+	if (_activeArea.bottom <= destY)			return false;
+	if (destY + height <= _activeArea.top)	return false;
 
 	return true;
 }

@@ -319,6 +319,7 @@ static DWORD CALLBACK ThreadFunction(LPVOID lpParameter)
 	SOUNDMANAGER->addSound("Cornifer_01","sound/Cornifer_01.wav", false, false);							Sleep(sleepTime);
 	SOUNDMANAGER->addSound("Cornifer_02","sound/Cornifer_02.wav", false, false);							Sleep(sleepTime);
 	SOUNDMANAGER->addSound("Cornifer_03","sound/Cornifer_03.wav", false, false);							Sleep(sleepTime);
+	SOUNDMANAGER->addSound("Cornifer_Hum","sound/Cornifer_Hum.wav", false, true);							Sleep(sleepTime);
 																											Sleep(sleepTime);
 	SOUNDMANAGER->addSound("sword_1","sound/sword_1.wav", false, false);									Sleep(sleepTime);
 	SOUNDMANAGER->addSound("sword_2","sound/sword_2.wav", false, false);									Sleep(sleepTime);

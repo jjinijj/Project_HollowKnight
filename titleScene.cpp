@@ -74,8 +74,8 @@ void titleScene::update()
 					SOUNDMANAGER->play("ui_button_confirm");
 
 					if (0 == _selIdx)
-						//_nextSceneNameName = eSceneName_DirtMouth;
-						_nextSceneNameName = eSceneName_CrossLoad_01;
+						_nextSceneNameName = eSceneName_DirtMouth;
+						//_nextSceneNameName = eSceneName_CrossLoad_01;
 					else if(1 == _selIdx)
 						_nextSceneNameName = eSceneName_MapTool;
 					else

@@ -265,6 +265,21 @@ void soundManager::setAllSoundVolume(float volume)
 	_effectGroup->setVolume(volume);
 }
 
+void soundManager::setVolume(string keyName, float volum)
+{
+	arrSoundsIter iter = _mTotalSounds.begin();
+
+	int count = 0;
+	for (iter; iter != _mTotalSounds.end(); ++iter, count++)
+	{
+		if (keyName == iter->first)
+		{
+			_channel[count]->setVolume(volum);
+			break;
+		}
+	}
+}
+
 void soundManager::setEffectPause()
 {
 	_effectGroup->setPaused(true);
