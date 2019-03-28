@@ -161,7 +161,7 @@ void idleState::update()
 		_nextState = player::ePlayer_State_Flying;
 	else if (KEYMANAGER->isOnceKeyDown('X'))
 		_player->attack();
-	else if (KEYMANAGER->isOnceKeyDown('A'))
+	else if (_player->checkPossibleStandOff() && KEYMANAGER->isOnceKeyDown('A'))
 	{
 		_player->standOff();
 		_nextState = player::ePlayer_State_StandOff;
@@ -249,7 +249,7 @@ void walkState::update()
 		_nextState = player::ePlayer_State_Flying;
 	else if (KEYMANAGER->isOnceKeyDown('X'))
 		_player->attack();
-	else if (KEYMANAGER->isOnceKeyDown('A'))
+	else if (_player->checkPossibleStandOff() && KEYMANAGER->isOnceKeyDown('A'))
 	{
 		_player->standOff();
 		_nextState = player::ePlayer_State_StandOff;

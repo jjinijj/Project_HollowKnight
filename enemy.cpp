@@ -37,8 +37,11 @@ void enemy::update()
 		_renderAlpha = _renderAlphaCnt % 10 * 0.1f;
 		++_renderAlphaCnt;
 
-		if(30 < _renderAlphaCnt)
+		if (30 < _renderAlphaCnt)
+		{
 			_renderAlphaCnt = 0;
+			_renderAlpha = 1.f;
+		}
 	}
 
 	actorBase::update();

@@ -48,6 +48,12 @@ public:
 		PLAYER_PUSHED_POW = 2,
 		PLAYER_PUSHED_FRAME_COUNT = 10,
 
+		PLAYER_INIT_HP = 5,
+		PLAYER_SKILL_VALUE = 10,
+
+		PLAYER_USE_SKILL_VALUE = 3,
+		PLAYER_FILL_HP_TIME = 3,
+
 	};
 
 	// player state
@@ -135,6 +141,9 @@ private:
 
 	UINT _power;
 	int	 _hp;
+
+	UINT _skillMax;
+	int _skillValue;
 
 	float _x;					// 위치 : center
 	float _y;					// 위치 : bottom
@@ -253,6 +262,8 @@ public:
 	bool checkPortal();
 	// 앉을 수 있는지 확인
 	bool trySit();
+	// 원거리 공격 가능한지 확인
+	bool checkPossibleStandOff();
 
 	//=====================================================
 	// set
@@ -308,5 +319,7 @@ private:
 	// 시야 리셋
 	void sightDown();
 	void sightUp();
+
+	void increaseSkillGauge();
 };
 

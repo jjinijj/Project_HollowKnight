@@ -128,7 +128,7 @@ void fallingState::update()
 		// 공격
 		if (KEYMANAGER->isOnceKeyDown('X'))			// 근거리 공격
 			_player->attack();
-		else if (KEYMANAGER->isOnceKeyDown('A'))	// 원거리 공격
+		else if(_player->checkPossibleStandOff() && KEYMANAGER->isOnceKeyDown('A'))	// 원거리 공격
 		{
 			_player->standOff();
 			_nextState = player::ePlayer_State_StandOff;
@@ -215,7 +215,7 @@ void jumpFallingState::update()
 		// 공격
 		if (KEYMANAGER->isOnceKeyDown('X'))			// 근거리 공격
 			_player->attack();
-		else if (KEYMANAGER->isOnceKeyDown('A'))	// 원거리 공격
+		else if (_player->checkPossibleStandOff() && KEYMANAGER->isOnceKeyDown('A'))	// 원거리 공격
 		{
 			_player->standOff();
 			_nextState = player::ePlayer_State_StandOff;

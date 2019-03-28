@@ -17,7 +17,7 @@ HRESULT playerStatusUI::init()
 	for (int ii = 0; ii < 5; ++ii)
 	{
 		uiSprite* sprite = new uiSprite;
-		sprite->init(ii * 80 + 160, 10, "hp");
+		sprite->init(ii * 80 + 260, 50, "hp");
 		
 		UINT uid = UIMANAGER->getUIAniUID();
 		sprite->setAnimationUid(uid);
@@ -33,6 +33,15 @@ HRESULT playerStatusUI::init()
 		insertUIObject(sprite);
 	}
 
+
+	image* front = IMAGEMANAGER->findImage("skillGauge_in");
+	image* back	= IMAGEMANAGER->findImage("skillGauge_out");
+	_uiGauge = new uiProgress;
+	_uiGauge->init(100, 50, front->GetWidth(), front->GetHeight(), front, back);
+	_uiGauge->setScrollDirect(false);
+	_uiGauge->setValue(0.0);
+	insertUIObject(_uiGauge);
+
 	return S_OK;
 }
 
@@ -40,6 +49,7 @@ void playerStatusUI::release()
 {
 	uiBase::release();
 	_hp.clear();
+	_uiGauge = nullptr;
 }
 
 void playerStatusUI::update()
@@ -74,4 +84,19 @@ void playerStatusUI::setHpStatus(UINT count)
 				_hp[ii]->setAnimation(eHpIconState_Crash);
 		}
 	}
+}
+
+void playerStatusUI::setGaugeValue(float value)
+{
+	if(value < 0)
+		value = 0.f;
+	else if(1.f < value)
+		value = 1.f;
+
+	_uiGauge->setValue(value);
+}
+
+void playerStatusUI::setGaugeChangeValue(float value)
+{
+	_uiGauge->changeValue(value);
 }

@@ -2,6 +2,7 @@
 #include "uiBase.h"
 
 class uiSprite;
+class uiProgress;
 class playerStatusUI : public uiBase
 {
 public:
@@ -17,7 +18,8 @@ public:
 
 
 private:
-	vector<uiSprite*> _hp;
+	vector<uiSprite*>	_hp;
+	uiProgress*			_uiGauge;
 
 public:
 	playerStatusUI();
@@ -29,5 +31,9 @@ public:
 	void render();
 
 	void setHpStatus(UINT count);
+
+	// 0.0 ~ 1.0f
+	void setGaugeValue(float value);
+	void setGaugeChangeValue(float value);
 };
 

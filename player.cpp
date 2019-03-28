@@ -55,7 +55,9 @@ HRESULT player::init(float x, float y)
 	initState();
 
 	_power = 1;
-	_hp = 5;
+	_hp = PLAYER_INIT_HP;
+	_skillValue = 0;
+	_skillMax = PLAYER_SKILL_VALUE;
 
 	_sight = 0.f;
 	_function = NULL;
@@ -278,11 +280,13 @@ void player::attackDamage()
 	{
 		enemy* em = iter->second;
 
-		if (CheckIntersectRect(_collisionAtk, em->getCollision()))
+		if (em->isAlive() && CheckIntersectRect(_collisionAtk, em->getCollision()))
 		{
 			_actorM->hitEnemy(em->getUID(), _power);
 			_isPushed = true;
 			_pushedPower = static_cast<float>(PLAYER_PUSHED_POW);
+
+			increaseSkillGauge();
 		}
 	}
 
@@ -353,11 +357,19 @@ void player::standOff()
 {
 	//_act = _stateMap[ePlayer_State_StandOff];
 	//_act->start();
+
+	_skillValue -= PLAYER_USE_SKILL_VALUE;
+	if(_skillValue < 0)
+		_skillValue = 0;
+
+	float value = static_cast<float>(_skillValue) / static_cast<float>(_skillMax);
+	UIMANAGER->getStatusUI()->setGaugeChangeValue(value);
 }
 
 void player::standOffDamage()
 {
 	// fire bullet
+	
 }
 
 void player::takeDamage()
@@ -607,6 +619,14 @@ bool player::trySit()
 	_chair = nullptr;
 
 	return false;
+}
+
+bool player::checkPossibleStandOff()
+{
+	if(PLAYER_USE_SKILL_VALUE <= _skillValue)
+		return true;
+	else
+		return false;
 }
 
 //===================================================================================================
@@ -1074,4 +1094,16 @@ void player::sightUp()
 		_sight = 0.f;
 		_function = NULL;
 	}
+}
+
+void player::increaseSkillGauge()
+{
+	++_skillValue;
+	if(_skillMax < _skillValue)
+		_skillValue = _skillMax;
+
+
+	float value = static_cast<float>(_skillValue) / static_cast<float>(_skillMax);
+
+	UIMANAGER->getStatusUI()->setGaugeChangeValue(value);
 }

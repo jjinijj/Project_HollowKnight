@@ -9,10 +9,13 @@ protected:
 
 	RECTD2D _frontRc;
 
-	bool _isFrontSizeFix;	// 스크롤 크기 고정을 할것인가
 	bool _isHorizontal;		// 가로방향인가 false일 경우 세로방향
 
-	float _value;  // 0.f ~ 1.f
+	float _value;			// 0.f ~ 1.f
+	float _changeValue;		// 0.f ~ 1.f 
+	
+	bool _isChanging;
+	int	 _dir;
 
 public:
 	uiProgress();
@@ -27,6 +30,7 @@ public:
 
 	void setScrollSize(float size);
 	void setValue(float value);
+	void changeValue(float value);
 
 	float getValue() { return _value; }
 

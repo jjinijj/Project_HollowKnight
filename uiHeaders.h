@@ -7,3 +7,4 @@
 #include "uiText.h"
 #include "uiButtonDrop.h"
 #include "uiSprite.h"
+#include "uiProgress.h"
