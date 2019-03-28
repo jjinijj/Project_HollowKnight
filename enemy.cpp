@@ -103,8 +103,6 @@ void enemy::dead()
 	_colHeight = 0.f;
 
 	_hp = 0;
-
-	SOUNDMANAGER->play("enemy_death_sword");
 }
 
 void enemy::takeDamage(int damage)
@@ -113,6 +111,7 @@ void enemy::takeDamage(int damage)
 	if (_hp <= 0)
 		dead();
 
+	SOUNDMANAGER->play("enemy_death_sword");
 	_renderAlphaCnt = 9;
 }
 

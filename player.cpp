@@ -1106,6 +1106,9 @@ void player::checkCollisionEnemy()
 
 void player::checkCollisionCoin()
 {
+	if(!_objM)
+		return;
+
 	list<dropCoin*> coins = _objM->getCoinList();
 
 	list<dropCoin*>::iterator iter = coins.begin();
@@ -1117,6 +1120,7 @@ void player::checkCollisionCoin()
 		if(CheckIntersectRect(_collision, coin->getCollision()))
 		{
 			// todo
+
 			SOUNDMANAGER->play("geo_small_collect_1");
 			_coin += coin->getPrice();
 			UIMANAGER->getStatusUI()->setCoin(_coin);
