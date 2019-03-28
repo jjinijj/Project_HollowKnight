@@ -222,7 +222,9 @@ void player::moveJump(float jumpPower)
 
 void player::moveFall(float gravity)
 {
-	_y += (gravity);
+	// 밀리는 도중에는 추락안함
+	if(!_isPushed || eDirection_Up != _dir_pushed)
+		_y += (gravity);
 }
 
 void player::moveUp()
@@ -259,6 +261,7 @@ void player::attackDamage()
 	if (!_actorM)
 		return;
 
+	// 적
 	map<UINT, enemy*> ems = _actorM->getEnemys();
 
 	map<UINT, enemy*>::iterator iter  = ems.begin();
@@ -274,6 +277,23 @@ void player::attackDamage()
 			_pushedPower = static_cast<float>(PLAYER_PUSHED_POW);
 		}
 	}
+
+	if (!_isPushed)
+	{
+		vector<terrain*> ters = *_mapData->getColliderTerrains();
+		vector<terrain*>::iterator iterT = ters.begin();
+		vector<terrain*>::iterator endT = ters.end();
+		for (iterT; endT != iterT; ++iterT)
+		{
+			terrain* ter = *iterT;
+			if (CheckIntersectRect(_collisionAtk, ter->getCollision()))
+			{
+				_isPushed = true;
+				_pushedPower = static_cast<float>(PLAYER_PUSHED_POW);
+			}
+		}
+	}
+
 
 	if (_effectAni)
 	{
@@ -984,7 +1004,10 @@ bool player::checkCollisionEnemy()
 	{
 		enemy* em = iter->second;
 
-		if (CheckIntersectRect(_collision, em->getCollision()))
+		if (!CheckIntersectRect(_collision, em->getCollision()))
+			continue;
+
+		if (em->isAlive())
 		{
 			check = true;
 			break;
