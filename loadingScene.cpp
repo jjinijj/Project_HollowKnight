@@ -103,7 +103,7 @@ void loadingScene::loadImageData()
 	IMAGEMANAGER->addFrameImage("knight_loading", L"image/loading.png", 376, 220, 4, 2);
 
 	// effect swing
-	IMAGEMANAGER->addFrameImage("swing", L"image/swing.png", 1028, 308, 4, 2);
+	IMAGEMANAGER->addFrameImage("swing", L"image/swing.png", 514, 154, 4, 2);
 	IMAGEMANAGER->addFrameImage("swing_updown", L"image/swing_updown.png", 304, 240, 2, 2);
 
 	// enemy tiktik

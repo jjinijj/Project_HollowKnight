@@ -73,7 +73,8 @@ void titleScene::update()
 					_isInputEnterKey = true;
 
 					if (0 == _selIdx)
-						_nextSceneNameName = eSceneName_DirtMouth;
+						//_nextSceneNameName = eSceneName_DirtMouth;
+						_nextSceneNameName = eSceneName_CrossLoad_01;
 					else if(1 == _selIdx)
 						_nextSceneNameName = eSceneName_MapTool;
 					else

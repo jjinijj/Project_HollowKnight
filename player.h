@@ -45,6 +45,7 @@ public:
 
 		// 밀리는 힘의 크기
 		PLAYER_PUSHED_POW = 2,
+		PLAYER_PUSHED_FRAME_COUNT = 10,
 
 	};
 
@@ -128,6 +129,8 @@ private:
 	UINT _coin;					// 돈
 	
 	bool _isFloating;			// 공중에 떠있는가
+	bool _isPushed;
+	bool _isHit;
 
 	UINT _power;
 	int	 _hp;
@@ -137,6 +140,7 @@ private:
 
 	float _sight;				// 위/아래 카매라 이동
 	float _invincibleTime;		// 무적
+	float _pushedPower;
 
 	mapData* _mapData;			// 맵 정보
 
@@ -156,6 +160,7 @@ private:
 
 	WORD _dir;					// 키가 눌린 방향
 	WORD _dir_atk;				// 공격 방향
+	WORD _dir_pushed;			// 밀리는 방향
 
 	actorManager* _actorM;
 	npc*		  _talkTarget;

@@ -14,7 +14,7 @@
 #include "playerStatusUI.h";
 
 player::player()
-: atkcnt(0){
+{
 }
 
 
@@ -111,16 +111,17 @@ void player::update()
 	if(checkPortal())
 		enterPortalTrigger();
 
+	// 
 	if(_function)
 		_function();
 
+	// ÀÌÆåÆ®
 	if (_effectAni)
 	{
 		if (!_effectAni->isPlay())
 		{
 			_effectAni = nullptr;
 			_effectImg = nullptr;
-			atkcnt = 0;
 		}
 		else
 		{
@@ -258,8 +259,6 @@ void player::attackDamage()
 	if (!_actorM)
 		return;
 
-	++atkcnt;
-
 	map<UINT, enemy*> ems = _actorM->getEnemys();
 
 	map<UINT, enemy*>::iterator iter  = ems.begin();
@@ -269,7 +268,11 @@ void player::attackDamage()
 		enemy* em = iter->second;
 
 		if (CheckIntersectRect(_collisionAtk, em->getCollision()))
+		{
 			_actorM->hitEnemy(em->getUID(), _power);
+			_isPushed = true;
+			_pushedPower = static_cast<float>(PLAYER_PUSHED_POW);
+		}
 	}
 
 	if (_effectAni)
@@ -278,34 +281,38 @@ void player::attackDamage()
 		_effectAni = nullptr;
 		_effectImg = nullptr;
 	}
-
 	
 	switch (_dir_atk)
 	{
 		case eDirection_Right:
 		{
 			_effectAni = ANIMANAGER->findAnimation(PLAYER_UID, ePlayer_Ani_Effect_Swing_Right);
+			_dir_pushed = eDirection_Left;
 			break;
 		}
 
 		case eDirection_Left:
 		{
 			_effectAni = ANIMANAGER->findAnimation(PLAYER_UID, ePlayer_Ani_Effect_Swing_Left);
+			_dir_pushed = eDirection_Right;
 			break;
 		}
 
 		case eDirection_Up:
 		{
 			_effectAni = ANIMANAGER->findAnimation(PLAYER_UID, ePlayer_Ani_Effect_Swing_Up);
+			_dir_pushed = eDirection_Down;
 			break;
 		}
 
 		case eDirection_Down:
 		{
 			_effectAni = ANIMANAGER->findAnimation(PLAYER_UID, ePlayer_Ani_Effect_Swing_Down);
+			_dir_pushed = eDirection_Up;
 			break;
 		}
 	}
+	
 
 	if (_effectAni)
 	{
@@ -875,6 +882,25 @@ void player::fixPosition()
 {
 	if(!_mapData)
 		return;
+
+	if (_isPushed)
+	{
+		if (eDirection_Left == _dir_pushed)
+			_x -= _pushedPower;
+		else if (eDirection_Right == _dir_pushed)
+			_x += _pushedPower;
+		else if (eDirection_Up == _dir_pushed)
+			_y -= _pushedPower;
+		else
+			_y += _pushedPower;
+
+		_pushedPower -= (TIMEMANAGER->getElapsedTime() * 5);
+		updateCollision();
+
+		if (_pushedPower <= 0.f)
+			_isPushed = false;
+	}
+
 
 	vector<terrain*>* vCol = _mapData->getColliderTerrains();
 	vector<terrain*>::iterator iter = vCol->begin();
