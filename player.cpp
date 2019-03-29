@@ -126,7 +126,7 @@ void player::update()
 	if(checkPortal())
 		enterPortalTrigger();
 
-	// 
+	// 특정 함수 
 	if(_function)
 		_function();
 

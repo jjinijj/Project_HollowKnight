@@ -156,9 +156,7 @@ void uiButton::releaseInputKey()
 			_state = eButton_Up;
 	}
 	else
-	{
 		_state = eButton_Up;
-	}
 }
 
 void uiButton::onceKeyDownMouseL()
@@ -168,8 +166,7 @@ void uiButton::onceKeyDownMouseL()
 
 void uiButton::onceKeyUpMouseL()
 {
-	if(eButton_Press != _state)
-		return;
+	if(eButton_Press != _state) return;
 	
 	_state = eButton_Up;
 	if (_isToggle)
@@ -177,28 +174,24 @@ void uiButton::onceKeyUpMouseL()
 		if (_isToggleOn)
 		{
 			_isToggleOn = false;
-			if(_offFunction )
-				_offFunction();
+			if(_offFunction ) _offFunction();
 		}
 		else
 		{
 			_isToggleOn = true;
-			if(_onFunction )
-				_onFunction();
+			if(_onFunction ) _onFunction();
 			_state = eButton_Down;
 		}
 	}
 	else
 	{
-		if( _onFunction )
-			_onFunction();
+		if( _onFunction )	_onFunction();
 	}
 }
 
 void uiButton::stayKeyMouseL()
 {
-	if( _pressFunction )
-		_pressFunction();
+	if( _pressFunction ) _pressFunction();
 }
 
 void uiButton::onceKeyDownMouseR()

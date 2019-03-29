@@ -4,10 +4,10 @@ class actorBase;
 class actorState
 {
 protected:
-	actorBase* _actor;
+	actorBase*	_actor;
 	
-	animation* _ani;
-	image* _img;
+	animation*	_ani;
+	image*		_img;
 	actorState* _next;
 
 	bool _isEnd;
