@@ -25,6 +25,7 @@ enum eImageUID
 	eImage_Fence,
 	eImage_Town_Well,
 	eImage_StreetLamp,
+	eImage_Town_Well_Under,
 
 	eImage_Npc_All = 1500,
 	eImage_Npc_Elderbug,

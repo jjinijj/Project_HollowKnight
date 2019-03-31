@@ -224,6 +224,7 @@ void loadingScene::loadImageData()
 	IMAGEMANAGER->addFrameImage("town_build_07", L"image/town_build_07.png", 410, 539, 1, 1);
 	IMAGEMANAGER->addFrameImage("town_rubble", L"image/town_rubble.png", 960, 960, 1, 1);
 	IMAGEMANAGER->addFrameImage("well", L"image/well.png", 800, 800, 1, 1);
+	IMAGEMANAGER->addFrameImage("well_under", L"image/well_under.png", 800, 800, 1, 1);
 
 
 	IMAGEMANAGER->addImage("titleBg", L"image/titleBg.png", 100, 100);
@@ -264,6 +265,7 @@ void loadingScene::loadImageData()
 	IMGDATABASE->insertImage(eImage_Fence, IMAGEMANAGER->findImage("fence"));
 	IMGDATABASE->insertImage(eImage_Town_Well, IMAGEMANAGER->findImage("well"));
 	IMGDATABASE->insertImage(eImage_StreetLamp, IMAGEMANAGER->findImage("streetLamp"));
+	IMGDATABASE->insertImage(eImage_Town_Well_Under, IMAGEMANAGER->findImage("well_under"));
 
 	IMGDATABASE->insertImage(eImage_UI_BG, IMAGEMANAGER->findImage("bg"));
 	IMGDATABASE->insertImage(eImage_UI_BG1, IMAGEMANAGER->findImage("uiBG"));

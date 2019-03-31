@@ -1448,6 +1448,12 @@ void mapTool::initTerrainImgLinks()
 		_imgLnksTerrain.push_back(lnk);
 		lnk = nullptr;
 	}
+	{
+		IMGLNK* lnk = new IMGLNK;
+		lnk->makeImageLnk(eImage_Town_Well_Under, false);
+		_imgLnksTerrain.push_back(lnk);
+		lnk = nullptr;
+	}
 }
 
 void mapTool::initObjectImgLinks()
