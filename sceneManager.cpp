@@ -60,6 +60,7 @@ HRESULT sceneManager::init()
 		_fileNameMap.insert(make_pair(eSceneName_Test, data));
 	}
 
+	_beforeSceneName = eSceneName_None;
 	_nextSceneName = eSceneName_None;
 	_isChangeScene = false;
 	return S_OK;

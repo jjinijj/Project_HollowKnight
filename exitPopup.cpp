@@ -51,7 +51,10 @@ void exitPopup::update()
 	if (KEYMANAGER->isOnceKeyDown(VK_RETURN))
 	{
 		if (_isExit)
+		{
+			SCENEMANAGER->setBeforeScene(eSceneName_None);
 			SCENEMANAGER->setNextScene(eSceneName_Title);
+		}
 		uiClose();
 	}
 

@@ -35,6 +35,7 @@ private:
 
 	WORD _triggerPool[TRRIGER_MAX_COUNT];			// terrain uid
 	map<UINT, eSceneName> _portalMap;				// terrin uid, esceneName
+	map<UINT, eSceneName> _genPosMap;				// terrin uid, esceneName
 
 	image* _background;
 	
@@ -89,8 +90,12 @@ public:
 	void removeTerrainAttribute(UINT layer, UID uid, eAttribute attr);
 	// 다음 포탈로 연결
 	void setNextPortal(UINT uid);
+	// 
+	void setNextGenPos(UINT uid);
 	// 연결된 씬 이름 확인
 	eSceneName getLinkedSceneName(UINT uid);
+	// 연결된 씬 이름 확인
+	eSceneName getLinkedGenPosSceneName(UINT uid);
 
 	// 레이어, uid
 	terrain* getTerrain(UINT layer, UINT uid);

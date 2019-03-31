@@ -62,6 +62,7 @@ HRESULT mapTool::init()
 
 	_isCloseSampleBoard = true;
 
+	CAMERA->init();
 	CAMERA->setScope(_canvas->getRect());
 	
 	_player = new player;
@@ -1300,6 +1301,12 @@ void mapTool::initUI()
 			if (eAttr_Portal == ii)
 			{
 				_uiBtnInspectors[ii]->setOnClickFunction(std::bind(&mapTool::clickBtnInspectorPortal, this, _uiBtnInspectors[ii]));
+				_uiBtnInspectors[ii]->setOnClickUPFunction(std::bind(&mapTool::clickBtnInspectorPortal, this, _uiBtnInspectors[ii]));
+			}
+			else if (eAttr_Player_Pos == ii)
+			{
+				_uiBtnInspectors[ii]->setOnClickFunction(std::bind(&mapTool::clickBtnInspectorGenPos, this, _uiBtnInspectors[ii]));
+				_uiBtnInspectors[ii]->setOnClickUPFunction(std::bind(&mapTool::clickBtnInspectorGenPos, this, _uiBtnInspectors[ii]));
 			}
 			else
 			{
@@ -1815,9 +1822,41 @@ void mapTool::clickBtnInspectorPortal(uiButton* btn)
 	}
 	else
 	{
+		_mapData->addTerrainAttribute(_select.layer, uid, eAttr_Portal);
 		btn->setState(eButton_Down);
 	}
 
+	terrain* ter = _mapData->getTerrain(_curLayer, _select.obj->getUID());
+	if (ter)
+		_select.infoSet(ter, ter->getAtrribute(), _curLayer);
+	refreshDetailText();
+}
+
+void mapTool::clickBtnInspectorGenPos(uiButton * btn)
+{
+	if (!_select.obj)
+		return;
+
+	if (eLayer_Actor == _select.layer)
+		return;
+
+	UINT uid = _select.obj->getUID();
+	_mapData->setNextGenPos(uid);
+
+	if (_mapData->getLinkedGenPosSceneName(uid) == eSceneName_None)
+	{
+		_mapData->removeTerrainAttribute(_select.layer, uid, eAttr_Player_Pos);
+		btn->setState(eButton_Up);
+	}
+	else
+	{
+		_mapData->addTerrainAttribute(_select.layer, uid, eAttr_Player_Pos);
+		btn->setState(eButton_Down);
+	}
+
+	terrain* ter = _mapData->getTerrain(_curLayer, _select.obj->getUID());
+	if (ter)
+		_select.infoSet(ter, ter->getAtrribute(), _curLayer);
 	refreshDetailText();
 }
 
@@ -2199,32 +2238,53 @@ void mapTool::refreshDetailText()
 					txt.append(format(L"Trigger : %d\n", _mapData->getTriggerIndex(uid)));
 					break; 
 				}
-				case eAttr_Breakable:		{ txt.append(L"Breakable\n");break; }
-				case eAttr_Usable:			{ txt.append(L"Usable\n");break; }
-				case eAttr_Trap:			{ txt.append(L"Trap\n");break; }
+				case eAttr_Breakable:		{ txt.append(L"Breakable\n");	break; }
+				case eAttr_Usable:			{ txt.append(L"Usable\n");		break; }
+				case eAttr_Trap:			{ txt.append(L"Trap\n");		break; }
 				case eAttr_Portal:			
 				{
 					eSceneName name = _mapData->getLinkedSceneName(uid);
 
 					switch (name)
 					{
-						case eSceneName_Loading:		{ txt.append(L"Portal : Loading\n"); break; }
-						case eSceneName_MapTool:		{ txt.append(L"Portal : MapTool\n"); break; }
-						case eSceneName_Title:			{ txt.append(L"Portal : Title\n"); break; }
-						case eSceneName_Load:			{ txt.append(L"Portal : Load\n"); break; }
-						case eSceneName_DirtMouth:		{ txt.append(L"Portal : DirtMouth\n"); break; }
-						case eSceneName_CrossLoad_01:	{ txt.append(L"Portal : CrossLoad 01\n"); break; }
-						case eSceneName_Iselda_Store:	{ txt.append(L"Portal : Iselda Store\n"); break; }
-						case eSceneName_Test:			{ txt.append(L"Portal : Test\n"); break; }
-						case eSceneName_None:			{ txt.append(L"Portal : None\n"); break; }
+						case eSceneName_Loading:		{ txt.append(L"Portal : Loading\n");		break; }
+						case eSceneName_MapTool:		{ txt.append(L"Portal : MapTool\n");		break; }
+						case eSceneName_Title:			{ txt.append(L"Portal : Title\n");			break; }
+						case eSceneName_Load:			{ txt.append(L"Portal : Load\n");			break; }
+						case eSceneName_DirtMouth:		{ txt.append(L"Portal : DirtMouth\n");		break; }
+						case eSceneName_CrossLoad_01:	{ txt.append(L"Portal : CrossLoad 01\n");	break; }
+						case eSceneName_Iselda_Store:	{ txt.append(L"Portal : Iselda Store\n");	break; }
+						case eSceneName_Test:			{ txt.append(L"Portal : Test\n");			break; }
+						case eSceneName_None:			{ txt.append(L"Portal : None\n");			break; }
 						default:
 							break;
 					}
 
 					break; 
 				}
-				case eAttr_Dialog:			{ txt.append(L"Dialog");break; }
-				case eAttr_Chair:			{ txt.append(L"Chair");break; }
+				case eAttr_Dialog:			{ txt.append(L"Dialog\n");	break; }
+				case eAttr_Chair:			{ txt.append(L"Chair\n");	break; }
+				case eAttr_Player_Pos:			
+				{
+					eSceneName name = _mapData->getLinkedGenPosSceneName(uid);
+
+					switch (name)
+					{
+						case eSceneName_Loading:		{ txt.append(L"before : Loading\n");		break; }
+						case eSceneName_MapTool:		{ txt.append(L"before : MapTool\n");		break; }
+						case eSceneName_Title:			{ txt.append(L"before : Title\n");			break; }
+						case eSceneName_Load:			{ txt.append(L"before : Load\n");			break; }
+						case eSceneName_DirtMouth:		{ txt.append(L"before : DirtMouth\n");		break; }
+						case eSceneName_CrossLoad_01:	{ txt.append(L"before : CrossLoad 01\n");	break; }
+						case eSceneName_Iselda_Store:	{ txt.append(L"before : Iselda Store\n");	break; }
+						case eSceneName_Test:			{ txt.append(L"before : Test\n");			break; }
+						case eSceneName_None:			{ txt.append(L"before : None\n");			break; }
+						default:
+							break;
+					}
+
+					break; 
+				}
 
 				default:
 					break;

@@ -557,12 +557,12 @@ void mapData::addTerrainAttribute(UINT layer, UID uid, eAttribute attr)
 				useTrigger(ter->getUID());
 				break;
 			}
-			case eAttr_Breakable: { break; }
-			case eAttr_Usable: { break; }
-			case eAttr_Trap: { break; }
-			case eAttr_Portal: { break; }
-			case eAttr_Dialog: { break; }
-			case eAttr_Chair: { break; }
+			case eAttr_Breakable:	{ break; }
+			case eAttr_Usable:		{ break; }
+			case eAttr_Trap:		{ break; }
+			case eAttr_Portal:		{ break; }
+			case eAttr_Dialog:		{ break; }
+			case eAttr_Chair:		{ break; }
 		}
 
 		// 원래 속성이 아무것도 없었다면 충돌체 생성
@@ -590,12 +590,12 @@ void mapData::removeTerrainAttribute(UINT layer, UID uid, eAttribute attr)
 				deleteTrigger(ter->getUID());
 				break;
 			}
-			case eAttr_Breakable: { break; }
-			case eAttr_Usable: { break; }
-			case eAttr_Trap: { break; }
-			case eAttr_Portal: { break; }
-			case eAttr_Dialog: { break; }
-			case eAttr_Chair: { break; }
+			case eAttr_Breakable:	{ break; }
+			case eAttr_Usable:		{ break; }
+			case eAttr_Trap:		{ break; }
+			case eAttr_Portal:		{ break; }
+			case eAttr_Dialog:		{ break; }
+			case eAttr_Chair:		{ break; }
 		}
 
 		// 속성이 아무것도 없다면 충돌체 제거
@@ -661,10 +661,54 @@ void mapData::setNextPortal(UINT uid)
 	}
 }
 
+void mapData::setNextGenPos(UINT uid)
+{
+	map<UINT, eSceneName>::iterator iter = _genPosMap.find(uid);
+
+	if (iter != _genPosMap.end())
+	{
+		int idx = (iter->second);
+		while (true)
+		{
+			idx += 1;
+			if (eSceneName_None <= idx)
+			{
+				_genPosMap.erase(iter);
+				break;
+			}
+			else if(SCENEMANAGER->isInGameScene((eSceneName)idx))
+			{
+				iter->second = (eSceneName)idx;
+				break;
+			}
+		}
+	}
+	else
+	{
+		_genPosMap.insert(make_pair(uid, eSceneName_Title));
+	}
+}
+
 eSceneName mapData::getLinkedSceneName(UINT uid)
 {
 	map<UINT, eSceneName>::iterator iter = _portalMap.begin();
 	map<UINT, eSceneName>::iterator end = _portalMap.end();
+
+	for (iter; end != iter; ++iter)
+	{
+		if (iter->first == uid)
+		{
+			return iter->second;
+		}
+	}
+
+	return eSceneName_None;
+}
+
+eSceneName mapData::getLinkedGenPosSceneName(UINT uid)
+{
+	map<UINT, eSceneName>::iterator iter = _genPosMap.begin();
+	map<UINT, eSceneName>::iterator end = _genPosMap.end();
 
 	for (iter; end != iter; ++iter)
 	{
@@ -732,16 +776,35 @@ int mapData::getTerrainIndex(UINT uid)
 POINTF mapData::getPlayerStartPosition()
 {
 	POINTF pos = {0.f, 0.f};
+	eSceneName beforeSceneName = SCENEMANAGER->getBeforeSceneName();
+	if(eSceneName_None == beforeSceneName)
+		beforeSceneName = eSceneName_Title;
 
-	int size = _collisionTerrains.size();
-	for(int ii = 0; ii < size; ++ii)
+	UINT uid = NULL;
+	
+	map<UINT, eSceneName>::iterator iter = _genPosMap.begin();
+	map<UINT, eSceneName>::iterator end = _genPosMap.end();
+	for(iter; end != iter; ++iter)
 	{
-		terrain* ter = _collisionTerrains[ii];
-		if (ter->checkAttribute(eAttr_Player_Pos))
+		if(beforeSceneName != iter->second)
+			continue;
+
+		uid = iter->first;
+		break;
+	}
+
+	if (NULL != uid)
+	{
+		int size = _collisionTerrains.size();
+		for(int ii = 0; ii < size; ++ii)
 		{
-			pos.x = ter->getPosX() + (ter->getCollision().right - ter->getCollision().left) * 0.5f;
-			pos.y = ter->getPosY() + (ter->getCollision().bottom - ter->getCollision().top) * 0.5f;
-			break;
+			terrain* ter = _collisionTerrains[ii];
+			if (ter->getUID() == uid)
+			{
+				pos.x = ter->getPosX() + (ter->getCollision().right - ter->getCollision().left) * 0.5f;
+				pos.y = ter->getPosY() + (ter->getCollision().bottom - ter->getCollision().top) * 0.5f;
+				break;
+			}
 		}
 	}
 
@@ -881,7 +944,7 @@ bool mapData::loadMapDate(string fileName, int* terrainCnt)
 bool mapData::loadMapInfo(string fileName, int* terrainCnt, int& actorCnt)
 {
 	string address;
-	char info[512] = "";
+	char info[1024] = "";
 	queue<int> infos;
 	address.clear();
 
@@ -933,6 +996,7 @@ bool mapData::loadMapInfo(string fileName, int* terrainCnt, int& actorCnt)
 			_triggerPool[ii] = NULL;
 	}
 
+	// 액터 수
 	if(!infos.empty())
 	{
 		actorCnt = infos.front();
@@ -942,18 +1006,46 @@ bool mapData::loadMapInfo(string fileName, int* terrainCnt, int& actorCnt)
 
 	if (!infos.empty())
 	{
-		while(!infos.empty())
+		int potalCnt = infos.front();
+		infos.pop();
+
+		// 포탈
+		if (!infos.empty())
 		{
-			int key = infos.front();
-			infos.pop();
-			int value = infos.front();
-			infos.pop();
-	
-			_portalMap.insert(make_pair(key, (eSceneName)value));
+			for(int ii = 0 ; ii < potalCnt; ++ii)
+			{
+				int key = infos.front();
+				infos.pop();
+				int value = infos.front();
+				infos.pop();
+
+				_portalMap.insert(make_pair(key, (eSceneName)value));
+			}
 		}
-	
-		return true;
 	}
+
+	if (!infos.empty())
+	{
+		int genCnt = infos.front();
+		infos.pop();
+
+		// 시작 위치
+		if (!infos.empty())
+		{
+			for(int ii = 0; ii < genCnt; ++ii)
+			{
+				int key = infos.front();
+				infos.pop();
+				int value = infos.front();
+				infos.pop();
+
+				_genPosMap.insert(make_pair(key, (eSceneName)value));
+			}
+			return true;
+		}
+	}
+	else
+		return true;
 
 	return false;
 }
@@ -1043,10 +1135,26 @@ void mapData::saveMapInfo(string fileName)
 		info.append(format("%d,", _triggerPool[ii]));
 
 	info.append(format("%d,", _actors.size()));
-	map<UINT, eSceneName>::iterator iter = _portalMap.begin();
-	map<UINT, eSceneName>::iterator end = _portalMap.end();
-	for(iter; end != iter; ++iter)
-		info.append(format("%d, %d,", iter->first, iter->second));
+	
+	// 포탈 갯수
+	info.append(format("%d,", _portalMap.size()));
+	// 포탈 정보
+	{
+		map<UINT, eSceneName>::iterator iter = _portalMap.begin();
+		map<UINT, eSceneName>::iterator end = _portalMap.end();
+		for (iter; end != iter; ++iter)
+			info.append(format("%d, %d,", iter->first, iter->second)); 
+	}
+
+	// 위치 젠 갯수
+	info.append(format("%d,", _genPosMap.size()));
+	// 위치 젠 정보
+	{
+		map<UINT, eSceneName>::iterator iter = _genPosMap.begin();
+		map<UINT, eSceneName>::iterator end = _genPosMap.end();
+		for (iter; end != iter; ++iter)
+			info.append(format("%d, %d,", iter->first, iter->second));
+	}
 
 
 	HANDLE file;

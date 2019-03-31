@@ -311,3 +311,12 @@ void soundManager::setAllSoundResume()
 	_bgmGroup->setPaused(false);
 	_effectGroup->setPaused(false);
 }
+
+void soundManager::setAllSoundStop()
+{
+	_bgmGroup->stop();
+	_effectGroup->stop();
+
+	_bgmSoundGroup->stop();
+	_effectSoundGroup->stop();
+}

@@ -21,6 +21,7 @@ HRESULT baseScene::init()
 
 void baseScene::release()
 {
+	SOUNDMANAGER->setAllSoundStop();
 }
 
 void baseScene::update()

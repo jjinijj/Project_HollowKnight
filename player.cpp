@@ -528,6 +528,7 @@ void player::enterPortal()
 		eSceneName next = _mapData->getLinkedSceneName(_portal->getUID());
 		if(eSceneName_None != next)
 		{
+			SCENEMANAGER->setBeforeScene(SCENEMANAGER->getCurrentSceneName());
 			SCENEMANAGER->setNextScene(next);
 			_portal = nullptr;
 		}

@@ -65,6 +65,7 @@ public:
 	void setEffectResume();
 	void setBgmResume();
 	void setAllSoundResume();
+	void setAllSoundStop();
 
 
 	soundManager();

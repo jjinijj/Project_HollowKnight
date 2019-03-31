@@ -36,6 +36,7 @@ private:
 	
 	int					_cursorCnt;			// 커서 on/off에 사용
 
+	eSceneName			_beforeSceneName;
 	eSceneName			_nextSceneName;		// 다음 씬
 	baseScene*			_nextScene;
 
@@ -59,12 +60,14 @@ public:
 	HRESULT changeNextScene();
 	HRESULT createNextScene(mapData* m, actorManager* am);
 
+	void setBeforeScene(eSceneName sceneName) { _beforeSceneName = sceneName; }
 	void setNextScene(eSceneName sceneName);
 
 	// 씬 정보
-	baseScene* getCurrentScene()	{ return _currentScene; }
+	baseScene* getCurrentScene()	{ return _currentScene;		}
 	eSceneName getCurrentSceneName(){ return _currentScene->getSceneName();}
-	eSceneName getNextSceneName()	{ return _nextSceneName;}
+	eSceneName getBeforeSceneName()	{ return _beforeSceneName;	}
+	eSceneName getNextSceneName()	{ return _nextSceneName;	}
 	
 
 	// 파일명
